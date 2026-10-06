@@ -17,3 +17,6 @@ $RECYCLE.BIN/
 *.temp
 *.swp
 *~
+.neon
+.env.local
+node_modules/
