@@ -18,5 +18,9 @@ $RECYCLE.BIN/
 *.swp
 *~
 .neon
+.env*
 .env.local
 node_modules/
+.next/
+*.tsbuildinfo
+
