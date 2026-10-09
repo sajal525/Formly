@@ -57,8 +57,7 @@ export function RegistrationForm() {
       }
 
       // Successful registration -> session cookie established -> navigate to protected dashboard
-      router.push("/dashboard");
-      router.refresh();
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("Registration error:", err);
       setSubmitError("Network error. Please check your connection and try again.");
@@ -91,7 +90,7 @@ export function RegistrationForm() {
       )}
 
       {/* Form Fields */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3.5 sm:space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} method="POST" noValidate className="space-y-3.5 sm:space-y-4">
         {/* Username Field */}
         <div className="space-y-1">
           <label

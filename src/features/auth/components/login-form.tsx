@@ -46,8 +46,7 @@ export function LoginForm() {
       }
 
       // Successful sign in -> navigate to protected dashboard
-      router.push("/dashboard");
-      router.refresh();
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("Sign in error:", err);
       setSubmitError("Username or password is incorrect");
@@ -80,7 +79,7 @@ export function LoginForm() {
       )}
 
       {/* Form Fields */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3 sm:space-y-3.5">
+      <form onSubmit={handleSubmit(onSubmit)} method="POST" noValidate className="space-y-3 sm:space-y-3.5">
         {/* Username Field */}
         <div className="space-y-1">
           <label

@@ -21,6 +21,8 @@ model User {
   sessions        Session[]
   accounts        Account[]
   profile         Profile?
+  forms           Form[]
+  settings        UserSettings?
 
   @@map("user")
 }
@@ -70,16 +72,192 @@ model Verification {
 }
 
 model Profile {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName  String?
-  contactEmail String?
-  institution  String?
-  department   String?
-  rollNumber   String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName            String?
+  contactEmail           String?
+  contactEmailVerifiedAt DateTime?
+  phone                  String?
+  institution            String?
+  department             String?
+  rollNumber             String?
+  studyYear              String?
+  division               String?
+  bio                    String?
+  avatarObjectKey        String?
+  coverObjectKey         String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   @@map("profile")
+}
+
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+  TRASHED
+}
+
+model Form {
+  id                      String           @id @default(cuid())
+  ownerId                 String
+  owner                   User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title                   String           @default("Untitled form")
+  description             String?
+  status                  FormStatus       @default(DRAFT)
+  statusBeforeArchive     FormStatus?
+  statusBeforeTrash       FormStatus?
+  deletedAt               DateTime?
+  purgeAt                 DateTime?
+  themeKey                String?
+  definition              Json?
+  definitionVersion       Int?
+  draftRevision           Int              @default(0)
+  sourceTemplateId        String?
+  sourceTemplate          Template?        @relation("SourceTemplate", fields: [sourceTemplateId], references: [id], onDelete: SetNull)
+  sourceTemplateVersionId String?
+  sourceTemplateVersion   TemplateVersion? @relation("SourceTemplateVersion", fields: [sourceTemplateVersionId], references: [id], onDelete: SetNull)
+  sessions                ResponseSession[]
+  responses               FormResponse[]
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  @@index([ownerId, updatedAt])
+  @@index([ownerId, status, updatedAt, id])
+  @@index([ownerId, status, createdAt, id])
+  @@index([ownerId, status, title, id])
+  @@index([ownerId, status, deletedAt, id])
+  @@map("form")
+}
+
+model Template {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  title         String
+  description   String
+  categoryKey   String
+  thumbnailPath String?
+  themeKey      String?
+  isPublished   Boolean           @default(true)
+  featuredRank  Int?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  versions      TemplateVersion[]
+  forms         Form[]            @relation("SourceTemplate")
+
+  @@index([categoryKey, isPublished])
+  @@index([isPublished, featuredRank])
+  @@map("template")
+}
+
+model TemplateVersion {
+  id                String    @id @default(cuid())
+  templateId        String
+  template          Template  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  version           Int       @default(1)
+  definitionVersion Int       @default(1)
+  definition        Json
+  publishedAt       DateTime  @default(now())
+  retiredAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  forms             Form[]    @relation("SourceTemplateVersion")
+
+  @@unique([templateId, version])
+  @@map("template_version")
+}
+
+enum DeviceCategory {
+  MOBILE
+  DESKTOP
+  TABLET
+  OTHER
+  UNKNOWN
+}
+
+enum SubmissionSource {
+  DIRECT
+  QR
+  EMBED
+  SHARED
+  OTHER
+  UNKNOWN
+}
+
+model ResponseSession {
+  id                    String            @id @default(cuid())
+  formId                String
+  form                  Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  sessionHash           String?
+  startedAt             DateTime          @default(now())
+  firstInteractionAt    DateTime?
+  reachedLastQuestionAt DateTime?
+  completedAt           DateTime?
+  deviceCategory        DeviceCategory    @default(UNKNOWN)
+  sourceKey             SubmissionSource  @default(DIRECT)
+  response              FormResponse?
+
+  @@index([formId, startedAt])
+  @@index([formId, firstInteractionAt])
+  @@map("response_session")
+}
+
+model FormResponse {
+  id                 String           @id @default(cuid())
+  formId             String
+  form               Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responseSessionId  String?          @unique
+  responseSession    ResponseSession? @relation(fields: [responseSessionId], references: [id], onDelete: SetNull)
+  schemaVersion      Int              @default(1)
+  definitionSnapshot Json?
+  answers            Json
+  durationSeconds    Int?
+  submittedAt        DateTime         @default(now())
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([formId, submittedAt, id])
+  @@map("form_response")
+}
+
+model UserSettings {
+  id                       String   @id @default(cuid())
+  userId                   String   @unique
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // General Preferences
+  defaultLandingPage       String   @default("dashboard")
+  defaultFormView          String   @default("list")
+  itemsPerPage             Int      @default(10)
+  dateFormat               String   @default("DD/MM/YYYY")
+  timeFormat               String   @default("12h")
+
+  // Appearance
+  themeMode                String   @default("system")
+  accentColor              String   @default("violet")
+
+  // Form Preferences (Defaults for newly created forms)
+  defaultThemeId           String   @default("soft-lavender")
+  showProgressIndicator    Boolean  @default(true)
+  collectEmailByDefault    Boolean  @default(false)
+  allowMultipleSubmissions Boolean  @default(true)
+
+  // Editor Preferences
+  autoSaveForms            Boolean  @default(true)
+  showKeyboardShortcuts    Boolean  @default(true)
+  defaultQuestionType      String   @default("SHORT_TEXT")
+  showQuestionNumbers      Boolean  @default(true)
+
+  // Language & Region
+  locale                   String   @default("en")
+  timeZone                 String   @default("UTC")
+  region                   String   @default("India")
+
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@map("user_settings")
 }
