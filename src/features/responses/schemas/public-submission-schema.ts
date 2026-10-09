@@ -23,6 +23,7 @@ export const publicSubmitAnswerValueSchema = z.union([
 export const publicSubmitPayloadSchema = z.object({
   sessionId: z.string().optional(),
   answers: z.record(z.string(), publicSubmitAnswerValueSchema),
+  accessPassword: z.string().optional(),
 });
 
 export type PublicSubmitPayload = z.infer<typeof publicSubmitPayloadSchema>;

@@ -61,6 +61,7 @@ export function MyFormsClient({
   const [isBulkArchiveOpen, setIsBulkArchiveOpen] = useState(false);
   const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreatingBlank, setIsCreatingBlank] = useState(false);
 
   // Notifications
   const [toast, setToast] = useState<{
@@ -73,6 +74,31 @@ export function MyFormsClient({
     setTimeout(() => {
       setToast((curr) => (curr?.text === text ? null : curr));
     }, 5000);
+  }
+
+  async function handleCreateBlankDirect() {
+    if (isCreatingBlank) return;
+    setIsCreatingBlank(true);
+    try {
+      const res = await fetch("/api/v1/forms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Untitled form",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.form?.id) {
+        throw new Error(data.error || "Failed to create blank form");
+      }
+      router.push(`/forms/${data.form.id}/edit`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to create blank form";
+      showToast(msg, "error");
+      setIsCreateModalOpen(true);
+    } finally {
+      setIsCreatingBlank(false);
+    }
   }
 
   // URL State Synchronizer
@@ -208,7 +234,6 @@ export function MyFormsClient({
         throw new Error(data.error || "Failed to archive form");
       }
       showToast(`Archived "${form.title}"`);
-      router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to archive form";
       showToast(msg, "error");
@@ -237,7 +262,6 @@ export function MyFormsClient({
         throw new Error(data.error || "Failed to restore form");
       }
       showToast(`Restored "${form.title}"`);
-      router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to restore form";
       showToast(msg, "error");
@@ -260,7 +284,6 @@ export function MyFormsClient({
         throw new Error(data.error || "Failed to move form to Trash");
       }
       showToast(`Moved "${form.title}" to Trash`);
-      router.refresh();
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Failed to move form to Trash";
@@ -300,7 +323,6 @@ export function MyFormsClient({
       showToast(data.message || `Archived ${selectedIds.size} forms`);
       setSelectedIds(new Set());
       setIsBulkArchiveOpen(false);
-      router.refresh();
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Failed to perform bulk archive";
@@ -344,7 +366,7 @@ export function MyFormsClient({
       )}
 
       {/* 1. Page Header */}
-      <MyFormsHeader onCreateBlankClick={() => setIsCreateModalOpen(true)} />
+      <MyFormsHeader onCreateBlankClick={handleCreateBlankDirect} />
 
       {/* 2. Filter & View Toolbar */}
       <MyFormsToolbar
@@ -359,7 +381,16 @@ export function MyFormsClient({
         onSortChange={(sort, direction) => updateURL({ sort, direction }, "push")}
         onViewModeChange={(v) => {
           setViewMode(v);
-          updateURL({ view: v }, "replace");
+          if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            if (v && v !== "list") {
+              params.set("view", v);
+            } else {
+              params.delete("view");
+            }
+            const queryStr = params.toString();
+            window.history.replaceState(null, "", queryStr ? `?${queryStr}` : window.location.pathname);
+          }
         }}
       />
 
@@ -373,7 +404,7 @@ export function MyFormsClient({
       {/* 4. Form Records or Empty State */}
       <div
         className={`flex-1 min-h-0 flex flex-col justify-between gap-4 transition-opacity duration-150 ${
-          isPending ? "opacity-60 pointer-events-none" : ""
+          isPending ? "opacity-75" : ""
         }`}
       >
         {items.length === 0 ? (
@@ -381,7 +412,7 @@ export function MyFormsClient({
             totalFormsCount={initialData.statusCounts.all}
             statusFilter={queryParams.status}
             searchQuery={queryParams.q}
-            onCreateClick={() => setIsCreateModalOpen(true)}
+            onCreateClick={handleCreateBlankDirect}
             onResetFilters={() =>
               updateURL({ status: "all", q: "", page: 1 }, "push")
             }
@@ -455,7 +486,6 @@ export function MyFormsClient({
             );
           }
           showToast(`Renamed to "${newTitle}"`);
-          router.refresh();
         }}
       />
 

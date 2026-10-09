@@ -161,7 +161,6 @@ export function TrashWorkspaceClient({
       });
       setRestoreTarget(null);
       showToast(`Restored "${item.title}" successfully`, "success");
-      router.refresh();
     } catch (err: any) {
       showToast(err.message || "Failed to restore form", "error");
     } finally {
@@ -193,7 +192,6 @@ export function TrashWorkspaceClient({
       });
       setDeleteTarget(null);
       showToast(`Permanently deleted "${deleteTarget.title}"`, "success");
-      router.refresh();
     } catch (err: any) {
       showToast(err.message || "Failed to delete form", "error");
     } finally {
@@ -223,7 +221,6 @@ export function TrashWorkspaceClient({
       setItems((prev) => prev.filter((i) => !idSet.has(i.id)));
       setSelectedIds(new Set());
       showToast(`Successfully restored ${ids.length} forms`, "success");
-      router.refresh();
     } catch (err: any) {
       showToast(err.message || "Failed to restore selected forms", "error");
     } finally {
@@ -258,7 +255,6 @@ export function TrashWorkspaceClient({
       setSelectedIds(new Set());
       setIsBulkDeleteOpen(false);
       showToast(`Permanently deleted ${ids.length} forms`, "success");
-      router.refresh();
     } catch (err: any) {
       showToast(err.message || "Failed to delete selected forms", "error");
     } finally {

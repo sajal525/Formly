@@ -28,6 +28,7 @@ export function useDraftAutosave({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isSavingRef = useRef(false);
+  const pendingSaveRef = useRef(false);
   const latestRevisionRef = useRef(initialRevision);
   const latestDefinitionRef = useRef(definition);
   const isFirstMountRef = useRef(true);
@@ -38,10 +39,12 @@ export function useDraftAutosave({
   const performSave = useCallback(
     async (docToSave: BuilderFormDefinition) => {
       if (isSavingRef.current) {
+        pendingSaveRef.current = true;
         return;
       }
 
       isSavingRef.current = true;
+      pendingSaveRef.current = false;
       setStatus("saving");
       setError(null);
 
@@ -64,6 +67,7 @@ export function useDraftAutosave({
               "This form was modified in another tab or device. Please reload."
           );
           if (data.currentRevision !== undefined) {
+            latestRevisionRef.current = data.currentRevision;
             setRevision(data.currentRevision);
             if (onConflict) onConflict(data.currentRevision);
           }
@@ -75,6 +79,7 @@ export function useDraftAutosave({
         }
 
         if (data.newRevision !== undefined) {
+          latestRevisionRef.current = data.newRevision;
           setRevision(data.newRevision);
         }
 
@@ -83,14 +88,33 @@ export function useDraftAutosave({
       } catch (err: unknown) {
         console.error("Autosave draft error:", err);
         setStatus("failed");
-        const msg = err instanceof Error ? err.message : "Save failed. Click retry to save changes.";
+        const msg =
+          err instanceof Error
+            ? err.message
+            : "Save failed. Click retry to save changes.";
         setError(msg);
       } finally {
         isSavingRef.current = false;
+        if (pendingSaveRef.current) {
+          pendingSaveRef.current = false;
+          performSave(latestDefinitionRef.current);
+        }
       }
     },
     [formId, onConflict]
   );
+
+  // Warn before closing tab if save is pending or in flight
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (status === "saving" || isSavingRef.current || pendingSaveRef.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [status]);
 
   // Trigger autosave when definition changes
   useEffect(() => {

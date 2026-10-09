@@ -32,11 +32,13 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
     sessionData.user.name ||
     "Creator";
 
-  // Optional profile displayName
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
+  const [userProfile, catalogData] = await Promise.all([
+    prisma.profile.findUnique({
+      where: { userId },
+      select: { displayName: true },
+    }),
+    getTemplateCatalog(validatedParams),
+  ]);
 
   const displayName =
     userProfile?.displayName ||
@@ -49,8 +51,6 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
     username,
     displayName,
   };
-
-  const catalogData = await getTemplateCatalog(validatedParams);
 
   return (
     <AppShell user={userDTO}>

@@ -23,41 +23,48 @@ interface AppSidebarProps {
 
 export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
   const pathname = usePathname();
+  const [optimisticPath, setOptimisticPath] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setOptimisticPath(null);
+  }, [pathname]);
+
+  const currentPath = optimisticPath || pathname;
 
   const mainNav = [
     {
       title: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
-      active: pathname === "/dashboard",
+      active: currentPath === "/dashboard",
       comingSoon: false,
     },
     {
       title: "My Forms",
       href: "/my-forms",
       icon: FileText,
-      active: pathname === "/my-forms",
+      active: currentPath === "/my-forms",
       comingSoon: false,
     },
     {
       title: "Templates",
       href: "/templates",
       icon: LayoutGrid,
-      active: pathname === "/templates",
+      active: currentPath === "/templates",
       comingSoon: false,
     },
     {
       title: "Responses",
       href: "/responses",
       icon: BarChart2,
-      active: pathname === "/responses",
+      active: currentPath === "/responses",
       comingSoon: false,
     },
     {
       title: "Analytics",
       href: "/analytics",
       icon: LineChart,
-      active: pathname === "/analytics",
+      active: currentPath === "/analytics",
       comingSoon: false,
     },
   ];
@@ -67,21 +74,21 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
       title: "Profile",
       href: "/profile",
       icon: User,
-      active: pathname === "/profile",
+      active: currentPath === "/profile",
       comingSoon: false,
     },
     {
       title: "Settings",
       href: "/settings",
       icon: Settings,
-      active: pathname === "/settings",
+      active: currentPath === "/settings",
       comingSoon: false,
     },
     {
       title: "Trash",
       href: "/trash",
       icon: Trash2,
-      active: pathname === "/trash",
+      active: currentPath === "/trash",
       comingSoon: false,
     },
   ];
@@ -127,7 +134,11 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
               <Link
                 key={item.title}
                 href={item.href}
-                onClick={onNavigate}
+                prefetch={true}
+                onClick={() => {
+                  setOptimisticPath(item.href);
+                  onNavigate?.();
+                }}
                 className={cn(
                   "flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all",
                   item.active
@@ -181,7 +192,11 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
               <Link
                 key={item.title}
                 href={item.href}
-                onClick={onNavigate}
+                prefetch={true}
+                onClick={() => {
+                  setOptimisticPath(item.href);
+                  onNavigate?.();
+                }}
                 className={cn(
                   "flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all",
                   item.active

@@ -156,6 +156,34 @@ export function QuestionSettingsPanel({
           </select>
         </div>
 
+        {/* Placeholder setting for text-based questions */}
+        {["SHORT_TEXT", "LONG_TEXT", "EMAIL", "PHONE", "NUMBER"].includes(question.type) && (
+          <div>
+            <label
+              htmlFor="panel-question-placeholder"
+              className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+            >
+              Placeholder text
+            </label>
+            <input
+              id="panel-question-placeholder"
+              type="text"
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="e.g. Type your answer here..."
+              maxLength={200}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+            />
+          </div>
+        )}
+
         {/* Required Toggle */}
         <div className="flex items-center justify-between py-1 border-t border-slate-100 dark:border-white/5">
           <div>

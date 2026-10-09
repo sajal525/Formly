@@ -79,9 +79,10 @@ export async function getMyFormsPage(
     { id: "asc" as const },
   ];
 
-  // Run status counts query (independent of search and sort, excluding TRASHED)
-  // and total matching count in parallel
-  const [statusGroupCounts, totalMatching] = await Promise.all([
+  const requestedSkip = Math.max(0, (page - 1) * pageSize);
+
+  // Run status counts, total matching count, and form list in parallel
+  const [statusGroupCounts, totalMatching, initialRawForms] = await Promise.all([
     prisma.form.groupBy({
       by: ["status"],
       where: {
@@ -93,6 +94,21 @@ export async function getMyFormsPage(
       },
     }),
     prisma.form.count({ where }),
+    prisma.form.findMany({
+      where,
+      orderBy,
+      skip: requestedSkip,
+      take: pageSize,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        status: true,
+        themeKey: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
   ]);
 
   // Compute status badge counts
@@ -115,23 +131,26 @@ export async function getMyFormsPage(
 
   const pageCount = Math.max(1, Math.ceil(totalMatching / pageSize));
   const safePage = Math.min(Math.max(1, page), pageCount);
-  const skip = (safePage - 1) * pageSize;
 
-  const rawForms = await prisma.form.findMany({
-    where,
-    orderBy,
-    skip,
-    take: pageSize,
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      status: true,
-      themeKey: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  // In the rare event an out-of-bounds page was requested that returned empty, fallback to the safePage
+  let rawForms = initialRawForms;
+  if (safePage !== page && totalMatching > 0 && initialRawForms.length === 0) {
+    rawForms = await prisma.form.findMany({
+      where,
+      orderBy,
+      skip: (safePage - 1) * pageSize,
+      take: pageSize,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        status: true,
+        themeKey: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
 
   const items: MyFormItemDTO[] = rawForms.map((f) => ({
     id: f.id,

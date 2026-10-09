@@ -25,10 +25,17 @@ export default async function SettingsPage() {
     sessionData.user.name ||
     "Creator";
 
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
+  const [userProfile, settings] = await Promise.all([
+    prisma.profile.findUnique({
+      where: { userId },
+      select: { displayName: true },
+    }),
+    getCurrentSettings(),
+  ]);
+
+  if (!settings) {
+    redirect("/login");
+  }
 
   const displayName =
     userProfile?.displayName ||
@@ -41,12 +48,6 @@ export default async function SettingsPage() {
     username,
     displayName,
   };
-
-  const settings = await getCurrentSettings();
-
-  if (!settings) {
-    redirect("/login");
-  }
 
   return (
     <AppShell user={userDTO}>

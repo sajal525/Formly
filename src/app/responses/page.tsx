@@ -38,10 +38,17 @@ export default async function ResponsesPage({ searchParams }: PageProps) {
     sessionData.user.name ||
     "Creator";
 
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
+  const [userProfile, workspaceData] = await Promise.all([
+    prisma.profile.findUnique({
+      where: { userId },
+      select: { displayName: true },
+    }),
+    getResponsesWorkspace(validatedParams),
+  ]);
+
+  if (!workspaceData) {
+    redirect("/login");
+  }
 
   const displayName =
     userProfile?.displayName ||
@@ -54,12 +61,6 @@ export default async function ResponsesPage({ searchParams }: PageProps) {
     username,
     displayName,
   };
-
-  const workspaceData = await getResponsesWorkspace(validatedParams);
-
-  if (!workspaceData) {
-    redirect("/login");
-  }
 
   return (
     <AppShell user={userDTO}>

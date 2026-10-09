@@ -46,8 +46,11 @@ export async function registerUser({
   const internalEmail = `${normalizedUsername}@accounts.formly.invalid`;
   const defaultName = username.trim();
 
-  // 3. Call Better Auth server API
+  // 3. Call Better Auth server API (clearing stale cookies for clean registration)
   try {
+    const authHeaders = headers ? new Headers(headers) : new Headers();
+    authHeaders.delete("cookie");
+
     const authResponse = await auth.api.signUpEmail({
       body: {
         email: internalEmail,
@@ -55,7 +58,7 @@ export async function registerUser({
         name: defaultName,
         username: normalizedUsername,
       },
-      headers: headers,
+      headers: authHeaders,
       asResponse: true,
     });
 

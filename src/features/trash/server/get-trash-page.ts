@@ -42,30 +42,26 @@ export async function getTrashPage(
 ): Promise<TrashPageDTO> {
   const { type, q, sort, page, pageSize } = params;
 
-  // Real category counts for current user
-  const formsCount = await prisma.form.count({
-    where: {
-      ownerId: userId,
-      status: FormStatus.TRASHED,
-    },
-  });
-
-  const counts: TrashCountsDTO = {
-    all: formsCount,
-    forms: formsCount,
-    templates: 0,
-    others: 0,
-  };
-
   // If user filtered by templates or others (which have no user-owned trashed instances), return empty
   if (type === "templates" || type === "others") {
+    const formsCount = await prisma.form.count({
+      where: {
+        ownerId: userId,
+        status: FormStatus.TRASHED,
+      },
+    });
     return {
       items: [],
       totalMatching: 0,
       currentPage: 1,
       pageSize,
       pageCount: 1,
-      counts,
+      counts: {
+        all: formsCount,
+        forms: formsCount,
+        templates: 0,
+        others: 0,
+      },
       retentionDays: TRASH_RETENTION_DAYS,
     };
   }
@@ -77,8 +73,9 @@ export async function getTrashPage(
   };
 
   // Search filter
-  if (q && q.trim().length > 0) {
-    const trimmed = q.trim().slice(0, 100);
+  const isFiltered = Boolean(q && q.trim().length > 0);
+  if (isFiltered) {
+    const trimmed = q!.trim().slice(0, 100);
     where.OR = [
       { title: { contains: trimmed, mode: "insensitive" } },
       { description: { contains: trimmed, mode: "insensitive" } },
@@ -103,27 +100,65 @@ export async function getTrashPage(
       break;
   }
 
-  const totalMatching = await prisma.form.count({ where });
+  const requestedSkip = Math.max(0, (page - 1) * pageSize);
+
+  // Run counts and items in a single concurrent Promise.all
+  const [formsCount, totalMatchingResult, initialRawForms] = await Promise.all([
+    prisma.form.count({
+      where: {
+        ownerId: userId,
+        status: FormStatus.TRASHED,
+      },
+    }),
+    isFiltered ? prisma.form.count({ where }) : Promise.resolve(null),
+    prisma.form.findMany({
+      where,
+      orderBy,
+      skip: requestedSkip,
+      take: pageSize,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        statusBeforeTrash: true,
+        themeKey: true,
+        createdAt: true,
+        deletedAt: true,
+        purgeAt: true,
+      },
+    }),
+  ]);
+
+  const totalMatching = isFiltered ? (totalMatchingResult ?? 0) : formsCount;
   const pageCount = Math.max(1, Math.ceil(totalMatching / pageSize));
   const safePage = Math.min(Math.max(1, page), pageCount);
-  const skip = (safePage - 1) * pageSize;
 
-  const rawForms = await prisma.form.findMany({
-    where,
-    orderBy,
-    skip,
-    take: pageSize,
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      statusBeforeTrash: true,
-      themeKey: true,
-      createdAt: true,
-      deletedAt: true,
-      purgeAt: true,
-    },
-  });
+  let rawForms = initialRawForms;
+  if (safePage !== page && totalMatching > 0 && initialRawForms.length === 0) {
+    rawForms = await prisma.form.findMany({
+      where,
+      orderBy,
+      skip: (safePage - 1) * pageSize,
+      take: pageSize,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        statusBeforeTrash: true,
+        themeKey: true,
+        createdAt: true,
+        deletedAt: true,
+        purgeAt: true,
+      },
+    });
+  }
+
+  const counts: TrashCountsDTO = {
+    all: formsCount,
+    forms: formsCount,
+    templates: 0,
+    others: 0,
+  };
 
   // Fetch response counts for these forms
   const formIds = rawForms.map((f) => f.id);

@@ -36,8 +36,10 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
         router.push(`/forms/${data.form.id}/edit`);
         return;
       }
-      setIsModalOpen(true);
-    } catch {
+      throw new Error(data.error || "Failed to create blank form");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to create blank form";
+      setCreatedToast(msg);
       setIsModalOpen(true);
     } finally {
       setIsCreatingBlank(false);

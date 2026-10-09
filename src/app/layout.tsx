@@ -12,6 +12,8 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+import { TopLoader } from "@/components/app-shell/top-loader";
+
 export default function RootLayout({
   children,
 }: {
@@ -20,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased min-h-screen selection:bg-[#563BFA]/20 selection:text-[#563BFA]">
+        <TopLoader />
         {children}
       </body>
     </html>

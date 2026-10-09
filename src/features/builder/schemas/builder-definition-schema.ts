@@ -39,7 +39,7 @@ export type QuestionSettings = z.infer<typeof questionSettingsSchema>;
 export const builderQuestionSchema = z.object({
   id: z.string(),
   type: builderQuestionTypeSchema,
-  label: z.string().min(1, "Question title is required"),
+  label: z.string().default("Untitled question"),
   description: z.string().nullable().optional(),
   required: z.boolean().default(false),
   options: z.array(questionOptionSchema).optional(),
@@ -133,7 +133,7 @@ export type FormSettings = z.infer<typeof formSettingsSchema>;
 
 export const builderFormDefinitionSchema = z.object({
   schemaVersion: z.literal(1).default(1),
-  title: z.string().min(1, "Form title is required").default("Untitled form"),
+  title: z.string().default("Untitled form"),
   description: z.string().nullable().optional(),
   themeKey: z.string().default("soft-lavender"),
   themeOverrides: themeOverridesSchema.optional(),

@@ -20,12 +20,48 @@ export async function saveFormDraft(
 
   const { definition, expectedRevision } = parsed.data;
 
-  // Retrieve current form to verify ownership and revision
+  const newTitle = definition.title.trim() || "Untitled form";
+  const newDescription = definition.description?.trim() || null;
+  const newThemeKey = definition.themeKey || "soft-lavender";
+  const now = new Date();
+
+  // 1. Attempt fast single-round-trip atomic update
+  const whereCondition: any = {
+    id: formId,
+    ownerId: userId,
+    status: { notIn: [FormStatus.TRASHED, FormStatus.ARCHIVED] },
+  };
+
+  if (expectedRevision !== undefined) {
+    whereCondition.draftRevision = expectedRevision;
+  }
+
+  const updateResult = await prisma.form.updateMany({
+    where: whereCondition,
+    data: {
+      title: newTitle,
+      description: newDescription,
+      themeKey: newThemeKey,
+      draftRevision: { increment: 1 },
+      definition: definition as any,
+      updatedAt: now,
+    },
+  });
+
+  if (updateResult.count === 1) {
+    // Successfully saved in a single database round-trip
+    return {
+      success: true,
+      newRevision: expectedRevision !== undefined ? expectedRevision + 1 : 1,
+      updatedAt: now.toISOString(),
+    };
+  }
+
+  // 2. Fallback diagnostic query: Only executed when atomic update matched 0 rows (conflict, archived, or not found)
   const existing = await prisma.form.findFirst({
     where: {
       id: formId,
       ownerId: userId,
-      status: { not: FormStatus.TRASHED },
     },
     select: {
       id: true,
@@ -38,14 +74,13 @@ export async function saveFormDraft(
     return { success: false, error: "Form not found or inaccessible" };
   }
 
-  if (existing.status !== FormStatus.DRAFT) {
+  if (existing.status === FormStatus.TRASHED || existing.status === FormStatus.ARCHIVED) {
     return {
       success: false,
-      error: `Form cannot be autosaved because its status is ${existing.status}. Only DRAFT forms can be saved in this mode.`,
+      error: `Form cannot be autosaved because its status is ${existing.status}.`,
     };
   }
 
-  // Optimistic concurrency check
   if (
     expectedRevision !== undefined &&
     expectedRevision !== existing.draftRevision
@@ -58,30 +93,5 @@ export async function saveFormDraft(
     };
   }
 
-  const newRevision = existing.draftRevision + 1;
-  const newTitle = definition.title.trim() || "Untitled form";
-  const newDescription = definition.description?.trim() || null;
-  const newThemeKey = definition.themeKey || "soft-lavender";
-
-  const updated = await prisma.form.update({
-    where: { id: formId },
-    data: {
-      title: newTitle,
-      description: newDescription,
-      themeKey: newThemeKey,
-      draftRevision: newRevision,
-      definition: definition as any,
-      updatedAt: new Date(),
-    },
-    select: {
-      draftRevision: true,
-      updatedAt: true,
-    },
-  });
-
-  return {
-    success: true,
-    newRevision: updated.draftRevision,
-    updatedAt: updated.updatedAt.toISOString(),
-  };
+  return { success: false, error: "Failed to save draft changes." };
 }

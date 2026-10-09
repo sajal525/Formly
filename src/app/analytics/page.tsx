@@ -36,10 +36,17 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     sessionData.user.name ||
     "Creator";
 
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
+  const [userProfile, analyticsData] = await Promise.all([
+    prisma.profile.findUnique({
+      where: { userId },
+      select: { displayName: true },
+    }),
+    getFormAnalytics(validatedParams),
+  ]);
+
+  if (!analyticsData) {
+    redirect("/login");
+  }
 
   const displayName =
     userProfile?.displayName ||
@@ -52,12 +59,6 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     username,
     displayName,
   };
-
-  const analyticsData = await getFormAnalytics(validatedParams);
-
-  if (!analyticsData) {
-    redirect("/login");
-  }
 
   return (
     <AppShell user={userDTO}>

@@ -280,36 +280,96 @@ export function QuestionCard({
           />
         )}
 
-        {/* Lightweight Interactive Question Respondent Preview */}
+        {/* Lightweight Interactive Question Respondent Preview & Placeholder Editor */}
         <div className="pt-2">
           {question.type === "SHORT_TEXT" && (
-            <div className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 py-2 text-xs text-slate-400 font-medium">
-              Short answer text
-            </div>
+            <input
+              type="text"
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="Short answer text"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              aria-label="Short answer placeholder"
+            />
           )}
 
           {question.type === "LONG_TEXT" && (
-            <div className="w-full rounded-xl border border-slate-200 dark:border-slate-700 p-3 text-xs text-slate-400 font-medium">
-              Paragraph answer text
-            </div>
+            <textarea
+              rows={2}
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="Paragraph answer text"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 focus:border-violet-500 p-2.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none resize-none transition-colors"
+              aria-label="Paragraph placeholder"
+            />
           )}
 
           {question.type === "EMAIL" && (
-            <div className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 py-2 text-xs text-slate-400 font-medium">
-              name@example.com
-            </div>
+            <input
+              type="text"
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="name@example.com"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              aria-label="Email placeholder"
+            />
           )}
 
           {question.type === "PHONE" && (
-            <div className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 py-2 text-xs text-slate-400 font-medium">
-              +1 (555) 000-0000
-            </div>
+            <input
+              type="text"
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="+1 (555) 000-0000"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              aria-label="Phone placeholder"
+            />
           )}
 
           {question.type === "NUMBER" && (
-            <div className="w-full sm:w-1/2 border-b-2 border-slate-200 dark:border-slate-700 py-2 text-xs text-slate-400 font-medium">
-              Numeric value (e.g. 42)
-            </div>
+            <input
+              type="text"
+              value={question.settings?.placeholder ?? ""}
+              onChange={(e) =>
+                onChange({
+                  settings: {
+                    ...(question.settings || {}),
+                    placeholder: e.target.value,
+                  },
+                })
+              }
+              placeholder="Numeric value (e.g. 42)"
+              className="w-full sm:w-1/2 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              aria-label="Number placeholder"
+            />
           )}
 
           {question.type === "DATE" && (

@@ -25,6 +25,30 @@ export interface TemplateCatalogResult {
   pageCount: number;
 }
 
+let cachedPublished: {
+  data: { id: string; slug: string; title: string; categoryKey: string }[];
+  timestamp: number;
+} | null = null;
+const CACHE_TTL_MS = 60_000;
+
+async function getAllPublishedTemplates() {
+  const now = Date.now();
+  if (cachedPublished && now - cachedPublished.timestamp < CACHE_TTL_MS) {
+    return cachedPublished.data;
+  }
+  const allPublished = await prisma.template.findMany({
+    where: { isPublished: true },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      categoryKey: true,
+    },
+  });
+  cachedPublished = { data: allPublished, timestamp: now };
+  return allPublished;
+}
+
 export async function getTemplateCatalog(
   params: TemplateQueryParams
 ): Promise<TemplateCatalogResult> {
@@ -35,17 +59,7 @@ export async function getTemplateCatalog(
     isPublished: true,
   };
 
-  // 2. Compute category counts across all published templates
-  const allPublished = await prisma.template.findMany({
-    where: baseWhere,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      categoryKey: true,
-    },
-  });
-
+  const allPublished = await getAllPublishedTemplates();
   const totalCatalogCount = allPublished.length;
 
   const categoryCounts: Record<string, number> = {
@@ -122,36 +136,36 @@ export async function getTemplateCatalog(
     ];
   }
 
-  // 5. Total matching
-  const totalMatching = await prisma.template.count({ where });
-
-  // 6. Pagination
+  // 5. Pagination & queries run in parallel
   const skip = (page - 1) * pageSize;
   const take = pageSize;
 
-  const rawTemplates = await prisma.template.findMany({
-    where,
-    orderBy,
-    skip,
-    take,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      description: true,
-      categoryKey: true,
-      themeKey: true,
-      featuredRank: true,
-      versions: {
-        orderBy: { version: "desc" },
-        take: 1,
-        select: {
-          id: true,
-          definition: true,
+  const [totalMatching, rawTemplates] = await Promise.all([
+    prisma.template.count({ where }),
+    prisma.template.findMany({
+      where,
+      orderBy,
+      skip,
+      take,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        description: true,
+        categoryKey: true,
+        themeKey: true,
+        featuredRank: true,
+        versions: {
+          orderBy: { version: "desc" },
+          take: 1,
+          select: {
+            id: true,
+            definition: true,
+          },
         },
       },
-    },
-  });
+    }),
+  ]);
 
   const items: TemplateCardDTO[] = rawTemplates.map((t) => {
     const latestVersion = t.versions[0];

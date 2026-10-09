@@ -79,8 +79,10 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   // Cloud debounced autosave
   const {
     status: autosaveStatus,
+    error: autosaveError,
     lastSavedAt,
     saveNow,
+    retry: retryAutosave,
   } = useDraftAutosave({
     formId: initialDraft.id,
     definition,
@@ -143,7 +145,6 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   // Add question
   const handleAddQuestion = useCallback(() => {
     const newId = `q-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    const questions = definition.questions || [];
     const newQuestion: BuilderQuestion = {
       id: newId,
       type: "SHORT_TEXT",
@@ -155,28 +156,31 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
       },
     };
 
-    let nextQuestions: BuilderQuestion[];
-    if (selectedQuestionId) {
-      const idx = questions.findIndex((q) => q.id === selectedQuestionId);
-      if (idx !== -1) {
-        nextQuestions = [
-          ...questions.slice(0, idx + 1),
-          newQuestion,
-          ...questions.slice(idx + 1),
-        ];
+    setDefinitionWithHistory((prev) => {
+      const questions = prev.questions || [];
+      let nextQuestions: BuilderQuestion[];
+      if (selectedQuestionId) {
+        const idx = questions.findIndex((q) => q.id === selectedQuestionId);
+        if (idx !== -1) {
+          nextQuestions = [
+            ...questions.slice(0, idx + 1),
+            newQuestion,
+            ...questions.slice(idx + 1),
+          ];
+        } else {
+          nextQuestions = [...questions, newQuestion];
+        }
       } else {
         nextQuestions = [...questions, newQuestion];
       }
-    } else {
-      nextQuestions = [...questions, newQuestion];
-    }
 
-    setDefinitionWithHistory((prev) => ({
-      ...prev,
-      questions: nextQuestions,
-    }));
+      return {
+        ...prev,
+        questions: nextQuestions,
+      };
+    });
     setSelectedQuestionId(newId);
-  }, [definition.questions, selectedQuestionId, setDefinitionWithHistory]);
+  }, [selectedQuestionId, setDefinitionWithHistory]);
 
   // Update question
   const handleUpdateQuestion = useCallback(
@@ -194,49 +198,61 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   // Duplicate question
   const handleDuplicateQuestion = useCallback(
     (questionId: string) => {
-      const questions = definition.questions || [];
-      const source = questions.find((q) => q.id === questionId);
-      if (!source) return;
+      let createdId = "";
+      setDefinitionWithHistory((prev) => {
+        const questions = prev.questions || [];
+        const source = questions.find((q) => q.id === questionId);
+        if (!source) return prev;
 
-      const newId = `q-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-      const duplicated: BuilderQuestion = {
-        ...JSON.parse(JSON.stringify(source)),
-        id: newId,
-        label: `${source.label} (Copy)`,
-      };
+        const newId = `q-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        createdId = newId;
+        const duplicated: BuilderQuestion = {
+          ...JSON.parse(JSON.stringify(source)),
+          id: newId,
+          label: `${source.label} (Copy)`,
+        };
 
-      const sourceIdx = questions.findIndex((q) => q.id === questionId);
-      const nextQuestions = [
-        ...questions.slice(0, sourceIdx + 1),
-        duplicated,
-        ...questions.slice(sourceIdx + 1),
-      ];
+        const sourceIdx = questions.findIndex((q) => q.id === questionId);
+        const nextQuestions = [
+          ...questions.slice(0, sourceIdx + 1),
+          duplicated,
+          ...questions.slice(sourceIdx + 1),
+        ];
 
-      setDefinitionWithHistory((prev) => ({
-        ...prev,
-        questions: nextQuestions,
-      }));
-      setSelectedQuestionId(newId);
+        return {
+          ...prev,
+          questions: nextQuestions,
+        };
+      });
+
+      if (createdId) {
+        setSelectedQuestionId(createdId);
+      }
     },
-    [definition.questions, setDefinitionWithHistory]
+    [setDefinitionWithHistory]
   );
 
   // Delete question
   const handleDeleteQuestion = useCallback(
     (questionId: string) => {
-      const questions = definition.questions || [];
-      const nextQuestions = questions.filter((q) => q.id !== questionId);
-
-      setDefinitionWithHistory((prev) => ({
-        ...prev,
-        questions: nextQuestions,
-      }));
+      let nextSelectedId: string | null = null;
+      setDefinitionWithHistory((prev) => {
+        const questions = prev.questions || [];
+        const nextQuestions = questions.filter((q) => q.id !== questionId);
+        if (selectedQuestionId === questionId) {
+          nextSelectedId = nextQuestions[0]?.id || null;
+        }
+        return {
+          ...prev,
+          questions: nextQuestions,
+        };
+      });
 
       if (selectedQuestionId === questionId) {
-        setSelectedQuestionId(nextQuestions[0]?.id || null);
+        setSelectedQuestionId(nextSelectedId);
       }
     },
-    [definition.questions, selectedQuestionId, setDefinitionWithHistory]
+    [selectedQuestionId, setDefinitionWithHistory]
   );
 
   // Reorder questions
@@ -323,6 +339,8 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
           onTitleChange={handleTitleChange}
           autosaveStatus={autosaveStatus}
           lastSavedAt={lastSavedAt}
+          autosaveError={autosaveError}
+          onRetryAutosave={retryAutosave}
           canUndo={canUndo}
           canRedo={canRedo}
           onUndo={undo}

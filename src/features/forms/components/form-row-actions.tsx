@@ -85,6 +85,7 @@ export function FormRowActions({
           <div className="absolute right-0 mt-1.5 w-44 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-white/10 py-1.5 z-40 animate-in fade-in zoom-in-95 duration-150">
             <Link
               href={`/forms/${form.id}/edit`}
+              prefetch={true}
               className="w-full px-3.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 flex items-center gap-2.5 transition-colors"
             >
               <Edit3 className="w-3.5 h-3.5 text-violet-600" />

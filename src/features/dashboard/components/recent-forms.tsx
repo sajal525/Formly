@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { DashboardFormItemDTO } from "../server/get-dashboard-data";
 import {
   FileText,
@@ -75,12 +76,13 @@ export function RecentFormsSection({
           Recent Forms
         </h2>
         {forms.length > 0 && (
-          <span
-            className="text-xs font-semibold text-slate-400 cursor-not-allowed"
-            title="My Forms full list coming in next step"
+          <Link
+            href="/my-forms"
+            prefetch={true}
+            className="text-xs font-semibold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 transition-colors"
           >
             View all →
-          </span>
+          </Link>
         )}
       </div>
 
@@ -140,9 +142,13 @@ export function RecentFormsSection({
                           <FileText className="w-4 h-4" />
                         </div>
                         <div className="min-w-0 max-w-[200px] sm:max-w-xs">
-                          <p className="font-bold text-slate-900 dark:text-white truncate text-xs sm:text-sm">
+                          <Link
+                            href={`/forms/${form.id}/edit`}
+                            prefetch={true}
+                            className="font-bold text-slate-900 dark:text-white truncate text-xs sm:text-sm hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block"
+                          >
                             {form.title}
-                          </p>
+                          </Link>
                           <p className="text-[11px] text-slate-400 truncate">
                             {form.description || "Draft form record"}
                           </p>
@@ -208,13 +214,13 @@ export function RecentFormsSection({
                                 {copiedId === form.id ? "Copied ID!" : "Copy Form ID"}
                               </span>
                             </button>
-                            <div
-                              className="px-3.5 py-2 text-xs text-slate-400 flex items-center gap-2.5 cursor-not-allowed opacity-60"
-                              title="Builder coming in next step"
+                            <Link
+                              href={`/forms/${form.id}/edit`}
+                              className="w-full px-3.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2.5 transition-colors font-medium"
                             >
                               <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                              <span>Builder (Soon)</span>
-                            </div>
+                              <span>Open in Builder</span>
+                            </Link>
                           </div>
                         )}
                       </div>

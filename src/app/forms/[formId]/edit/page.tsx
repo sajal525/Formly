@@ -34,17 +34,17 @@ export default async function FormEditPage({ params }: FormEditPageProps) {
     notFound();
   }
 
-  const draft = await getFormDraft(sessionData.user.id, formId);
+  const [draft, userProfile] = await Promise.all([
+    getFormDraft(sessionData.user.id, formId),
+    prisma.profile.findUnique({
+      where: { userId: sessionData.user.id },
+      select: { displayName: true },
+    }),
+  ]);
 
   if (!draft) {
     notFound();
   }
-
-  // Get user profile for display name
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId: sessionData.user.id },
-    select: { displayName: true },
-  });
 
   const userDTO = {
     id: sessionData.user.id,

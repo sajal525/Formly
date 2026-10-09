@@ -52,3 +52,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     );
   }
 }
+
+export async function PUT(req: NextRequest, { params }: RouteParams) {
+  return PATCH(req, { params });
+}

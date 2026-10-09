@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { Plus, ChevronDown, FilePlus, Sparkles, LayoutGrid } from "lucide-react";
 
 interface WelcomeHeaderProps {
@@ -118,16 +119,17 @@ export function WelcomeHeader({ displayName, onCreateClick }: WelcomeHeaderProps
               </span>
             </div>
 
-            <div
-              className="w-full px-4 py-2.5 text-left text-xs text-slate-400 flex items-center justify-between cursor-not-allowed opacity-60"
-              title="Coming soon"
+            <Link
+              href="/templates"
+              onClick={() => setIsDropdownOpen(false)}
+              className="w-full px-4 py-2.5 text-left text-xs text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between transition-colors font-medium"
             >
               <div className="flex items-center gap-3">
                 <div className="w-7 h-7 rounded-xl bg-pink-100 dark:bg-pink-950/60 text-pink-500 flex items-center justify-center">
                   <LayoutGrid className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-500 dark:text-slate-400">
+                  <div className="font-bold text-slate-900 dark:text-white">
                     Use Template
                   </div>
                   <div className="text-[10px] text-slate-400">
@@ -135,10 +137,10 @@ export function WelcomeHeader({ displayName, onCreateClick }: WelcomeHeaderProps
                   </div>
                 </div>
               </div>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">
-                Soon
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 font-bold">
+                Active
               </span>
-            </div>
+            </Link>
           </div>
         )}
       </div>

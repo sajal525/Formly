@@ -38,20 +38,12 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
     sessionData.user.name ||
     "Creator";
 
-  // Check optional profile for displayName
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
-
-  const displayName =
-    userProfile?.displayName ||
-    sessionData.user.name ||
-    sessionData.user.username ||
-    "Creator";
-
-  // Run stats and recent forms queries scoped strictly to userId
-  const [totalForms, draftForms, recentForms] = await Promise.all([
+  // Run profile, stats, and recent forms queries concurrently scoped strictly to userId
+  const [userProfile, totalForms, draftForms, recentForms] = await Promise.all([
+    prisma.profile.findUnique({
+      where: { userId },
+      select: { displayName: true },
+    }),
     prisma.form.count({
       where: {
         ownerId: userId,
@@ -83,6 +75,12 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
       },
     }),
   ]);
+
+  const displayName =
+    userProfile?.displayName ||
+    sessionData.user.name ||
+    sessionData.user.username ||
+    "Creator";
 
   return {
     user: {

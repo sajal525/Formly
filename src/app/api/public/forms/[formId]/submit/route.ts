@@ -39,11 +39,29 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       responseId: result.responseId,
       message: "Response recorded successfully.",
+      confirmationType: result.confirmationType,
+      confirmationTitle: result.confirmationTitle,
+      confirmationMessage: result.confirmationMessage,
+      customPageTitle: result.customPageTitle,
+      customPageDescription: result.customPageDescription,
+      redirectUrl: result.redirectUrl,
+      allowMultipleSubmissions: result.allowMultipleSubmissions,
     });
+
+    if (result.allowMultipleSubmissions === false) {
+      response.cookies.set(`formly_submitted_${formId}`, "true", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+      });
+    }
+
+    return response;
   } catch (error) {
     console.error("Error submitting response:", error);
     return NextResponse.json(

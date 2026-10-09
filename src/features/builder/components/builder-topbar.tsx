@@ -32,6 +32,8 @@ interface BuilderTopbarProps {
   onTitleChange: (newTitle: string) => void;
   autosaveStatus: AutosaveStatus;
   lastSavedAt?: string;
+  autosaveError?: string | null;
+  onRetryAutosave?: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -53,6 +55,8 @@ export function BuilderTopbar({
   onTitleChange,
   autosaveStatus,
   lastSavedAt,
+  autosaveError,
+  onRetryAutosave,
   canUndo,
   canRedo,
   onUndo,
@@ -191,7 +195,17 @@ export function BuilderTopbar({
 
         {/* Autosave status indicator badge */}
         <div className="hidden sm:block">
-          <AutosaveIndicator status={autosaveStatus} lastSavedAt={lastSavedAt} />
+          <AutosaveIndicator
+            status={autosaveStatus}
+            lastSavedAt={lastSavedAt}
+            error={autosaveError}
+            onRetry={onRetryAutosave}
+            onReload={() => {
+              if (typeof window !== "undefined") {
+                window.location.reload();
+              }
+            }}
+          />
         </div>
       </div>
 
