@@ -13,6 +13,7 @@ export interface FormlyThemePreset {
   name: string;
   description: string;
   category: ThemeCategory;
+  badgeLabel?: string;
   accentColor: string;
   gradientClass: string;
   solidBgColor: string;
@@ -20,7 +21,7 @@ export interface FormlyThemePreset {
   badgeClass: string;
   previewColors: string[];
   isDark?: boolean;
-  decorativeStyle?: "dots" | "floral" | "tech" | "playful" | "vintage" | "space" | "nature" | "royal" | "academic" | "festive";
+  decorativeStyle?: "dots" | "floral" | "tech" | "playful" | "vintage" | "space" | "nature" | "royal" | "academic" | "festive" | "nothing";
 }
 
 export const THEME_CATEGORIES: ThemeCategory[] = [
@@ -182,19 +183,36 @@ export const FORMLY_THEME_CATALOG: FormlyThemePreset[] = [
     decorativeStyle: "academic",
   },
   {
-    id: "party-event",
-    name: "Party / Event",
-    description: "Great for registrations",
-    category: "Event",
-    accentColor: "#F43F5E",
-    gradientClass: "from-pink-50/80 via-orange-50/50 to-rose-50/60 dark:from-slate-950 dark:via-pink-950/40 dark:to-orange-950/30",
-    solidBgColor: "#FFF1F2",
-    cardClass: "bg-white/95 dark:bg-slate-900/95 border-rose-200/80 dark:border-rose-900/40",
-    badgeClass: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
-    previewColors: ["#F43F5E", "#FB7185", "#FFE4E6"],
-    decorativeStyle: "festive",
+    id: "nothing",
+    name: "Nothing",
+    description: "Minimal tech aesthetic",
+    category: "Minimal",
+    badgeLabel: "Tech",
+    accentColor: "#DC2626",
+    gradientClass: "from-stone-50 via-neutral-50 to-stone-100/80 text-neutral-900",
+    solidBgColor: "#FAFAFA",
+    cardClass: "bg-white text-neutral-900 border-neutral-900 shadow-none",
+    badgeClass: "bg-white text-neutral-900 border border-neutral-900",
+    previewColors: ["#DC2626", "#9CA3AF", "#FFFFFF"],
+    isDark: false,
+    decorativeStyle: "nothing",
   },
 ];
+
+export const LEGACY_PARTY_EVENT_PRESET: FormlyThemePreset = {
+  id: "party-event",
+  name: "Party / Event",
+  description: "Great for registrations",
+  category: "Event",
+  badgeLabel: "Event",
+  accentColor: "#F43F5E",
+  gradientClass: "from-pink-50/80 via-orange-50/50 to-rose-50/60 dark:from-slate-950 dark:via-pink-950/40 dark:to-orange-950/30",
+  solidBgColor: "#FFF1F2",
+  cardClass: "bg-white/95 dark:bg-slate-900/95 border-rose-200/80 dark:border-rose-900/40",
+  badgeClass: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
+  previewColors: ["#F43F5E", "#FB7185", "#FFE4E6"],
+  decorativeStyle: "festive",
+};
 
 export function findThemePreset(themeKey?: string | null): FormlyThemePreset {
   if (!themeKey) return FORMLY_THEME_CATALOG[0];
@@ -204,13 +222,17 @@ export function findThemePreset(themeKey?: string | null): FormlyThemePreset {
   const direct = FORMLY_THEME_CATALOG.find((t) => t.id === clean);
   if (direct) return direct;
 
+  // Legacy party-event preservation for existing saved/published forms
+  if (clean === "party-event" || clean === "healthcare-rose" || clean === "event-vibrant") {
+    return LEGACY_PARTY_EVENT_PRESET;
+  }
+
   // Aliases for backward compatibility
   if (clean === "minimal") return FORMLY_THEME_CATALOG[0];
   if (clean === "survey-purple") return FORMLY_THEME_CATALOG.find((t) => t.id === "gen-z") || FORMLY_THEME_CATALOG[0];
   if (clean === "education-soft") return FORMLY_THEME_CATALOG.find((t) => t.id === "education") || FORMLY_THEME_CATALOG[0];
   if (clean === "business-amber") return FORMLY_THEME_CATALOG.find((t) => t.id === "classic-royal") || FORMLY_THEME_CATALOG[0];
   if (clean === "feedback-mint" || clean === "business-emerald") return FORMLY_THEME_CATALOG.find((t) => t.id === "nature") || FORMLY_THEME_CATALOG[0];
-  if (clean === "healthcare-rose" || clean === "event-vibrant") return FORMLY_THEME_CATALOG.find((t) => t.id === "party-event") || FORMLY_THEME_CATALOG[0];
 
   return FORMLY_THEME_CATALOG[0];
 }

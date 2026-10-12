@@ -75,7 +75,7 @@ export function FormSettingsWorkspace({
           {/* Column 1 */}
           <div className="space-y-5">
             <GeneralSettingsCard
-              title={definition.title || "Untitled form"}
+              title={definition.title ?? ""}
               description={definition.description}
               settings={definition.settings}
               onTitleChange={onTitleChange}

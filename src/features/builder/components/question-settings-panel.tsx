@@ -92,7 +92,7 @@ export function QuestionSettingsPanel({
 
   return (
     <aside
-      className="w-full lg:w-[340px] xl:w-[360px] bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-white/10 flex flex-col h-full overflow-y-auto select-none shrink-0"
+      className="w-full lg:w-[340px] xl:w-[360px] bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-white/10 flex flex-col h-full overflow-y-auto shrink-0"
       aria-label="Question settings panel"
     >
       {/* Header */}
@@ -126,9 +126,20 @@ export function QuestionSettingsPanel({
             type="text"
             value={question.label}
             onChange={(e) => onChange({ label: e.target.value })}
+            onBlur={() => {
+              if (!question.label || !question.label.trim()) {
+                onChange({ label: "Untitled question" });
+              }
+            }}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                e.stopPropagation();
+                e.currentTarget.select();
+              }
+            }}
             placeholder="Untitled question"
             maxLength={300}
-            className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+            className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
           />
         </div>
 

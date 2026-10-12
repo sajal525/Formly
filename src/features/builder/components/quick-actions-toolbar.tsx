@@ -14,11 +14,13 @@ import { cn } from "@/lib/utils";
 interface QuickActionsToolbarProps {
   onAddQuestion: () => void;
   onFocusHeader: () => void;
+  onAddImage?: () => void;
 }
 
 export function QuickActionsToolbar({
   onAddQuestion,
   onFocusHeader,
+  onAddImage,
 }: QuickActionsToolbarProps) {
   const actions = [
     {
@@ -49,13 +51,11 @@ export function QuickActionsToolbar({
     },
     {
       id: "image",
-      label: "Image",
+      label: "Add Image",
       icon: ImageIcon,
-      onClick: () => {
-        alert("Media uploads require secure storage configuration.");
-      },
-      enabled: false,
-      tooltip: "Image card - Coming soon",
+      onClick: onAddImage || (() => {}),
+      enabled: Boolean(onAddImage),
+      tooltip: "Add Image content block",
     },
     {
       id: "video",

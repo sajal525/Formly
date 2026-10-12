@@ -131,17 +131,113 @@ export const formSettingsSchema = z.object({
 
 export type FormSettings = z.infer<typeof formSettingsSchema>;
 
+export const imageDisplaySizeSchema = z.enum(["small", "medium", "large", "full"]);
+export type ImageDisplaySize = z.infer<typeof imageDisplaySizeSchema>;
+
+export const imageAlignmentSchema = z.enum(["left", "center", "right"]);
+export type ImageAlignment = z.infer<typeof imageAlignmentSchema>;
+
+export const imageCropSchema = z.object({
+  x: z.number().default(0),
+  y: z.number().default(0),
+  width: z.number().default(100),
+  height: z.number().default(100),
+  aspectRatio: z.number().optional(),
+});
+export type ImageCrop = z.infer<typeof imageCropSchema>;
+
+export const imageTransformSchema = z.object({
+  rotation: z.number().default(0),
+  fineAngle: z.number().optional(),
+  zoom: z.number().optional(),
+  panX: z.number().optional(),
+  panY: z.number().optional(),
+  aspectPreset: z.string().optional(),
+  crop: imageCropSchema.optional(),
+});
+export type ImageTransform = z.infer<typeof imageTransformSchema>;
+
+export const builderImageBlockSchema = z.object({
+  id: z.string(),
+  kind: z.literal("image").default("image"),
+  assetId: z.string(),
+  altText: z.string().default(""),
+  displaySize: imageDisplaySizeSchema.default("medium"),
+  alignment: imageAlignmentSchema.default("center"),
+  transform: imageTransformSchema.default({ rotation: 0 }),
+  naturalWidth: z.number().optional(),
+  naturalHeight: z.number().optional(),
+  fileName: z.string().optional(),
+});
+export type BuilderImageBlock = z.infer<typeof builderImageBlockSchema>;
+
+export const builderQuestionBlockSchema = z.object({
+  id: z.string(),
+  kind: z.literal("question").default("question"),
+  question: builderQuestionSchema,
+});
+export type BuilderQuestionBlock = z.infer<typeof builderQuestionBlockSchema>;
+
+export const builderContentBlockSchema = z.discriminatedUnion("kind", [
+  builderQuestionBlockSchema,
+  builderImageBlockSchema,
+]);
+export type BuilderContentBlock = z.infer<typeof builderContentBlockSchema>;
+
+export const builderCoverImageSchema = z.object({
+  assetId: z.string(),
+  originalAssetId: z.string().optional(),
+  altText: z.string().default(""),
+  transform: imageTransformSchema.default({ rotation: 0 }),
+});
+export type BuilderCoverImage = z.infer<typeof builderCoverImageSchema>;
+
 export const builderFormDefinitionSchema = z.object({
   schemaVersion: z.literal(1).default(1),
   title: z.string().default("Untitled form"),
   description: z.string().nullable().optional(),
+  coverImage: builderCoverImageSchema.nullable().optional(),
   themeKey: z.string().default("soft-lavender"),
   themeOverrides: themeOverridesSchema.optional(),
   settings: formSettingsSchema.default({}),
+  blocks: z.array(builderContentBlockSchema).optional(),
   questions: z.array(builderQuestionSchema).default([]),
 });
 
 export type BuilderFormDefinition = z.infer<typeof builderFormDefinitionSchema>;
+
+/**
+ * Normalizes a form definition so that it always has a canonical ordered sequence of content blocks.
+ * If definition.blocks is present, it is used. Otherwise, existing questions are adapted seamlessly.
+ */
+export function ensureDefinitionBlocks(
+  definition?: Partial<BuilderFormDefinition> | null
+): BuilderContentBlock[] {
+  if (!definition) return [];
+  if (Array.isArray(definition.blocks) && definition.blocks.length > 0) {
+    return definition.blocks;
+  }
+  const questions = definition.questions || [];
+  return questions.map((q) => ({
+    id: q.id,
+    kind: "question" as const,
+    question: q,
+  }));
+}
+
+/**
+ * Given an ordered sequence of blocks, produces the synchronized { blocks, questions } tuple
+ * for 100% backward compatibility with components that read definition.questions.
+ */
+export function syncBlocksAndQuestions(blocks: BuilderContentBlock[]): {
+  blocks: BuilderContentBlock[];
+  questions: BuilderQuestion[];
+} {
+  const questions = blocks
+    .filter((b): b is BuilderQuestionBlock => b.kind === "question")
+    .map((b) => b.question);
+  return { blocks, questions };
+}
 
 // Autosave payload schema
 export const saveDraftRequestSchema = z.object({

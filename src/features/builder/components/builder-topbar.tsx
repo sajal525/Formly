@@ -119,6 +119,11 @@ export function BuilderTopbar({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+      e.stopPropagation();
+      titleInputRef.current?.select();
+      return;
+    }
     if (e.key === "Enter") {
       e.preventDefault();
       handleSaveTitle();
@@ -167,7 +172,7 @@ export function BuilderTopbar({
                 onBlur={handleSaveTitle}
                 onKeyDown={handleKeyDown}
                 maxLength={120}
-                className="h-8 px-2.5 py-1 text-xs sm:text-base font-bold text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 border border-violet-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/30 w-full min-w-0"
+                className="h-8 px-2.5 py-1 text-xs sm:text-base font-bold text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 border border-violet-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/30 w-full min-w-0 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               />
               <button
                 type="button"

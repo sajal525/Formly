@@ -18,9 +18,16 @@ import { useDraftAutosave } from "../hooks/use-draft-autosave";
 import {
   BuilderFormDefinition,
   BuilderQuestion,
+  BuilderContentBlock,
+  BuilderQuestionBlock,
+  BuilderImageBlock,
+  BuilderCoverImage,
+  ensureDefinitionBlocks,
+  syncBlocksAndQuestions,
   FormSettings,
 } from "../schemas/builder-definition-schema";
 import { FormDraftDTO } from "../server/get-form-draft";
+import { ImageUploadModal } from "./image-block/image-upload-modal";
 
 interface BuilderShellProps {
   initialDraft: FormDraftDTO;
@@ -60,10 +67,15 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
     }
   }, []);
 
-  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(
-    initialDraft.definition.questions?.[0]?.id || null
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(
+    initialDraft.definition.blocks?.[0]?.id ||
+      initialDraft.definition.questions?.[0]?.id ||
+      null
   );
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
+  const [isImageUploadOpen, setIsImageUploadOpen] = useState(false);
+  const [editingImageBlock, setEditingImageBlock] = useState<BuilderImageBlock | null>(null);
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const headerCardRef = useRef<HTMLDivElement>(null);
 
   // In-memory Undo / Redo history
@@ -155,124 +167,272 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         placeholder: "Short answer text",
       },
     };
+    const newBlock: BuilderQuestionBlock = {
+      id: newId,
+      kind: "question",
+      question: newQuestion,
+    };
 
     setDefinitionWithHistory((prev) => {
-      const questions = prev.questions || [];
-      let nextQuestions: BuilderQuestion[];
-      if (selectedQuestionId) {
-        const idx = questions.findIndex((q) => q.id === selectedQuestionId);
+      const blocks = ensureDefinitionBlocks(prev);
+      let nextBlocks: BuilderContentBlock[];
+
+      if (selectedBlockId) {
+        const idx = blocks.findIndex((b) => b.id === selectedBlockId);
         if (idx !== -1) {
-          nextQuestions = [
-            ...questions.slice(0, idx + 1),
-            newQuestion,
-            ...questions.slice(idx + 1),
+          nextBlocks = [
+            ...blocks.slice(0, idx + 1),
+            newBlock,
+            ...blocks.slice(idx + 1),
           ];
         } else {
-          nextQuestions = [...questions, newQuestion];
+          nextBlocks = [...blocks, newBlock];
         }
       } else {
-        nextQuestions = [...questions, newQuestion];
+        nextBlocks = [...blocks, newBlock];
       }
 
+      const synced = syncBlocksAndQuestions(nextBlocks);
       return {
         ...prev,
-        questions: nextQuestions,
+        blocks: synced.blocks,
+        questions: synced.questions,
       };
     });
-    setSelectedQuestionId(newId);
-  }, [selectedQuestionId, setDefinitionWithHistory]);
+    setSelectedBlockId(newId);
+  }, [selectedBlockId, setDefinitionWithHistory]);
+
+  // Insert newly confirmed image block
+  const handleInsertImage = useCallback(
+    (newImageBlock: BuilderImageBlock) => {
+      setDefinitionWithHistory((prev) => {
+        const blocks = ensureDefinitionBlocks(prev);
+        let nextBlocks: BuilderContentBlock[];
+
+        if (selectedBlockId) {
+          const idx = blocks.findIndex((b) => b.id === selectedBlockId);
+          if (idx !== -1) {
+            nextBlocks = [
+              ...blocks.slice(0, idx + 1),
+              newImageBlock,
+              ...blocks.slice(idx + 1),
+            ];
+          } else {
+            nextBlocks = [...blocks, newImageBlock];
+          }
+        } else {
+          nextBlocks = [...blocks, newImageBlock];
+        }
+
+        const synced = syncBlocksAndQuestions(nextBlocks);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
+      setSelectedBlockId(newImageBlock.id);
+    },
+    [selectedBlockId, setDefinitionWithHistory]
+  );
 
   // Update question
   const handleUpdateQuestion = useCallback(
     (questionId: string, updates: Partial<BuilderQuestion>) => {
-      setDefinitionWithHistory((prev) => ({
-        ...prev,
-        questions: (prev.questions || []).map((q) =>
-          q.id === questionId ? { ...q, ...updates } : q
-        ),
-      }));
+      setDefinitionWithHistory((prev) => {
+        const blocks = ensureDefinitionBlocks(prev).map((b) => {
+          if (b.kind === "question" && b.id === questionId) {
+            return {
+              ...b,
+              question: { ...b.question, ...updates },
+            };
+          }
+          return b;
+        });
+        const synced = syncBlocksAndQuestions(blocks);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
     },
     [setDefinitionWithHistory]
   );
 
-  // Duplicate question
-  const handleDuplicateQuestion = useCallback(
-    (questionId: string) => {
-      let createdId = "";
+  // Update image block
+  const handleUpdateImageBlock = useCallback(
+    (blockId: string, updates: Partial<BuilderImageBlock>) => {
       setDefinitionWithHistory((prev) => {
-        const questions = prev.questions || [];
-        const source = questions.find((q) => q.id === questionId);
-        if (!source) return prev;
-
-        const newId = `q-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-        createdId = newId;
-        const duplicated: BuilderQuestion = {
-          ...JSON.parse(JSON.stringify(source)),
-          id: newId,
-          label: `${source.label} (Copy)`,
-        };
-
-        const sourceIdx = questions.findIndex((q) => q.id === questionId);
-        const nextQuestions = [
-          ...questions.slice(0, sourceIdx + 1),
-          duplicated,
-          ...questions.slice(sourceIdx + 1),
-        ];
-
+        const blocks = ensureDefinitionBlocks(prev).map((b) => {
+          if (b.kind === "image" && b.id === blockId) {
+            return { ...b, ...updates };
+          }
+          return b;
+        });
+        const synced = syncBlocksAndQuestions(blocks);
         return {
           ...prev,
-          questions: nextQuestions,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
+    },
+    [setDefinitionWithHistory]
+  );
+
+  // Save existing image block adjustments from modal
+  const handleSaveExistingImageBlock = useCallback(
+    (updatedBlock: BuilderImageBlock) => {
+      setDefinitionWithHistory((prev) => {
+        const blocks = ensureDefinitionBlocks(prev).map((b) => {
+          if (b.kind === "image" && b.id === updatedBlock.id) {
+            return updatedBlock;
+          }
+          return b;
+        });
+        const synced = syncBlocksAndQuestions(blocks);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
+    },
+    [setDefinitionWithHistory]
+  );
+
+  // Open adjustment modal for existing image
+  const handleEditImage = useCallback((block: BuilderImageBlock) => {
+    setEditingImageBlock(block);
+    setIsImageUploadOpen(true);
+  }, []);
+
+  // Duplicate block (question or image)
+  const handleDuplicateBlock = useCallback(
+    (blockId: string) => {
+      let createdId = "";
+      setDefinitionWithHistory((prev) => {
+        const blocks = ensureDefinitionBlocks(prev);
+        const sourceIdx = blocks.findIndex((b) => b.id === blockId);
+        if (sourceIdx === -1) return prev;
+        const source = blocks[sourceIdx];
+
+        const newId = `${source.kind === "image" ? "img" : "q"}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        createdId = newId;
+
+        let duplicatedBlock: BuilderContentBlock;
+        if (source.kind === "image") {
+          duplicatedBlock = {
+            ...JSON.parse(JSON.stringify(source)),
+            id: newId,
+          };
+        } else {
+          duplicatedBlock = {
+            id: newId,
+            kind: "question",
+            question: {
+              ...JSON.parse(JSON.stringify(source.question)),
+              id: newId,
+              label: `${source.question.label} (Copy)`,
+            },
+          };
+        }
+
+        const nextBlocks = [
+          ...blocks.slice(0, sourceIdx + 1),
+          duplicatedBlock,
+          ...blocks.slice(sourceIdx + 1),
+        ];
+
+        const synced = syncBlocksAndQuestions(nextBlocks);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
         };
       });
 
       if (createdId) {
-        setSelectedQuestionId(createdId);
+        setSelectedBlockId(createdId);
       }
     },
     [setDefinitionWithHistory]
   );
 
-  // Delete question
-  const handleDeleteQuestion = useCallback(
-    (questionId: string) => {
+  // Delete block (question or image)
+  const handleDeleteBlock = useCallback(
+    (blockId: string) => {
       let nextSelectedId: string | null = null;
       setDefinitionWithHistory((prev) => {
-        const questions = prev.questions || [];
-        const nextQuestions = questions.filter((q) => q.id !== questionId);
-        if (selectedQuestionId === questionId) {
-          nextSelectedId = nextQuestions[0]?.id || null;
+        const blocks = ensureDefinitionBlocks(prev);
+        const nextBlocks = blocks.filter((b) => b.id !== blockId);
+        if (selectedBlockId === blockId) {
+          nextSelectedId = nextBlocks[0]?.id || null;
         }
+        const synced = syncBlocksAndQuestions(nextBlocks);
         return {
           ...prev,
-          questions: nextQuestions,
+          blocks: synced.blocks,
+          questions: synced.questions,
         };
       });
 
-      if (selectedQuestionId === questionId) {
-        setSelectedQuestionId(nextSelectedId);
+      if (selectedBlockId === blockId) {
+        setSelectedBlockId(nextSelectedId);
       }
     },
-    [selectedQuestionId, setDefinitionWithHistory]
+    [selectedBlockId, setDefinitionWithHistory]
   );
 
-  // Reorder questions
-  const handleReorderQuestions = useCallback(
-    (reordered: BuilderQuestion[]) => {
-      setDefinitionWithHistory((prev) => ({
-        ...prev,
-        questions: reordered,
-      }));
+  // Reorder blocks
+  const handleReorderBlocks = useCallback(
+    (reordered: BuilderContentBlock[]) => {
+      setDefinitionWithHistory((prev) => {
+        const synced = syncBlocksAndQuestions(reordered);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
     },
     [setDefinitionWithHistory]
   );
+
+  // Cover image handlers
+  const handleSaveCoverImage = useCallback(
+    (cover: BuilderCoverImage) => {
+      setDefinitionWithHistory((prev) => ({
+        ...prev,
+        coverImage: cover,
+      }));
+      setTimeout(() => {
+        saveNow();
+      }, 50);
+    },
+    [setDefinitionWithHistory, saveNow]
+  );
+
+  const handleRemoveCoverImage = useCallback(() => {
+    setDefinitionWithHistory((prev) => {
+      const next = { ...prev };
+      delete next.coverImage;
+      return next;
+    });
+  }, [setDefinitionWithHistory]);
 
   // Theme select
   const handleThemeSelect = useCallback(
     (themeKey: string) => {
-      setDefinitionWithHistory((prev) => ({
-        ...prev,
-        themeKey,
-      }));
+      setDefinitionWithHistory((prev) => {
+        const isSwitchingToNothing = themeKey === "nothing";
+        return {
+          ...prev,
+          themeKey,
+          ...(isSwitchingToNothing ? { themeOverrides: undefined } : {}),
+        };
+      });
     },
     [setDefinitionWithHistory]
   );
@@ -316,12 +476,13 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
 
   // Jump to header card
   const handleFocusHeader = useCallback(() => {
-    setSelectedQuestionId(null);
+    setSelectedBlockId(null);
     headerCardRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   const selectedQuestion =
-    definition.questions?.find((q) => q.id === selectedQuestionId) || null;
+    definition.questions?.find((q) => q.id === selectedBlockId) || null;
+  const contentBlocks = ensureDefinitionBlocks(definition);
 
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden flex w-full bg-[var(--page-bg,#F8F9FA)] text-[var(--body-text,#1E293B)] transition-colors duration-200">
@@ -370,24 +531,35 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
                   <div className="flex-1 min-w-0 space-y-4">
                     <div ref={headerCardRef}>
                       <FormHeaderEditor
-                        title={definition.title || "Untitled form"}
+                        title={definition.title ?? ""}
                         description={definition.description}
                         onTitleChange={handleTitleChange}
                         onDescriptionChange={handleDescriptionChange}
-                        isSelected={selectedQuestionId === null}
-                        onSelect={() => setSelectedQuestionId(null)}
+                        isSelected={selectedBlockId === null}
+                        onSelect={() => setSelectedBlockId(null)}
+                        coverImage={definition.coverImage}
+                        onOpenCoverUpload={() => setIsCoverModalOpen(true)}
+                        onRemoveCoverImage={handleRemoveCoverImage}
+                        formId={initialDraft.id}
                       />
                     </div>
 
                     <QuestionList
-                      questions={definition.questions || []}
-                      selectedQuestionId={selectedQuestionId}
-                      onSelectQuestion={setSelectedQuestionId}
+                      blocks={contentBlocks}
+                      selectedBlockId={selectedBlockId}
+                      onSelectBlock={setSelectedBlockId}
                       onUpdateQuestion={handleUpdateQuestion}
-                      onDuplicateQuestion={handleDuplicateQuestion}
-                      onDeleteQuestion={handleDeleteQuestion}
-                      onReorderQuestions={handleReorderQuestions}
+                      onUpdateImageBlock={handleUpdateImageBlock}
+                      onDuplicateBlock={handleDuplicateBlock}
+                      onDeleteBlock={handleDeleteBlock}
+                      onReorderBlocks={handleReorderBlocks}
                       onAddQuestion={handleAddQuestion}
+                      onAddImage={() => {
+                        setEditingImageBlock(null);
+                        setIsImageUploadOpen(true);
+                      }}
+                      onEditImage={handleEditImage}
+                      formId={initialDraft.id}
                     />
                   </div>
 
@@ -396,6 +568,10 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
                     <QuickActionsToolbar
                       onAddQuestion={handleAddQuestion}
                       onFocusHeader={handleFocusHeader}
+                      onAddImage={() => {
+                        setEditingImageBlock(null);
+                        setIsImageUploadOpen(true);
+                      }}
                     />
                   </div>
                 </div>
@@ -405,20 +581,20 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
               <div className="shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200/80 dark:border-white/10">
                 <QuestionSettingsPanel
                   question={selectedQuestion}
-                  onClose={() => setSelectedQuestionId(null)}
+                  onClose={() => setSelectedBlockId(null)}
                   onChange={(updates) => {
-                    if (selectedQuestionId) {
-                      handleUpdateQuestion(selectedQuestionId, updates);
+                    if (selectedBlockId) {
+                      handleUpdateQuestion(selectedBlockId, updates);
                     }
                   }}
                   onDuplicate={() => {
-                    if (selectedQuestionId) {
-                      handleDuplicateQuestion(selectedQuestionId);
+                    if (selectedBlockId) {
+                      handleDuplicateBlock(selectedBlockId);
                     }
                   }}
                   onDelete={() => {
-                    if (selectedQuestionId) {
-                      handleDeleteQuestion(selectedQuestionId);
+                    if (selectedBlockId) {
+                      handleDeleteBlock(selectedBlockId);
                     }
                   }}
                 />
@@ -464,6 +640,29 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         onPublishSuccess={() => {
           saveNow();
         }}
+      />
+
+      {/* Image Upload and Adjustment Modal */}
+      <ImageUploadModal
+        isOpen={isImageUploadOpen}
+        onClose={() => {
+          setIsImageUploadOpen(false);
+          setEditingImageBlock(null);
+        }}
+        formId={initialDraft.id}
+        onInsertImage={handleInsertImage}
+        editingBlock={editingImageBlock}
+        onSaveExistingBlock={handleSaveExistingImageBlock}
+      />
+
+      {/* Cover Image Upload and Adjustment Modal */}
+      <ImageUploadModal
+        isOpen={isCoverModalOpen}
+        onClose={() => setIsCoverModalOpen(false)}
+        formId={initialDraft.id}
+        mode="cover"
+        onSaveCoverImage={handleSaveCoverImage}
+        editingCoverImage={definition.coverImage}
       />
     </div>
   );

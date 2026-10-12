@@ -244,9 +244,20 @@ export function QuestionCard({
             type="text"
             value={question.label}
             onChange={(e) => onChange({ label: e.target.value })}
+            onBlur={() => {
+              if (!question.label || !question.label.trim()) {
+                onChange({ label: "Untitled question" });
+              }
+            }}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                e.stopPropagation();
+                e.currentTarget.select();
+              }
+            }}
             placeholder="Untitled question"
             maxLength={300}
-            className="flex-1 text-sm sm:text-base font-bold text-slate-900 dark:text-white placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-violet-500 focus:outline-none py-1.5 transition-all"
+            className="flex-1 text-sm sm:text-base font-bold text-slate-900 dark:text-white placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-violet-500 focus:outline-none py-1.5 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
             aria-label="Question title"
           />
 
@@ -273,9 +284,15 @@ export function QuestionCard({
             type="text"
             value={question.description || ""}
             onChange={(e) => onChange({ description: e.target.value })}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                e.stopPropagation();
+                e.currentTarget.select();
+              }
+            }}
             placeholder="Description / helper text (optional)"
             maxLength={500}
-            className="w-full text-xs text-slate-500 dark:text-slate-400 placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-slate-300 focus:outline-none py-1"
+            className="w-full text-xs text-slate-500 dark:text-slate-400 placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-slate-300 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
             aria-label="Question helper text"
           />
         )}
@@ -294,8 +311,14 @@ export function QuestionCard({
                   },
                 })
               }
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
               placeholder="Short answer text"
-              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               aria-label="Short answer placeholder"
             />
           )}
@@ -312,8 +335,14 @@ export function QuestionCard({
                   },
                 })
               }
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
               placeholder="Paragraph answer text"
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 focus:border-violet-500 p-2.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none resize-none transition-colors"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 focus:border-violet-500 p-2.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none resize-none transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               aria-label="Paragraph placeholder"
             />
           )}
@@ -330,8 +359,14 @@ export function QuestionCard({
                   },
                 })
               }
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
               placeholder="name@example.com"
-              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               aria-label="Email placeholder"
             />
           )}
@@ -348,8 +383,14 @@ export function QuestionCard({
                   },
                 })
               }
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
               placeholder="+1 (555) 000-0000"
-              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              className="w-full sm:w-2/3 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               aria-label="Phone placeholder"
             />
           )}
@@ -366,8 +407,14 @@ export function QuestionCard({
                   },
                 })
               }
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
               placeholder="Numeric value (e.g. 42)"
-              className="w-full sm:w-1/2 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors"
+              className="w-full sm:w-1/2 border-b-2 border-slate-200 dark:border-slate-700 focus:border-violet-500 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 font-medium bg-transparent focus:outline-none transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
               aria-label="Number placeholder"
             />
           )}
@@ -399,8 +446,14 @@ export function QuestionCard({
                     type="text"
                     value={opt.label}
                     onChange={(e) => handleUpdateOption(opt.id, e.target.value)}
+                    onKeyDown={(e) => {
+                      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                        e.stopPropagation();
+                        e.currentTarget.select();
+                      }
+                    }}
                     placeholder={`Option ${i + 1}`}
-                    className="flex-1 text-xs text-slate-700 dark:text-slate-200 bg-transparent border-0 border-b border-transparent focus:border-violet-400 focus:outline-none py-1"
+                    className="flex-1 text-xs text-slate-700 dark:text-slate-200 bg-transparent border-0 border-b border-transparent focus:border-violet-400 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
                   />
 
                   {(question.options || []).length > 1 && (

@@ -15,6 +15,7 @@ export interface ResolvedThemeTokens {
   headerAlignment: "left" | "center";
   headerPaddingClass: string;
   isDark: boolean;
+  isNothing: boolean;
 }
 
 export function resolveThemeTokens(
@@ -22,6 +23,7 @@ export function resolveThemeTokens(
   overrides?: ThemeOverrides | null
 ): ResolvedThemeTokens {
   const preset = findThemePreset(themeKey);
+  const isNothing = preset.id === "nothing";
 
   // 1. Accent color
   let accentColor = preset.accentColor;
@@ -37,7 +39,12 @@ export function resolveThemeTokens(
   let backgroundClass = preset.gradientClass;
   let backgroundStyle: React.CSSProperties | undefined = undefined;
 
-  if (backgroundMode === "solid") {
+  if (isNothing) {
+    backgroundClass = "bg-[#FAFAFA] text-neutral-950";
+    if (backgroundMode === "solid") {
+      backgroundStyle = { backgroundColor: preset.solidBgColor };
+    }
+  } else if (backgroundMode === "solid") {
     backgroundClass = "";
     backgroundStyle = { backgroundColor: preset.solidBgColor };
   } else {
@@ -51,11 +58,15 @@ export function resolveThemeTokens(
     const cardOpt = CARD_STYLE_OPTIONS.find((c) => c.key === overrides.cardStyle);
     if (cardOpt) {
       if (overrides.cardStyle === "glass") {
-        cardClass = preset.isDark
+        cardClass = isNothing
+          ? "backdrop-blur-md bg-white/90 border border-neutral-900 text-neutral-950 shadow-md"
+          : preset.isDark
           ? "backdrop-blur-md bg-slate-900/80 border border-white/15 text-white shadow-xl"
           : "backdrop-blur-md bg-white/80 border border-white/60 shadow-lg";
       } else if (overrides.cardStyle === "outlined") {
-        cardClass = preset.isDark
+        cardClass = isNothing
+          ? "bg-white border-2 border-neutral-950 text-neutral-950 shadow-none"
+          : preset.isDark
           ? "bg-slate-950 border-2 border-slate-700 text-white shadow-none"
           : "bg-white border-2 border-slate-300 shadow-none";
       } else {
@@ -66,8 +77,10 @@ export function resolveThemeTokens(
   }
 
   // 4. Font pairing
-  let headingFontClass = "font-sans";
-  let bodyFontClass = "font-sans";
+  let headingFontClass = isNothing
+    ? "font-sans font-bold tracking-tight text-neutral-950"
+    : "font-sans";
+  let bodyFontClass = isNothing ? "font-sans text-neutral-600" : "font-sans";
   if (overrides?.fontPairKey) {
     const fontOpt = FONT_PAIR_OPTIONS.find((f) => f.key === overrides.fontPairKey);
     if (fontOpt) {
@@ -100,5 +113,6 @@ export function resolveThemeTokens(
     headerAlignment,
     headerPaddingClass,
     isDark: Boolean(preset.isDark),
+    isNothing,
   };
 }

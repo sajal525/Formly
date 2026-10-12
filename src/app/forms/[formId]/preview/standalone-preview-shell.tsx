@@ -59,6 +59,7 @@ export function StandalonePreviewShell({ draft }: StandalonePreviewShellProps) {
             definition={draft.definition}
             displayOptions={displayOptions}
             isStandalone={true}
+            formId={draft.id}
           />
         </div>
       </main>

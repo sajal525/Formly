@@ -10,12 +10,14 @@ interface PreviewDeviceCanvasProps {
   definition: BuilderFormDefinition;
   devicePreset: DevicePreset;
   displayOptions: PreviewDisplayOptions;
+  formId?: string;
 }
 
 export function PreviewDeviceCanvas({
   definition,
   devicePreset,
   displayOptions,
+  formId,
 }: PreviewDeviceCanvasProps) {
   const meta = DEVICE_PRESETS[devicePreset];
 
@@ -43,7 +45,11 @@ export function PreviewDeviceCanvas({
 
           {/* Inner Form Canvas with natural scroll */}
           <div className="flex-1 w-full overflow-y-auto">
-            <RespondentFormCanvas definition={definition} displayOptions={displayOptions} />
+            <RespondentFormCanvas
+              definition={definition}
+              displayOptions={displayOptions}
+              formId={formId}
+            />
           </div>
         </div>
       )}
@@ -63,7 +69,11 @@ export function PreviewDeviceCanvas({
           {/* Screen area with rounded corners */}
           <div className="w-full flex-1 rounded-[24px] overflow-hidden bg-white dark:bg-slate-900 flex flex-col">
             <div className="flex-1 w-full overflow-y-auto">
-              <RespondentFormCanvas definition={definition} displayOptions={displayOptions} />
+              <RespondentFormCanvas
+                definition={definition}
+                displayOptions={displayOptions}
+                formId={formId}
+              />
             </div>
           </div>
         </div>
@@ -86,7 +96,11 @@ export function PreviewDeviceCanvas({
           {/* Phone Screen area */}
           <div className="w-full flex-1 rounded-[30px] overflow-hidden bg-white dark:bg-slate-900 flex flex-col">
             <div className="flex-1 w-full overflow-y-auto">
-              <RespondentFormCanvas definition={definition} displayOptions={displayOptions} />
+              <RespondentFormCanvas
+                definition={definition}
+                displayOptions={displayOptions}
+                formId={formId}
+              />
             </div>
           </div>
 

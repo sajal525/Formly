@@ -138,6 +138,7 @@ export function PreviewWorkspace({
           definition={definition}
           devicePreset={devicePreset}
           displayOptions={displayOptions}
+          formId={formId}
         />
 
         <PreviewSettingsRail

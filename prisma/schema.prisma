@@ -22,6 +22,7 @@ model User {
   accounts        Account[]
   profile         Profile?
   forms           Form[]
+  assets          FormAsset[]
   settings        UserSettings?
 
   @@map("user")
@@ -124,6 +125,7 @@ model Form {
   sourceTemplateVersion   TemplateVersion? @relation("SourceTemplateVersion", fields: [sourceTemplateVersionId], references: [id], onDelete: SetNull)
   sessions                ResponseSession[]
   responses               FormResponse[]
+  assets                  FormAsset[]
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
 
@@ -263,4 +265,30 @@ model UserSettings {
   updatedAt                DateTime @updatedAt
 
   @@map("user_settings")
+}
+
+enum AssetLifecycle {
+  PENDING
+  ATTACHED
+  DELETED
+}
+
+model FormAsset {
+  id          String         @id @default(cuid())
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  formId      String
+  form        Form           @relation(fields: [formId], references: [id], onDelete: Cascade)
+  objectKey   String         @unique
+  contentType String
+  byteSize    Int
+  width       Int?
+  height      Int?
+  lifecycle   AssetLifecycle @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([formId, lifecycle])
+  @@index([ownerId])
+  @@map("form_asset")
 }

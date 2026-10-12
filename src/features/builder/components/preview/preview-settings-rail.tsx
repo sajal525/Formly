@@ -266,17 +266,24 @@ export function PreviewSettingsRail({
         >
           <div className="flex items-center gap-3 min-w-0">
             {/* Thumbnail swatch */}
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs border border-white/20"
-              style={{
-                backgroundColor: currentTheme.solidBgColor,
-                backgroundImage: currentTheme.previewColors
-                  ? `linear-gradient(135deg, ${currentTheme.previewColors[0]}, ${currentTheme.previewColors[1]})`
-                  : undefined,
-              }}
-            >
-              <Sparkles className="w-4 h-4 text-white drop-shadow-xs" />
-            </div>
+            {currentTheme.id === "nothing" ? (
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs border border-neutral-300 bg-white [background-image:radial-gradient(#d1d5db_1px,transparent_1px)] [background-size:4px_4px] relative overflow-hidden">
+                <div className="w-3.5 h-3.5 rounded-full bg-red-600 shadow-2xs" />
+                <div className="w-5 h-5 rounded-tl-full bg-neutral-950 absolute -bottom-1 -right-1" />
+              </div>
+            ) : (
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs border border-white/20"
+                style={{
+                  backgroundColor: currentTheme.solidBgColor,
+                  backgroundImage: currentTheme.previewColors
+                    ? `linear-gradient(135deg, ${currentTheme.previewColors[0]}, ${currentTheme.previewColors[1]})`
+                    : undefined,
+                }}
+              >
+                <Sparkles className="w-4 h-4 text-white drop-shadow-xs" />
+              </div>
+            )}
             <div className="min-w-0">
               <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">
                 {currentTheme.name}

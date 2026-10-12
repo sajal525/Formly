@@ -90,6 +90,16 @@ export const FORMLY_THEMES: FormlyTheme[] = [
     badgeClass: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300",
     previewColors: ["#059669", "#34D399", "#ECFDF5"],
   },
+  {
+    id: "nothing",
+    name: "Nothing",
+    description: "Minimal tech aesthetic with Bauhaus precision and restrained red accents.",
+    accentColor: "#DC2626",
+    gradientClass: "from-stone-50 via-neutral-50 to-stone-100/80 text-neutral-900",
+    cardClass: "bg-white text-neutral-900 border-neutral-900 shadow-none",
+    badgeClass: "bg-white text-neutral-900 border border-neutral-900",
+    previewColors: ["#DC2626", "#9CA3AF", "#FFFFFF"],
+  },
 ];
 
 export function getTheme(themeKey?: string | null): FormlyTheme {

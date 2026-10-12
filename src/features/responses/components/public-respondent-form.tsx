@@ -19,6 +19,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { resolveThemeTokens } from "@/features/forms/themes/resolver";
+import {
+  ensureDefinitionBlocks,
+  BuilderImageBlock,
+} from "@/features/builder/schemas/builder-definition-schema";
+import { RenderedImageBlock } from "@/features/builder/components/image-block/rendered-image-block";
 
 interface PublicRespondentFormProps {
   form: PublicFormDTO;
@@ -52,6 +57,38 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
   const questions = form.definition.questions || [];
   const totalQuestions = questions.length;
   const currentQuestion = questions[currentIndex];
+  const blocks = ensureDefinitionBlocks(form.definition);
+
+  // Find image blocks that are positioned with the current question
+  const currentStepImages = (() => {
+    if (!currentQuestion) return [];
+    const qIndexInBlocks = blocks.findIndex(
+      (b) => b.kind === "question" && (b.id === currentQuestion.id || (b as any).question?.id === currentQuestion.id)
+    );
+    if (qIndexInBlocks === -1) return [];
+
+    const imgs: BuilderImageBlock[] = [];
+    for (let i = qIndexInBlocks - 1; i >= 0; i--) {
+      if (blocks[i].kind === "image") {
+        imgs.unshift(blocks[i] as BuilderImageBlock);
+      } else {
+        break;
+      }
+    }
+
+    // If this is the last question, also include any trailing images
+    if (currentIndex === totalQuestions - 1) {
+      for (let i = qIndexInBlocks + 1; i < blocks.length; i++) {
+        if (blocks[i].kind === "image") {
+          imgs.push(blocks[i] as BuilderImageBlock);
+        } else {
+          break;
+        }
+      }
+    }
+
+    return imgs;
+  })();
 
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const hasInteractedRef = useRef(false);
@@ -499,8 +536,13 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
   return (
     <div
       className={cn(
-        "min-h-screen w-full flex flex-col justify-between p-4 sm:p-8 bg-gradient-to-br transition-colors duration-500 select-none",
-        getThemeGradient()
+        "min-h-screen w-full flex flex-col justify-between p-4 sm:p-8 transition-colors duration-500 select-none relative overflow-hidden",
+        resolved.isNothing
+          ? "bg-[#FAFAFA] [background-image:radial-gradient(rgba(0,0,0,0.12)_1px,transparent_1px)] [background-size:18px_18px] text-neutral-950"
+          : getThemeGradient()
+          ? `bg-gradient-to-br ${getThemeGradient()}`
+          : "",
+        resolved.isDark ? "text-white" : "text-slate-900"
       )}
       onKeyDown={handleKeyDown}
     >
@@ -508,28 +550,43 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
       <header className="w-full max-w-3xl mx-auto flex flex-col gap-3">
         <div className="flex items-center justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800 dark:text-white truncate max-w-[200px] sm:max-w-md">
+            <span
+              className={cn(
+                "font-bold truncate max-w-[200px] sm:max-w-md",
+                resolved.isNothing ? "text-neutral-950 font-mono tracking-tight" : "text-slate-800 dark:text-white"
+              )}
+            >
               {form.title}
             </span>
           </div>
           {showProgress && (
             <div className="flex items-center gap-2 font-semibold">
-              <span>
+              <span className={resolved.isNothing ? "font-mono text-neutral-800" : ""}>
                 {currentIndex + 1} of {totalQuestions}
               </span>
-              <span className="text-slate-400">({progressPercentage}%)</span>
+              <span className={resolved.isNothing ? "text-neutral-500 font-mono" : "text-slate-400"}>
+                ({progressPercentage}%)
+              </span>
             </div>
           )}
         </div>
 
         {/* Progress indicator bar */}
         {showProgress && (
-          <div className="w-full h-1.5 bg-slate-200/80 dark:bg-white/10 rounded-full overflow-hidden">
+          <div
+            className={cn(
+              "w-full h-1.5 rounded-full overflow-hidden",
+              resolved.isNothing ? "bg-neutral-200" : "bg-slate-200/80 dark:bg-white/10"
+            )}
+          >
             <div
-              className="h-full transition-all duration-300 rounded-full"
+              className={cn(
+                "h-full transition-all duration-300 rounded-full",
+                resolved.isNothing ? "bg-red-600" : ""
+              )}
               style={{
                 width: `${progressPercentage}%`,
-                backgroundColor: accentColor,
+                backgroundColor: resolved.isNothing ? "#DC2626" : accentColor,
               }}
             />
           </div>
@@ -538,7 +595,42 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
 
       {/* Main Single-Question Interactive Container */}
       <main className="w-full max-w-2xl mx-auto my-auto py-8">
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-xl p-6 sm:p-10 transition-all duration-200">
+        <div
+          className={cn(
+            "p-6 sm:p-10 transition-all duration-200",
+            resolved.isNothing
+              ? "bg-white text-neutral-950 border border-neutral-900 rounded-2xl shadow-none"
+              : "bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-xl"
+          )}
+        >
+          {/* Cover image banner if configured on form */}
+          {form.definition.coverImage && (
+            <div
+              className={cn(
+                "w-full rounded-2xl overflow-hidden relative mb-6 border border-slate-100 dark:border-white/10 shadow-sm",
+                form.definition.coverImage.transform?.aspectPreset === "16:9"
+                  ? "aspect-[16/9] max-h-[380px]"
+                  : "aspect-[4/1] min-h-[130px] max-h-[260px]"
+              )}
+            >
+              <img
+                src={`/api/public/forms/${form.id}/assets/${form.definition.coverImage.assetId}`}
+                alt={form.definition.coverImage.altText || "Cover banner"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Render any image blocks positioned with this question */}
+          {currentStepImages.map((imgBlock) => (
+            <RenderedImageBlock
+              key={imgBlock.id}
+              block={imgBlock}
+              imageUrl={`/api/public/forms/${form.id}/assets/${imgBlock.assetId}`}
+              className="mb-6"
+            />
+          ))}
+
           {/* Question Index Badge */}
           <div className="flex items-center gap-2 mb-4">
             {showNumbers && (
@@ -795,10 +887,15 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
                 <Button
                   type="button"
                   onClick={handleNext}
-                  style={{ backgroundColor: accentColor }}
-                  className="text-white hover:opacity-90 shadow-md px-5"
+                  style={resolved.isNothing ? undefined : { backgroundColor: accentColor }}
+                  className={cn(
+                    "text-white shadow-md px-5",
+                    resolved.isNothing
+                      ? "bg-neutral-950 hover:bg-neutral-800 rounded-xl font-bold shadow-none"
+                      : "hover:opacity-90"
+                  )}
                 >
-                  Next
+                  <span>Next</span>
                   <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               ) : (
@@ -806,11 +903,19 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleSubmit}
-                  style={{ backgroundColor: accentColor }}
-                  className="text-white hover:opacity-90 shadow-md px-6 font-semibold"
+                  style={resolved.isNothing ? undefined : { backgroundColor: accentColor }}
+                  className={cn(
+                    "text-white shadow-md px-6 font-semibold relative",
+                    resolved.isNothing
+                      ? "bg-neutral-950 hover:bg-neutral-800 rounded-xl font-bold shadow-none"
+                      : "hover:opacity-90"
+                  )}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit"}
+                  <span>{isSubmitting ? "Submitting..." : "Submit"}</span>
                   <Check className="w-4 h-4 ml-1.5" />
+                  {resolved.isNothing && (
+                    <span className="w-2 h-2 rounded-full bg-red-600 absolute -top-1 -right-1 shadow-xs" />
+                  )}
                 </Button>
               )}
             </div>
@@ -819,10 +924,21 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
       </main>
 
       {/* Bottom Footer */}
-      <footer className="w-full text-center py-2 text-xs text-slate-400 flex items-center justify-center gap-1.5">
-        <Sparkles className="w-3.5 h-3.5 text-violet-500" />
-        <span>Powered by Formly — Responsive & Accessible</span>
-      </footer>
+      {resolved.isNothing ? (
+        <footer
+          className="w-full text-center py-3 text-[10px] font-mono tracking-[0.25em] text-neutral-500 uppercase flex items-center justify-center gap-2 select-none"
+          aria-hidden="true"
+        >
+          <span>BUILT WITH FORMLY</span>
+          <span className="text-red-600 font-bold">—</span>
+          <span>SIMPLE FORMS FOR A BRIGHTER TOMORROW</span>
+        </footer>
+      ) : (
+        <footer className="w-full text-center py-2 text-xs text-slate-400 flex items-center justify-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+          <span>Powered by Formly — Responsive & Accessible</span>
+        </footer>
+      )}
     </div>
   );
 }

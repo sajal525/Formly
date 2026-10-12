@@ -45,8 +45,12 @@ export function ThemePreviewCard({
       <div
         style={resolved.backgroundStyle}
         className={cn(
-          "w-full min-h-[340px] max-h-[420px] overflow-y-auto p-4 sm:p-5 transition-colors duration-200 scrollbar-thin",
-          resolved.backgroundClass ? `bg-gradient-to-br ${resolved.backgroundClass}` : "",
+          "w-full min-h-[340px] max-h-[420px] overflow-y-auto p-4 sm:p-5 transition-colors duration-200 scrollbar-thin relative",
+          resolved.isNothing
+            ? "bg-[#FAFAFA] [background-image:radial-gradient(rgba(0,0,0,0.12)_1px,transparent_1px)] [background-size:12px_12px] text-neutral-950"
+            : resolved.backgroundClass
+            ? `bg-gradient-to-br ${resolved.backgroundClass}`
+            : "",
           resolved.isDark ? "text-white" : "text-slate-900"
         )}
       >
@@ -54,12 +58,24 @@ export function ThemePreviewCard({
           {/* Header Card */}
           <div
             className={cn(
-              "rounded-xl border transition-all duration-200",
+              "rounded-xl border transition-all duration-200 relative",
               resolved.cardClass,
               resolved.headerPaddingClass,
               resolved.headerAlignment === "center" ? "text-center" : "text-left"
             )}
           >
+            {resolved.isNothing && (
+              <div className="flex items-center gap-1.5 mb-2.5">
+                <div className="w-6 h-6 rounded-lg border border-neutral-200 bg-white flex items-center justify-center relative shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 absolute -top-0.5 -right-0.5" />
+                  <span className="text-[10px] font-bold">⌘</span>
+                </div>
+                <span className="text-[9px] font-mono tracking-widest text-neutral-500 uppercase">
+                  TECH 01
+                </span>
+              </div>
+            )}
+
             {/* Form Title */}
             <h1
               className={cn(
@@ -112,17 +128,24 @@ export function ThemePreviewCard({
                 )}
               >
                 <div className="flex items-baseline justify-between gap-2">
-                  <label
-                    className={cn(
-                      "text-xs font-semibold leading-tight",
-                      resolved.headingFontClass
+                  <div className="flex items-center gap-2">
+                    {resolved.isNothing && (
+                      <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[9px] font-bold flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
                     )}
-                  >
-                    <span>{q.label || `Question ${idx + 1}`}</span>
-                    {q.required && (
-                      <span className="text-red-500 ml-1 font-bold">*</span>
-                    )}
-                  </label>
+                    <label
+                      className={cn(
+                        "text-xs font-semibold leading-tight",
+                        resolved.headingFontClass
+                      )}
+                    >
+                      <span>{q.label || `Question ${idx + 1}`}</span>
+                      {q.required && (
+                        <span className="text-red-500 ml-1 font-bold">*</span>
+                      )}
+                    </label>
+                  </div>
                 </div>
 
                 {q.description && (
@@ -141,7 +164,14 @@ export function ThemePreviewCard({
                     ).map((opt, oIdx) => (
                       <div
                         key={opt.id || oIdx}
-                        className="flex items-center gap-2 text-xs opacity-90 cursor-default"
+                        className={cn(
+                          "flex items-center gap-2 text-xs opacity-90 cursor-default px-2.5 py-1.5 rounded-lg border",
+                          resolved.isNothing
+                            ? oIdx === 0
+                              ? "border-neutral-900 bg-neutral-100 font-semibold"
+                              : "border-neutral-300 bg-white"
+                            : "border-transparent"
+                        )}
                       >
                         <div
                           className="w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0"
@@ -173,7 +203,9 @@ export function ThemePreviewCard({
                   <div
                     className={cn(
                       "h-7 w-full rounded-md border px-2 flex items-center text-[11px] opacity-70",
-                      resolved.isDark
+                      resolved.isNothing
+                        ? "border-neutral-300 bg-white text-neutral-700"
+                        : resolved.isDark
                         ? "border-white/15 bg-white/5 text-slate-300"
                         : "border-slate-200 bg-slate-50 text-slate-500"
                     )}
@@ -190,11 +222,16 @@ export function ThemePreviewCard({
             <button
               type="button"
               disabled
-              style={{ backgroundColor: resolved.accentColor }}
-              className="w-full h-8 rounded-lg text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm opacity-95 cursor-default"
+              style={{
+                backgroundColor: resolved.isNothing ? "#0A0A0A" : resolved.accentColor,
+              }}
+              className="w-full h-8 rounded-lg text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm opacity-95 cursor-default relative overflow-hidden"
             >
               <span>Submit Form</span>
               <ChevronRight className="w-3.5 h-3.5" />
+              {resolved.isNothing && (
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600 absolute right-3" />
+              )}
             </button>
           </div>
         </div>
