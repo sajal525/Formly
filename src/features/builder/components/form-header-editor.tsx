@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import { Image as ImageIcon, Sparkles, Trash2 } from "lucide-react";
 import { BuilderCoverImage } from "../schemas/builder-definition-schema";
+import { getDefaultTextSelectProps } from "../utils/default-text-select";
 import { cn } from "@/lib/utils";
 
 interface FormHeaderEditorProps {
@@ -134,11 +135,6 @@ export function FormHeaderEditor({
             type="text"
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
-            onBlur={() => {
-              if (!title || !title.trim()) {
-                onTitleChange("Untitled form");
-              }
-            }}
             onKeyDown={(e) => {
               if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
                 e.stopPropagation();
@@ -149,6 +145,13 @@ export function FormHeaderEditor({
             maxLength={120}
             className="w-full text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white placeholder:text-slate-400 bg-transparent border-0 border-b-2 border-transparent focus:border-violet-500 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
             aria-label="Form title"
+            {...getDefaultTextSelectProps("Untitled form", {
+              onBlur: () => {
+                if (!title || !title.trim()) {
+                  onTitleChange("Untitled form");
+                }
+              },
+            })}
           />
         </div>
 

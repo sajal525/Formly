@@ -93,10 +93,9 @@ async function runTextEditingTestSuite() {
     const titleInput = await page.$('input[aria-label="Form title"]');
     assert.ok(titleInput, "Form title input must exist");
 
-    // TEST 1: Clicking "Untitled form" places the caret at clicked position
-    console.log("Test 1: Caret placement at clicked position...");
+    // TEST 1: Clicking untouched "Untitled form" automatically selects all text
+    console.log("Test 1: Auto-select all text on clicking untouched 'Untitled form'...");
     const box = await titleInput.boundingBox();
-    // Click near character index 4-6
     await page.mouse.click(box.x + 60, box.y + box.height / 2);
     await delay(200);
 
@@ -106,9 +105,9 @@ async function runTextEditingTestSuite() {
       value: el.value,
     }), titleInput);
     console.log("Caret position after click at x+60:", sel);
-    assert.strictEqual(sel.start, sel.end, "Clicking must place collapsed caret (not accidental full select)");
-    assert.ok(sel.start > 0 && sel.start < sel.value.length, "Caret must be placed inside the text");
-    console.log("✓ Caret placed at clicked index:", sel.start);
+    assert.strictEqual(sel.start, 0, "Selection must start at 0");
+    assert.strictEqual(sel.end, 13, "Selection must cover entire 'Untitled form'");
+    console.log("✓ Entire untouched default title auto-selected on click");
 
     // TEST 2: Ctrl + A selects the complete title
     console.log("Test 2: Ctrl + A selection...");

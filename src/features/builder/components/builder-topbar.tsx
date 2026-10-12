@@ -24,6 +24,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { AutosaveIndicator, AutosaveStatus } from "./autosave-indicator";
 import { ThemeToggle } from "@/components/branding/theme-toggle";
+import {
+  getDefaultTextSelectProps,
+  isUntouchedDefaultValue,
+} from "../utils/default-text-select";
 import { cn } from "@/lib/utils";
 
 interface BuilderTopbarProps {
@@ -93,9 +97,11 @@ export function BuilderTopbar({
   useEffect(() => {
     if (isEditingTitle && titleInputRef.current) {
       titleInputRef.current.focus();
-      titleInputRef.current.select();
+      if (isUntouchedDefaultValue(tempTitle, "Untitled form")) {
+        titleInputRef.current.select();
+      }
     }
-  }, [isEditingTitle]);
+  }, [isEditingTitle, tempTitle]);
 
   // Click outside to close menus
   useEffect(() => {
@@ -169,10 +175,12 @@ export function BuilderTopbar({
                 type="text"
                 value={tempTitle}
                 onChange={(e) => setTempTitle(e.target.value)}
-                onBlur={handleSaveTitle}
                 onKeyDown={handleKeyDown}
                 maxLength={120}
                 className="h-8 px-2.5 py-1 text-xs sm:text-base font-bold text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 border border-violet-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/30 w-full min-w-0 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
+                {...getDefaultTextSelectProps("Untitled form", {
+                  onBlur: handleSaveTitle,
+                })}
               />
               <button
                 type="button"

@@ -11,6 +11,7 @@ import {
 } from "../../schemas/builder-definition-schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { getDefaultTextSelectProps } from "../../utils/default-text-select";
 
 interface GeneralSettingsCardProps {
   title: string;
@@ -79,6 +80,7 @@ export function GeneralSettingsCard({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Untitled form"
+          {...getDefaultTextSelectProps("Untitled form")}
           className="h-9 text-xs rounded-xl bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
         />
       </div>

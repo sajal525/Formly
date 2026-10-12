@@ -13,6 +13,7 @@ import {
   BuilderQuestion,
   BuilderQuestionType,
 } from "../schemas/builder-definition-schema";
+import { getDefaultTextSelectProps } from "../utils/default-text-select";
 import { QUESTION_TYPES } from "./question-card";
 import { cn } from "@/lib/utils";
 
@@ -126,11 +127,6 @@ export function QuestionSettingsPanel({
             type="text"
             value={question.label}
             onChange={(e) => onChange({ label: e.target.value })}
-            onBlur={() => {
-              if (!question.label || !question.label.trim()) {
-                onChange({ label: "Untitled question" });
-              }
-            }}
             onKeyDown={(e) => {
               if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
                 e.stopPropagation();
@@ -140,6 +136,13 @@ export function QuestionSettingsPanel({
             placeholder="Untitled question"
             maxLength={300}
             className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
+            {...getDefaultTextSelectProps("Untitled question", {
+              onBlur: () => {
+                if (!question.label || !question.label.trim()) {
+                  onChange({ label: "Untitled question" });
+                }
+              },
+            })}
           />
         </div>
 

@@ -28,6 +28,7 @@ import {
   BuilderQuestionType,
   QuestionOption,
 } from "../schemas/builder-definition-schema";
+import { getDefaultTextSelectProps } from "../utils/default-text-select";
 import { cn } from "@/lib/utils";
 
 interface QuestionCardProps {
@@ -244,11 +245,6 @@ export function QuestionCard({
             type="text"
             value={question.label}
             onChange={(e) => onChange({ label: e.target.value })}
-            onBlur={() => {
-              if (!question.label || !question.label.trim()) {
-                onChange({ label: "Untitled question" });
-              }
-            }}
             onKeyDown={(e) => {
               if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
                 e.stopPropagation();
@@ -259,6 +255,13 @@ export function QuestionCard({
             maxLength={300}
             className="flex-1 text-sm sm:text-base font-bold text-slate-900 dark:text-white placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-violet-500 focus:outline-none py-1.5 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
             aria-label="Question title"
+            {...getDefaultTextSelectProps("Untitled question", {
+              onBlur: () => {
+                if (!question.label || !question.label.trim()) {
+                  onChange({ label: "Untitled question" });
+                }
+              },
+            })}
           />
 
           {/* Question Type Selector */}
@@ -453,6 +456,7 @@ export function QuestionCard({
                       }
                     }}
                     placeholder={`Option ${i + 1}`}
+                    {...getDefaultTextSelectProps(/^option\s+\d+$/i)}
                     className="flex-1 text-xs text-slate-700 dark:text-slate-200 bg-transparent border-0 border-b border-transparent focus:border-violet-400 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
                   />
 
