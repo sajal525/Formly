@@ -32,7 +32,11 @@ export async function getCurrentProfile(): Promise<ProfileDTO | null> {
     studyYear: profile?.studyYear ?? null,
     division: profile?.division ?? null,
     bio: profile?.bio ?? null,
-    avatarUrl: null, // R2 storage is not configured yet; neutral default visual fallback
-    coverUrl: null,
+    avatarUrl: profile?.avatarObjectKey
+      ? `/api/v1/profile/avatar?v=${profile.updatedAt.getTime()}`
+      : null,
+    coverUrl: profile?.coverObjectKey
+      ? `/api/v1/profile/cover?v=${profile.updatedAt.getTime()}`
+      : null,
   };
 }

@@ -4,6 +4,16 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Formly — Build Forms, Your Way",
   description: "Create beautiful forms with flexible themes, fast respondent flows, and powerful insights.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/brand/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/brand/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
 };
 
 export const viewport: Viewport = {

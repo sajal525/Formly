@@ -1,15 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Camera, Image as ImageIcon, Info } from "lucide-react";
+import { Camera, Image as ImageIcon } from "lucide-react";
 import { ProfileDTO } from "../schemas/profile-schema";
+import { ProfileCoverModal } from "./profile-cover-modal";
+import { ProfileAvatarModal } from "./profile-avatar-modal";
 
 interface ProfileBannerProps {
   profile: ProfileDTO;
+  onProfileUpdated?: (updated: ProfileDTO) => void;
 }
 
-export function ProfileBanner({ profile }: ProfileBannerProps) {
-  const [showR2Notice, setShowR2Notice] = useState(false);
+export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps) {
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   const initial = (
     profile.displayName ||
@@ -26,19 +30,32 @@ export function ProfileBanner({ profile }: ProfileBannerProps) {
     <div className="relative w-full rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm transition-colors duration-200">
       {/* Visual Cover Area */}
       <div className="relative h-44 sm:h-52 w-full bg-gradient-to-r from-blue-400/30 via-indigo-400/25 to-purple-400/35 dark:from-blue-900/40 dark:via-indigo-950/50 dark:to-purple-900/40 overflow-hidden">
-        {/* Subtle decorative curved gradient mesh */}
-        <div className="absolute inset-0 opacity-60 dark:opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-300/40 via-purple-300/20 to-transparent pointer-events-none" />
-        <div className="absolute -bottom-10 -right-10 w-96 h-96 rounded-full bg-gradient-to-br from-indigo-400/20 to-pink-400/20 blur-3xl pointer-events-none" />
-        
+        {profile.coverUrl ? (
+          <img
+            src={profile.coverUrl}
+            alt={`${profile.displayName || profile.username}'s profile cover`}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+          />
+        ) : (
+          <>
+            {/* Subtle decorative curved gradient mesh */}
+            <div className="absolute inset-0 opacity-60 dark:opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-300/40 via-purple-300/20 to-transparent pointer-events-none" />
+            <div className="absolute -bottom-10 -right-10 w-96 h-96 rounded-full bg-gradient-to-br from-indigo-400/20 to-pink-400/20 blur-3xl pointer-events-none" />
+          </>
+        )}
+
+        {/* Subtle vignette/gradient at bottom to ensure contrast */}
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+
         {/* Change Cover Button (Upper Right) */}
         <div className="absolute top-4 right-4 z-10">
           <button
             type="button"
-            onClick={() => setShowR2Notice(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer"
-            title="Cloudflare R2 storage is not configured in this environment"
+            onClick={() => setIsCoverModalOpen(true)}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-md border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            title="Change cover image"
           >
-            <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
+            <ImageIcon className="w-3.5 h-3.5 text-[#563BFA] dark:text-indigo-400" />
             <span>Change Cover</span>
           </button>
         </div>
@@ -49,17 +66,25 @@ export function ProfileBanner({ profile }: ProfileBannerProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5 -mt-16 sm:-mt-20">
           {/* Avatar Container with Overlapping Camera Button */}
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-3xl sm:text-4xl ring-4 ring-white dark:ring-slate-900 shadow-md">
-              {initial}
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-3xl sm:text-4xl ring-4 ring-white dark:ring-slate-900 shadow-md relative">
+              {profile.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt={`${profile.displayName || profile.username}'s profile picture`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{initial}</span>
+              )}
             </div>
             
             {/* Camera Action Button */}
             <button
               type="button"
-              onClick={() => setShowR2Notice(true)}
+              onClick={() => setIsAvatarModalOpen(true)}
               className="absolute bottom-0 right-0 p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 shadow-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer"
               aria-label="Upload profile photo"
-              title="Upload profile photo (R2 storage required)"
+              title="Upload profile photo"
             >
               <Camera className="w-4 h-4 text-[#563BFA] dark:text-indigo-400" />
             </button>
@@ -91,26 +116,33 @@ export function ProfileBanner({ profile }: ProfileBannerProps) {
             )}
           </div>
         </div>
-
-        {/* Informative notification when user clicks cover or avatar */}
-        {showR2Notice && (
-          <div className="mt-4 p-3 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 text-xs text-indigo-800 dark:text-indigo-300 flex items-center justify-between gap-3 animate-in fade-in duration-200">
-            <div className="flex items-center gap-2">
-              <Info className="w-4 h-4 shrink-0 text-[#563BFA] dark:text-indigo-400" />
-              <span>
-                <strong>Image uploads are not ready yet:</strong> Secure Cloudflare R2 object storage credentials are not configured in this environment. Your default initials avatar is active.
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowR2Notice(false)}
-              className="text-xs font-bold text-[#563BFA] dark:text-indigo-400 hover:underline shrink-0"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Profile Cover Image Adjust & Upload Modal */}
+      <ProfileCoverModal
+        isOpen={isCoverModalOpen}
+        onClose={() => setIsCoverModalOpen(false)}
+        currentCoverUrl={profile.coverUrl}
+        onCoverSaved={(newCoverUrl) => {
+          onProfileUpdated?.({
+            ...profile,
+            coverUrl: newCoverUrl,
+          });
+        }}
+      />
+
+      {/* Profile Avatar Image Adjust & Upload Modal */}
+      <ProfileAvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        currentAvatarUrl={profile.avatarUrl}
+        onAvatarSaved={(newAvatarUrl) => {
+          onProfileUpdated?.({
+            ...profile,
+            avatarUrl: newAvatarUrl,
+          });
+        }}
+      />
     </div>
   );
 }

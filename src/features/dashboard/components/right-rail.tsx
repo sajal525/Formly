@@ -9,7 +9,6 @@ import {
   TrendingUp,
   Plus,
   Upload,
-  LayoutGrid,
   BarChart,
   ChevronRight,
   Lightbulb,
@@ -143,21 +142,6 @@ export function RightRail({ stats, onCreateClick }: RightRailProps) {
                 <Upload className="w-3.5 h-3.5" />
               </div>
               <span>Import Formly file</span>
-            </div>
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
-              Soon
-            </span>
-          </div>
-
-          <div
-            className="w-full p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-slate-400 cursor-not-allowed opacity-60"
-            title="Template catalog coming soon"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-xl bg-pink-100 dark:bg-pink-950/60 text-pink-500 flex items-center justify-center">
-                <LayoutGrid className="w-3.5 h-3.5" />
-              </div>
-              <span>Browse templates</span>
             </div>
             <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
               Soon

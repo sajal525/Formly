@@ -24,6 +24,7 @@ model User {
   forms           Form[]
   assets          FormAsset[]
   settings        UserSettings?
+  notifications   Notification[]
 
   @@map("user")
 }
@@ -126,6 +127,7 @@ model Form {
   sessions                ResponseSession[]
   responses               FormResponse[]
   assets                  FormAsset[]
+  notifications           Notification[]
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
 
@@ -220,6 +222,7 @@ model FormResponse {
   definitionSnapshot Json?
   answers            Json
   durationSeconds    Int?
+  notifications      Notification[]
   submittedAt        DateTime         @default(now())
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
@@ -292,3 +295,34 @@ model FormAsset {
   @@index([ownerId])
   @@map("form_asset")
 }
+
+enum NotificationType {
+  FORM_RESPONSE
+  COLLABORATOR_INVITATION
+  FORM_ACTIVITY
+}
+
+model Notification {
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         NotificationType @default(FORM_RESPONSE)
+  title        String
+  message      String
+  eventKey     String?
+  formId       String?
+  form         Form?            @relation(fields: [formId], references: [id], onDelete: SetNull)
+  responseId   String?
+  response     FormResponse?    @relation(fields: [responseId], references: [id], onDelete: SetNull)
+  invitationId String?
+  actorId      String?
+  readAt       DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([userId, eventKey])
+  @@index([userId, createdAt])
+  @@index([userId, readAt, createdAt])
+  @@map("notification")
+}
+

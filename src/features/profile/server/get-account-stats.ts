@@ -5,7 +5,7 @@ import { AccountStatsDTO } from "../schemas/profile-schema";
 
 export async function getAccountStats(userId: string): Promise<AccountStatsDTO> {
   try {
-    const [totalForms, totalResponses, totalViews, templatesUsed] = await Promise.all([
+    const [totalForms, totalResponses, totalViews, draftForms] = await Promise.all([
       // Total non-trashed forms owned by user
       prisma.form.count({
         where: {
@@ -31,12 +31,11 @@ export async function getAccountStats(userId: string): Promise<AccountStatsDTO> 
           },
         },
       }),
-      // Forms created from template provenance
+      // Draft forms in progress
       prisma.form.count({
         where: {
           ownerId: userId,
-          status: { not: FormStatus.TRASHED },
-          sourceTemplateId: { not: null },
+          status: FormStatus.DRAFT,
         },
       }),
     ]);
@@ -45,7 +44,7 @@ export async function getAccountStats(userId: string): Promise<AccountStatsDTO> 
       totalForms,
       totalResponses,
       totalViews,
-      templatesUsed,
+      draftForms,
     };
   } catch (err) {
     console.error("Failed to query account stats:", err);
@@ -53,7 +52,7 @@ export async function getAccountStats(userId: string): Promise<AccountStatsDTO> 
       totalForms: 0,
       totalResponses: 0,
       totalViews: 0,
-      templatesUsed: 0,
+      draftForms: 0,
     };
   }
 }

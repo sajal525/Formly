@@ -1,4 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="10" fill="#563BFA"/>
-  <path d="M16 7L18.5 13.5L25 16L18.5 18.5L16 25L13.5 18.5L7 16L13.5 13.5L16 7Z" fill="white"/>
+  <defs>
+    <linearGradient id="f-top" x1="14" y1="4.5" x2="25" y2="11.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A1C24"/>
+      <stop offset="100%" stop-color="#0E1015"/>
+    </linearGradient>
+    <linearGradient id="f-mid" x1="14" y1="14.5" x2="21" y2="21.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E233F8"/>
+      <stop offset="100%" stop-color="#9A0FE6"/>
+    </linearGradient>
+    <linearGradient id="f-ribbon" x1="10" y1="4.5" x2="10" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6948FF"/>
+      <stop offset="100%" stop-color="#4621F7"/>
+    </linearGradient>
+    <linearGradient id="f-stem" x1="7" y1="17.5" x2="14" y2="27" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A3FE8"/>
+      <stop offset="100%" stop-color="#3470FE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Clean White Squircle Tile -->
+  <rect width="32" height="32" rx="8" fill="#FFFFFF"/>
+
+  <!-- Centered F Mark -->
+  <g transform="translate(16, 16) scale(0.052) translate(-256, -256)">
+    <path d="M112 284 L112 422 C112 430 119 435 126 431 L220 367 C223 365 224 362 224 358 L224 352 Z" fill="url(#f-stem)"/>
+    <path d="M224 74 L126 139 C117 145 112 154 112 165 L112 284 L224 352 L224 234 L224 180 L224 74 Z" fill="url(#f-ribbon)"/>
+    <path d="M224 234 L306 234 C315 234 322 239 326 248 L337 274 C339 279 339 285 336 290 L315 332 C312 337 306 340 300 340 L224 340 Z" fill="url(#f-mid)"/>
+    <path d="M224 74 L378 74 C388 74 396 80 400 89 L415 125 C417 131 416 137 412 142 L390 173 C386 178 380 180 374 180 L224 180 Z" fill="url(#f-top)"/>
+  </g>
 </svg>

@@ -3,7 +3,6 @@ import { z } from "zod";
 export const landingPageSchema = z.enum([
   "dashboard",
   "my-forms",
-  "templates",
   "responses",
   "analytics",
 ]);

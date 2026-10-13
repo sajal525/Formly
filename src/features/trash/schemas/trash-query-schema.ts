@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const trashTypeFilterSchema = z.enum(["all", "forms", "templates", "others"]);
+export const trashTypeFilterSchema = z.enum(["all", "forms", "others"]);
 export type TrashTypeFilter = z.infer<typeof trashTypeFilterSchema>;
 
 export const trashSortSchema = z.enum([

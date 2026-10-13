@@ -6,12 +6,16 @@ import { FormlyLogo } from "@/components/branding/formly-logo";
 import { ThemeToggle } from "@/components/branding/theme-toggle";
 
 export function LoginHeader() {
-  const navItems = ["Features", "Templates", "Pricing", "Help"];
+  const navItems = ["Features", "Pricing", "Help"];
 
   return (
     <header className="w-full px-4 sm:px-8 md:px-12 lg:px-14 xl:px-16 2xl:px-20 h-14 sm:h-16 flex items-center justify-between z-20 relative shrink-0">
       {/* Brand Logo */}
-      <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] rounded-xl">
+      <Link
+        href="/"
+        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] rounded-xl"
+        aria-label="Formly home"
+      >
         <FormlyLogo size="md" />
       </Link>
 

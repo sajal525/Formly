@@ -5,7 +5,6 @@ import {
   Plus,
   ChevronDown,
   FileText,
-  LayoutGrid,
   Sparkles,
   Upload,
 } from "lucide-react";
@@ -94,20 +93,6 @@ export function MyFormsHeader({ onCreateBlankClick }: MyFormsHeaderProps) {
             </button>
 
             <div className="my-1.5 border-t border-slate-100 dark:border-white/5" />
-
-            {/* Deferred Template option */}
-            <div
-              className="w-full px-4 py-2 text-left text-xs text-slate-400 dark:text-slate-500 cursor-not-allowed flex items-center justify-between opacity-70"
-              title="Templates coming soon"
-            >
-              <div className="flex items-center gap-3">
-                <LayoutGrid className="w-4 h-4 text-slate-400" />
-                <span>From Template</span>
-              </div>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400 font-medium">
-                Soon
-              </span>
-            </div>
 
             {/* Deferred AI option */}
             <div

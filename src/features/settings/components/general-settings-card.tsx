@@ -75,7 +75,6 @@ export function GeneralSettingsCard({
           >
             <option value="dashboard">Dashboard</option>
             <option value="my-forms">My Forms</option>
-            <option value="templates">Templates</option>
             <option value="responses">Responses</option>
             <option value="analytics">Analytics</option>
           </select>

@@ -8,6 +8,7 @@ import {
   builderFormDefinitionSchema,
 } from "@/features/builder/schemas/builder-definition-schema";
 import { PublicSubmitPayload } from "../schemas/public-submission-schema";
+import { createNotification } from "@/features/notifications/server/notification-service";
 
 export function createFormPasswordHash(formId: string, password: string): string {
   return crypto.createHash("sha256").update(`${formId}:${password}`).digest("hex");
@@ -333,6 +334,8 @@ export async function submitFormResponse(
     where: { id: formId },
     select: {
       id: true,
+      ownerId: true,
+      title: true,
       status: true,
       definition: true,
     },
@@ -474,7 +477,7 @@ export async function submitFormResponse(
       });
     }
 
-    return tx.formResponse.create({
+    const newResponse = await tx.formResponse.create({
       data: {
         formId,
         responseSessionId: validSessionId,
@@ -486,6 +489,22 @@ export async function submitFormResponse(
       },
       select: { id: true },
     });
+
+    // Create real persisted owner notification in the same transaction
+    await createNotification(
+      {
+        userId: form.ownerId,
+        type: "FORM_RESPONSE",
+        title: "New Response Received",
+        message: `New response received for "${form.title || "Untitled form"}"`,
+        eventKey: `resp_${newResponse.id}`,
+        formId,
+        responseId: newResponse.id,
+      },
+      tx
+    );
+
+    return newResponse;
   });
 
   return {

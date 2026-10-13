@@ -8,7 +8,7 @@ export interface TrashItemDTO {
   id: string;
   title: string;
   description: string | null;
-  type: "form" | "template" | "other";
+  type: "form" | "other";
   statusBeforeTrash: FormStatus | null;
   themeKey: string | null;
   createdAt: string;
@@ -22,7 +22,6 @@ export interface TrashItemDTO {
 export interface TrashCountsDTO {
   all: number;
   forms: number;
-  templates: number;
   others: number;
 }
 
@@ -42,8 +41,8 @@ export async function getTrashPage(
 ): Promise<TrashPageDTO> {
   const { type, q, sort, page, pageSize } = params;
 
-  // If user filtered by templates or others (which have no user-owned trashed instances), return empty
-  if (type === "templates" || type === "others") {
+  // If user filtered by others (which have no user-owned trashed instances), return empty
+  if (type === "others") {
     const formsCount = await prisma.form.count({
       where: {
         ownerId: userId,
@@ -59,7 +58,6 @@ export async function getTrashPage(
       counts: {
         all: formsCount,
         forms: formsCount,
-        templates: 0,
         others: 0,
       },
       retentionDays: TRASH_RETENTION_DAYS,
@@ -156,7 +154,6 @@ export async function getTrashPage(
   const counts: TrashCountsDTO = {
     all: formsCount,
     forms: formsCount,
-    templates: 0,
     others: 0,
   };
 

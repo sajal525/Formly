@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 640" fill="none" aria-label="Formly logo">
+  <defs>
+    <linearGradient id="hl-top-arm" x1="224" y1="74" x2="390" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A1C24"/>
+      <stop offset="100%" stop-color="#0E1015"/>
+    </linearGradient>
+    <linearGradient id="hl-mid-arm" x1="224" y1="234" x2="320" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E233F8"/>
+      <stop offset="60%" stop-color="#C11EEE"/>
+      <stop offset="100%" stop-color="#9A0FE6"/>
+    </linearGradient>
+    <linearGradient id="hl-upper-ribbon" x1="160" y1="74" x2="160" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6948FF"/>
+      <stop offset="50%" stop-color="#5534FB"/>
+      <stop offset="100%" stop-color="#4621F7"/>
+    </linearGradient>
+    <linearGradient id="hl-lower-stem" x1="120" y1="280" x2="220" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A3FE8"/>
+      <stop offset="50%" stop-color="#2356F7"/>
+      <stop offset="100%" stop-color="#3470FE"/>
+    </linearGradient>
+    <linearGradient id="hl-crease-shadow" x1="120" y1="280" x2="220" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#061258" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#061258" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Scaled F mark centered vertically: scale 0.75, offset x=200, y=128 -->
+  <g transform="translate(200, 128) scale(0.75)">
+    <!-- Lower Stem -->
+    <path d="M112 284 L112 422 C112 430 119 435 126 431 L220 367 C223 365 224 362 224 358 L224 352 Z" fill="url(#hl-lower-stem)"/>
+    <!-- Crease Shadow -->
+    <path d="M112 284 L224 352 L224 364 L112 296 Z" fill="url(#hl-crease-shadow)"/>
+    <!-- Upper Ribbon -->
+    <path d="M224 74 L126 139 C117 145 112 154 112 165 L112 284 L224 352 L224 234 L224 180 L224 74 Z" fill="url(#hl-upper-ribbon)"/>
+    <!-- Middle Arm -->
+    <path d="M224 234 L306 234 C315 234 322 239 326 248 L337 274 C339 279 339 285 336 290 L315 332 C312 337 306 340 300 340 L224 340 Z" fill="url(#hl-mid-arm)"/>
+    <!-- Upper Arm -->
+    <path d="M224 74 L378 74 C388 74 396 80 400 89 L415 125 C417 131 416 137 412 142 L390 173 C386 178 380 180 374 180 L224 180 Z" fill="url(#hl-top-arm)"/>
+  </g>
+
+  <!-- Wordmark Formly in dark navy -->
+  <text x="600" y="388" fill="#060B1E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="250" font-weight="800" letter-spacing="-0.035em">Formly</text>
+</svg>

@@ -23,6 +23,8 @@ import {
 } from "../schemas/my-forms-query-schema";
 import { StatusCountsDTO } from "../server/get-my-forms-page";
 
+import { cn } from "@/lib/utils";
+
 interface MyFormsToolbarProps {
   statusFilter: FormStatusFilter;
   statusCounts: StatusCountsDTO;
@@ -50,7 +52,16 @@ export function MyFormsToolbar({
 }: MyFormsToolbarProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const sortRef = useRef<HTMLDivElement>(null);
+
+  // Detect touch devices for hover fallback
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsTouchDevice(window.matchMedia("(hover: none)").matches);
+    }
+  }, []);
 
   // Sync internal search if prop changes externally (e.g. browser back/forward)
   useEffect(() => {
@@ -88,36 +99,44 @@ export function MyFormsToolbar({
     label: string;
     count: number;
     icon: React.ComponentType<{ className?: string }>;
+    inactiveColor: string;
   }> = [
     {
       id: "all",
       label: "All",
       count: statusCounts.all,
       icon: Layers,
+      inactiveColor:
+        "text-slate-400 dark:text-slate-500 group-hover:text-[#563BFA] dark:group-hover:text-indigo-400",
     },
     {
       id: "draft",
       label: "Drafts",
       count: statusCounts.draft,
       icon: FileEdit,
+      inactiveColor:
+        "text-slate-400 dark:text-slate-500 group-hover:text-amber-500 dark:group-hover:text-amber-400",
     },
     {
       id: "published",
       label: "Published",
       count: statusCounts.published,
       icon: CheckCircle2,
+      inactiveColor: "text-emerald-500",
     },
     {
       id: "closed",
       label: "Closed",
       count: statusCounts.closed,
       icon: Lock,
+      inactiveColor: "text-rose-500",
     },
     {
       id: "archived",
       label: "Archived",
       count: statusCounts.archived,
       icon: Archive,
+      inactiveColor: "text-amber-500",
     },
   ];
 
@@ -136,51 +155,77 @@ export function MyFormsToolbar({
 
   return (
     <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 sm:gap-4 py-2">
-      {/* 1. Status Filter Tabs */}
+      {/* 1. Compact Status Filter Tabs with Smooth Expand on Hover */}
       <div
-        className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1 xl:pb-0 scroll-smooth"
+        className="flex items-center gap-1.5 sm:gap-2 shrink-0 w-fit max-w-full overflow-x-auto sm:overflow-visible no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 py-1 sm:py-0"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         role="tablist"
         aria-label="Filter forms by status"
       >
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = statusFilter === tab.id;
+          const isExpanded =
+            hoveredTab === tab.id || (isTouchDevice && isActive);
+
           return (
             <button
               key={tab.id}
               role="tab"
               aria-selected={isActive}
+              aria-label={`${tab.label} forms (${tab.count})`}
+              title={`${tab.label} (${tab.count})`}
               type="button"
               onClick={() => onStatusChange(tab.id)}
-              className={`h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl text-xs font-semibold shrink-0 flex items-center gap-2 transition-all ${
+              onMouseEnter={() => setHoveredTab(tab.id)}
+              onMouseLeave={() => setHoveredTab(null)}
+              onFocus={() => setHoveredTab(tab.id)}
+              onBlur={() => setHoveredTab(null)}
+              className={cn(
+                "group relative h-9 sm:h-10 px-2.5 sm:px-3 rounded-xl sm:rounded-2xl text-xs font-semibold shrink-0 flex items-center justify-center transition-all duration-300 ease-out outline-none select-none",
+                "focus-visible:ring-2 focus-visible:ring-[#563BFA] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900",
                 isActive
-                  ? "bg-[#563BFA] text-white shadow-sm shadow-indigo-500/20 font-bold"
-                  : "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
-              }`}
+                  ? "bg-gradient-to-r from-[#563BFA] to-[#7B52F8] text-white shadow-md shadow-indigo-500/25 font-bold border border-transparent"
+                  : "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-white/20 shadow-2xs"
+              )}
             >
-              <Icon
-                className={`w-3.5 h-3.5 ${
-                  isActive
-                    ? "text-white"
-                    : tab.id === "published"
-                    ? "text-emerald-500"
-                    : tab.id === "closed"
-                    ? "text-rose-500"
-                    : tab.id === "archived"
-                    ? "text-amber-500"
-                    : "text-slate-400"
-                }`}
-              />
-              <span>{tab.label}</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[11px] font-bold ${
-                  isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
-                }`}
+              {/* Tooltip for desktop accessibility */}
+              <div
+                role="tooltip"
+                className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-slate-900/90 dark:bg-slate-800/95 text-white text-[10px] font-semibold opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-150 shadow-md whitespace-nowrap z-30 hidden group-hover:md:block group-focus-visible:md:block"
               >
-                {tab.count}
-              </span>
+                {tab.label} ({tab.count})
+              </div>
+
+              {/* Intuitive Icon */}
+              <Icon
+                className={cn(
+                  "w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110",
+                  isActive ? "text-white" : tab.inactiveColor
+                )}
+              />
+
+              {/* Smoothly Expandable Label and Form Count */}
+              <div
+                className={cn(
+                  "overflow-hidden whitespace-nowrap transition-all duration-300 ease-out flex items-center gap-1.5",
+                  isExpanded
+                    ? "max-w-[160px] opacity-100 ml-2"
+                    : "max-w-0 opacity-0 ml-0 group-hover:max-w-[160px] group-hover:opacity-100 group-hover:ml-2 group-focus-visible:max-w-[160px] group-focus-visible:opacity-100 group-focus-visible:ml-2"
+                )}
+              >
+                <span className="leading-none">{tab.label}</span>
+                <span
+                  className={cn(
+                    "px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none shrink-0 transition-colors",
+                    isActive
+                      ? "bg-white/25 text-white"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200/70 dark:group-hover:bg-slate-700/70"
+                  )}
+                >
+                  {tab.count}
+                </span>
+              </div>
             </button>
           );
         })}

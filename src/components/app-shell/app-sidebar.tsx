@@ -7,7 +7,6 @@ import { FormlyLogo } from "@/components/branding/formly-logo";
 import {
   LayoutDashboard,
   FileText,
-  LayoutGrid,
   BarChart2,
   LineChart,
   User,
@@ -44,13 +43,6 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
       href: "/my-forms",
       icon: FileText,
       active: currentPath === "/my-forms",
-      comingSoon: false,
-    },
-    {
-      title: "Templates",
-      href: "/templates",
-      icon: LayoutGrid,
-      active: currentPath === "/templates",
       comingSoon: false,
     },
     {
@@ -103,7 +95,11 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
       <div className="flex flex-col flex-1 p-5 overflow-y-auto">
         {/* Logo */}
         <div className="h-10 flex items-center mb-6 pl-1">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] rounded-xl"
+            aria-label="Formly home"
+          >
             <FormlyLogo size="md" />
           </Link>
         </div>

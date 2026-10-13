@@ -10,7 +10,7 @@ import {
   FormDefinitionV1,
   formDefinitionV1Schema,
   QuestionDefinition,
-} from "@/features/templates/data/definition-v1-schema";
+} from "@/features/forms/schemas/definition-v1-schema";
 
 export interface AnalyticsKpiCardDTO {
   label: string;

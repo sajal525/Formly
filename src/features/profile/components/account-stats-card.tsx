@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FileText, TrendingUp, Eye, LayoutGrid } from "lucide-react";
+import { FileText, TrendingUp, Eye, FileEdit } from "lucide-react";
 import { AccountStatsDTO } from "../schemas/profile-schema";
 
 interface AccountStatsCardProps {
@@ -35,9 +35,9 @@ export function AccountStatsCard({ stats }: AccountStatsCardProps) {
       borderColor: "border-sky-100 dark:border-sky-900/30",
     },
     {
-      label: "Templates Used",
-      value: stats.templatesUsed,
-      icon: LayoutGrid,
+      label: "Draft Forms",
+      value: stats.draftForms,
+      icon: FileEdit,
       color: "text-rose-600 dark:text-rose-400",
       bgColor: "bg-rose-50 dark:bg-rose-950/50",
       borderColor: "border-rose-100 dark:border-rose-900/30",

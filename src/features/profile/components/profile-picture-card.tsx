@@ -1,21 +1,53 @@
 "use client";
 
 import React, { useState } from "react";
-import { UploadCloud, Trash2, Info } from "lucide-react";
+import { UploadCloud, Trash2, Loader2, AlertCircle } from "lucide-react";
 import { ProfileDTO } from "../schemas/profile-schema";
+import { ProfileAvatarModal } from "./profile-avatar-modal";
 
 interface ProfilePictureCardProps {
   profile: ProfileDTO;
+  onProfileUpdated?: (updated: ProfileDTO) => void;
 }
 
-export function ProfilePictureCard({ profile }: ProfilePictureCardProps) {
-  const [showR2Info, setShowR2Info] = useState(false);
+export function ProfilePictureCard({ profile, onProfileUpdated }: ProfilePictureCardProps) {
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [removeError, setRemoveError] = useState<string | null>(null);
 
   const initial = (
     profile.displayName ||
     profile.username ||
     "U"
   )[0]?.toUpperCase() || "U";
+
+  const handleRemovePhoto = async () => {
+    if (!profile.avatarUrl || isRemoving) return;
+
+    setIsRemoving(true);
+    setRemoveError(null);
+
+    try {
+      const res = await fetch("/api/v1/profile/avatar", {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to remove profile photo.");
+      }
+
+      onProfileUpdated?.({
+        ...profile,
+        avatarUrl: null,
+      });
+    } catch (err: any) {
+      console.error("Remove photo error:", err);
+      setRemoveError(err.message || "Failed to remove photo. Please try again.");
+    } finally {
+      setIsRemoving(false);
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 p-6 shadow-sm transition-colors duration-200">
@@ -28,17 +60,24 @@ export function ProfilePictureCard({ profile }: ProfilePictureCardProps) {
 
       <div className="mt-5 flex items-center gap-5">
         {/* Avatar Display */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-2xl sm:text-3xl shadow-sm ring-2 ring-slate-100 dark:ring-white/10">
-          {initial}
+        <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full overflow-hidden bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-2xl sm:text-3xl shadow-sm ring-2 ring-slate-100 dark:ring-white/10 relative">
+          {profile.avatarUrl ? (
+            <img
+              src={profile.avatarUrl}
+              alt={`${profile.displayName || profile.username}'s profile picture`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span>{initial}</span>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="flex-1 space-y-2">
           <button
             type="button"
-            onClick={() => setShowR2Info(true)}
+            onClick={() => setIsAvatarModalOpen(true)}
             className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-[#563BFA] hover:bg-[#482fe0] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
-            title="Image uploads are disabled until Cloudflare R2 is configured"
           >
             <UploadCloud className="w-3.5 h-3.5" />
             <span>Upload New Photo</span>
@@ -46,30 +85,42 @@ export function ProfilePictureCard({ profile }: ProfilePictureCardProps) {
 
           <button
             type="button"
-            onClick={() => setShowR2Info(true)}
-            className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold border border-slate-200/60 dark:border-white/5 transition-colors cursor-pointer"
+            onClick={handleRemovePhoto}
+            disabled={!profile.avatarUrl || isRemoving}
+            className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold border border-slate-200/60 dark:border-white/5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            title={profile.avatarUrl ? "Remove custom photo" : "No custom photo to remove"}
           >
-            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
-            <span className="text-rose-600 dark:text-rose-400">Remove Photo</span>
+            {isRemoving ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-500" />
+            ) : (
+              <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+            )}
+            <span className="text-rose-600 dark:text-rose-400">
+              {isRemoving ? "Removing..." : "Remove Photo"}
+            </span>
           </button>
         </div>
       </div>
 
-      {showR2Info && (
-        <div className="mt-4 p-3 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 text-xs text-indigo-800 dark:text-indigo-300 flex items-start justify-between gap-2.5 animate-in fade-in duration-200">
-          <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#563BFA] dark:text-indigo-400" />
-          <div className="flex-1 text-[11px] leading-relaxed">
-            <strong>Storage not configured:</strong> Cloudflare R2 credentials (R2_BUCKET, R2_ACCESS_KEY_ID) are not set in this environment. Your default initials avatar is securely generated and displayed.
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowR2Info(false)}
-            className="text-[11px] font-bold text-[#563BFA] dark:text-indigo-400 hover:underline shrink-0"
-          >
-            Close
-          </button>
+      {removeError && (
+        <div className="mt-3 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{removeError}</span>
         </div>
       )}
+
+      {/* Avatar Modal */}
+      <ProfileAvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        currentAvatarUrl={profile.avatarUrl}
+        onAvatarSaved={(newAvatarUrl) => {
+          onProfileUpdated?.({
+            ...profile,
+            avatarUrl: newAvatarUrl,
+          });
+        }}
+      />
     </div>
   );
 }

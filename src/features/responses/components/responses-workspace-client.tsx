@@ -178,17 +178,12 @@ export function ResponsesWorkspaceClient({
             No Forms Created Yet
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">
-            You don&apos;t have any forms yet. Create a form from our templates catalogue or start a new form to begin collecting real responses.
+            You don&apos;t have any forms yet. Create a new form to begin collecting real responses.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link href="/templates">
-              <Button className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs sm:text-sm font-semibold">
-                Browse Templates
-              </Button>
-            </Link>
             <Link href="/my-forms">
-              <Button variant="outline" className="rounded-xl text-xs sm:text-sm font-semibold">
-                My Forms
+              <Button className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs sm:text-sm font-semibold">
+                Go to My Forms
               </Button>
             </Link>
           </div>

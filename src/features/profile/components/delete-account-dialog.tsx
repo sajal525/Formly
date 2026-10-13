@@ -126,10 +126,6 @@ export function DeleteAccountDialog({ isOpen, onClose }: DeleteAccountDialogProp
               </span>
             </li>
           </ul>
-
-          <p className="text-[11px] text-slate-400 italic pt-1">
-            Shared global templates in the Formly catalogue remain intact.
-          </p>
         </div>
 
         {/* Error message */}

@@ -209,14 +209,9 @@ export function AnalyticsWorkspaceClient({
             gathering insights.
           </p>
           <div className="pt-2 flex items-center justify-center gap-3">
-            <Link href="/templates">
+            <Link href="/my-forms">
               <Button className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl">
-                Browse Templates
-              </Button>
-            </Link>
-            <Link href="/forms">
-              <Button variant="outline" className="rounded-xl">
-                My Forms
+                Go to My Forms
               </Button>
             </Link>
           </div>

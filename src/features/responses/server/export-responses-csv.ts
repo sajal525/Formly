@@ -5,7 +5,7 @@ import { FormStatus } from "@prisma/client";
 import {
   FormDefinitionV1,
   formDefinitionV1Schema,
-} from "@/features/templates/data/definition-v1-schema";
+} from "@/features/forms/schemas/definition-v1-schema";
 
 /**
  * Sanitizes a cell value to prevent CSV / Formula Injection attacks (OWASP)

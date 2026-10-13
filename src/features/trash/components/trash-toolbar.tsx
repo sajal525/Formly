@@ -51,7 +51,6 @@ export function TrashToolbar({
   const categories: { key: TrashTypeFilter; label: string; count: number }[] = [
     { key: "all", label: "All", count: counts.all },
     { key: "forms", label: "Forms", count: counts.forms },
-    { key: "templates", label: "Templates", count: counts.templates },
     { key: "others", label: "Others", count: counts.others },
   ];
 

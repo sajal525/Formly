@@ -21,7 +21,7 @@ export interface AccountStatsDTO {
   totalForms: number;
   totalResponses: number;
   totalViews: number;
-  templatesUsed: number;
+  draftForms: number;
 }
 
 // Zod schema for profile editing form and PATCH API

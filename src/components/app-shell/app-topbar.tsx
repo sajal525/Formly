@@ -3,10 +3,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/branding/theme-toggle";
+import { NotificationsPopover } from "@/features/notifications/components/notifications-popover";
 import { authClient } from "@/lib/auth-client";
 import {
   Search,
-  Bell,
   Menu,
   ChevronDown,
   LogOut,
@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   Loader2,
   FileText,
-  LayoutGrid,
 } from "lucide-react";
 
 interface AppTopbarProps {
@@ -33,7 +32,7 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<{ forms: any[]; templates: any[] } | null>(null);
+  const [searchResults, setSearchResults] = useState<{ forms: any[] } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -90,7 +89,6 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
           const data = await res.json();
           setSearchResults({
             forms: data.forms || [],
-            templates: data.templates || [],
           });
         }
       } catch (err) {
@@ -139,7 +137,7 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
               setIsSearchOpen(true);
             }}
             onFocus={() => setIsSearchOpen(true)}
-            placeholder="Search your forms, templates..."
+            placeholder="Search your forms..."
             className="w-full h-10 pl-10 pr-12 rounded-2xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-white/5 text-xs text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#563BFA]/40 focus:bg-white dark:focus:bg-slate-800 transition-all"
           />
           <div className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-md bg-white dark:bg-slate-700 border border-slate-200/80 dark:border-white/10 text-[10px] font-mono text-slate-400 shadow-2xs">
@@ -155,10 +153,9 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
                   <span>Searching...</span>
                 </div>
               ) : searchResults &&
-                searchResults.forms.length === 0 &&
-                searchResults.templates.length === 0 ? (
+                searchResults.forms.length === 0 ? (
                 <div className="py-6 px-4 text-center text-xs text-slate-400">
-                  No forms or templates match &ldquo;{searchQuery}&rdquo;
+                  No forms match &ldquo;{searchQuery}&rdquo;
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -191,36 +188,6 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
                       </div>
                     </div>
                   )}
-
-                  {/* Templates Results */}
-                  {searchResults && searchResults.templates.length > 0 && (
-                    <div>
-                      <div className="px-3.5 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Templates
-                      </div>
-                      <div className="space-y-0.5">
-                        {searchResults.templates.map((tpl) => (
-                          <Link
-                            key={tpl.id}
-                            href={`/templates`}
-                            onClick={() => {
-                              setIsSearchOpen(false);
-                              setSearchQuery("");
-                            }}
-                            className="flex items-center justify-between px-3.5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-xs text-slate-700 dark:text-slate-200"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <LayoutGrid className="w-3.5 h-3.5 text-pink-500 shrink-0" />
-                              <span className="truncate font-medium">{tpl.title}</span>
-                            </div>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 shrink-0 capitalize">
-                              {tpl.categoryKey}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -232,16 +199,8 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
       <div className="flex items-center gap-2 sm:gap-3">
         <ThemeToggle />
 
-        {/* Notifications */}
-        <button
-          type="button"
-          disabled
-          title="No new notifications"
-          className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
-          aria-label="Notifications"
-        >
-          <Bell className="w-4 h-4" />
-        </button>
+        {/* Notifications Popover */}
+        <NotificationsPopover />
 
         {/* User Dropdown */}
         <div className="relative" ref={dropdownRef}>

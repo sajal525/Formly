@@ -94,8 +94,12 @@ export async function updateCurrentProfile(
       studyYear: updatedProfile.studyYear ?? null,
       division: updatedProfile.division ?? null,
       bio: updatedProfile.bio ?? null,
-      avatarUrl: null,
-      coverUrl: null,
+      avatarUrl: updatedProfile.avatarObjectKey
+        ? `/api/v1/profile/avatar?v=${updatedProfile.updatedAt.getTime()}`
+        : null,
+      coverUrl: updatedProfile.coverObjectKey
+        ? `/api/v1/profile/cover?v=${updatedProfile.updatedAt.getTime()}`
+        : null,
     },
   };
 }
