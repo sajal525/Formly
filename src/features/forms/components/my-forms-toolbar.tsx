@@ -299,28 +299,12 @@ export function MyFormsToolbar({
           )}
         </div>
 
-        {/* View Toggle (List / Grid) */}
+        {/* View Toggle (Grid / List) */}
         <div
           className="h-9 sm:h-10 p-1 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/10 flex items-center gap-1 shadow-2xs shrink-0"
           role="radiogroup"
           aria-label="Select view mode"
         >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={viewMode === "list"}
-            onClick={() => onViewModeChange("list")}
-            className={`h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg sm:rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-              viewMode === "list"
-                ? "bg-[#563BFA] text-white shadow-2xs font-bold"
-                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-            }`}
-            title="List view"
-          >
-            <ListIcon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">List</span>
-          </button>
-
           <button
             type="button"
             role="radio"
@@ -335,6 +319,22 @@ export function MyFormsToolbar({
           >
             <LayoutGrid className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Grid</span>
+          </button>
+
+          <button
+            type="button"
+            role="radio"
+            aria-checked={viewMode === "list"}
+            onClick={() => onViewModeChange("list")}
+            className={`h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg sm:rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              viewMode === "list"
+                ? "bg-[#563BFA] text-white shadow-2xs font-bold"
+                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            }`}
+            title="List view"
+          >
+            <ListIcon className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">List</span>
           </button>
         </div>
       </div>

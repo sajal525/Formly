@@ -74,3 +74,58 @@ body {
   scrollbar-width: none !important;
 }
 
+/* ==========================================================================
+   Formly Brand Logo Hover Expansion
+   Compact icon-only at rest on desktop; reveals wordmark on hover/focus.
+   On touch/mobile devices or screens < 1024px, the full wordmark remains visible.
+   ========================================================================== */
+
+.formly-logo-wordmark-expandable {
+  display: inline-block;
+  opacity: 1;
+  max-width: 140px;
+  margin-left: 0.625rem; /* 10px matching standard gap-2.5 */
+  transform: translateX(0);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .formly-logo-wordmark-expandable {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+    transform: translateX(-6px);
+    overflow: hidden;
+    pointer-events: none;
+    white-space: nowrap;
+    contain: paint;
+    transition: max-width 200ms cubic-bezier(0, 0, 0.2, 1),
+                opacity 180ms cubic-bezier(0, 0, 0.2, 1),
+                margin-left 200ms cubic-bezier(0, 0, 0.2, 1),
+                transform 180ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: max-width, opacity, transform;
+  }
+
+  /* Trigger on hover or keyboard focus of the parent link / container */
+  .group:hover .formly-logo-wordmark-expandable,
+  .group:focus-within .formly-logo-wordmark-expandable,
+  .group:focus-visible .formly-logo-wordmark-expandable,
+  .formly-logo-trigger:hover .formly-logo-wordmark-expandable,
+  .formly-logo-trigger:focus-within .formly-logo-wordmark-expandable,
+  .formly-logo-trigger:focus-visible .formly-logo-wordmark-expandable {
+    max-width: 140px;
+    opacity: 1;
+    margin-left: 0.625rem;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formly-logo-wordmark-expandable {
+    transition: none !important;
+  }
+}
+

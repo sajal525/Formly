@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { BuilderFormDefinition } from "../schemas/builder-definition-schema";
 import { resolveThemeTokens } from "@/features/forms/themes/resolver";
+import { FormCoverBanner } from "./cover-image/form-cover-banner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -112,39 +113,54 @@ export function RespondentPreview({ definition }: RespondentPreviewProps) {
         {/* Form Header Card */}
         <div
           className={cn(
-            "rounded-3xl border shadow-sm transition-all duration-200",
+            "rounded-3xl border shadow-sm transition-all duration-200 overflow-hidden",
             resolved.cardClass,
-            resolved.headerPaddingClass,
-            resolved.headerAlignment === "center" ? "text-center" : "text-left"
+            !definition.coverImage && resolved.headerPaddingClass,
+            !definition.coverImage && (resolved.headerAlignment === "center" ? "text-center" : "text-left")
           )}
         >
+          {definition.coverImage && (
+            <FormCoverBanner
+              coverImage={definition.coverImage}
+              imageUrl={`/api/v1/assets/${definition.coverImage.assetId}`}
+            />
+          )}
+
           <div
             className={cn(
-              "w-10 h-10 rounded-2xl flex items-center justify-center mb-4 shadow-xs",
-              resolved.headerAlignment === "center" ? "mx-auto" : ""
-            )}
-            style={{ backgroundColor: `${resolved.accentColor}18`, color: resolved.accentColor }}
-          >
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <h1
-            className={cn(
-              "text-2xl sm:text-3xl font-extrabold tracking-tight mb-2",
-              resolved.headingFontClass
+              "relative z-10",
+              definition.coverImage ? resolved.headerPaddingClass : "",
+              resolved.headerAlignment === "center" ? "text-center" : "text-left"
             )}
           >
-            {definition.title || "Untitled form"}
-          </h1>
-          {definition.description && (
-            <p
+            <div
               className={cn(
-                "text-sm leading-relaxed opacity-80",
-                resolved.bodyFontClass
+                "w-10 h-10 rounded-2xl flex items-center justify-center mb-4 shadow-xs",
+                resolved.headerAlignment === "center" ? "mx-auto" : ""
+              )}
+              style={{ backgroundColor: `${resolved.accentColor}18`, color: resolved.accentColor }}
+            >
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <h1
+              className={cn(
+                "text-2xl sm:text-3xl font-extrabold tracking-tight mb-2",
+                resolved.headingFontClass
               )}
             >
-              {definition.description}
-            </p>
-          )}
+              {definition.title || "Untitled form"}
+            </h1>
+            {definition.description && (
+              <p
+                className={cn(
+                  "text-sm leading-relaxed opacity-80",
+                  resolved.bodyFontClass
+                )}
+              >
+                {definition.description}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Single-Page Questions List */}

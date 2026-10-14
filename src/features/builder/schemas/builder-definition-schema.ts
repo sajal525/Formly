@@ -154,6 +154,8 @@ export const imageTransformSchema = z.object({
   panY: z.number().optional(),
   aspectPreset: z.string().optional(),
   crop: imageCropSchema.optional(),
+  flipHorizontal: z.boolean().optional(),
+  flipVertical: z.boolean().optional(),
 });
 export type ImageTransform = z.infer<typeof imageTransformSchema>;
 

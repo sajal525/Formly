@@ -15,6 +15,8 @@ interface FormHeaderEditorProps {
   onSelect?: () => void;
   coverImage?: BuilderCoverImage | null;
   onOpenCoverUpload?: () => void;
+  onSelectCoverFile?: (file: File) => void;
+  onOpenCoverEditor?: () => void;
   onRemoveCoverImage?: () => void;
   formId?: string;
 }
@@ -28,11 +30,15 @@ export function FormHeaderEditor({
   onSelect,
   coverImage,
   onOpenCoverUpload,
+  onSelectCoverFile,
+  onOpenCoverEditor,
   onRemoveCoverImage,
   formId,
 }: FormHeaderEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+  const [isDraggingOver, setIsDraggingOver] = React.useState(false);
 
   // Auto-resize textarea based on content
   useEffect(() => {
@@ -41,6 +47,48 @@ export function FormHeaderEditor({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [description]);
+
+  const validateAndHandleFile = (file: File) => {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      alert("Please upload a valid image file (JPG, PNG, or WebP).");
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      alert("Image exceeds the 15MB file size limit.");
+      return;
+    }
+    onSelectCoverFile?.(file);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      validateAndHandleFile(file);
+    }
+    e.target.value = "";
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      validateAndHandleFile(file);
+    }
+  };
 
   return (
     <div
@@ -52,14 +100,34 @@ export function FormHeaderEditor({
           : "border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20"
       )}
     >
+      {/* Hidden file input for desktop image picking */}
+      <input
+        ref={coverFileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/jpg"
+        className="hidden"
+        onChange={handleFileInputChange}
+      />
+
       {/* Cover Banner Region */}
       <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        style={
+          coverImage?.transform?.aspectPreset === "free" && coverImage.transform.crop?.aspectRatio
+            ? { aspectRatio: `${coverImage.transform.crop.aspectRatio}` }
+            : undefined
+        }
         className={cn(
-          "w-full relative overflow-hidden flex flex-col items-center justify-center border-b border-slate-100 dark:border-white/5 group",
+          "w-full relative overflow-hidden flex flex-col items-center justify-center border-b border-slate-100 dark:border-white/5 group transition-colors",
+          isDraggingOver && "ring-2 ring-inset ring-[#563BFA] bg-[#563BFA]/10",
           coverImage
             ? coverImage.transform?.aspectPreset === "16:9"
               ? "aspect-[16/9] max-h-[380px]"
-              : "aspect-[4/1] min-h-[140px] max-h-[260px]"
+              : coverImage.transform?.aspectPreset === "free"
+              ? "max-h-[340px]"
+              : "aspect-[4/1] max-h-[260px]"
             : "h-36 sm:h-44 bg-gradient-to-r from-violet-100/70 via-indigo-50/50 to-purple-100/70 dark:from-violet-950/40 dark:via-indigo-950/30 dark:to-purple-950/40"
         )}
       >
@@ -68,15 +136,32 @@ export function FormHeaderEditor({
             <img
               src={`/api/v1/forms/${formId}/assets/${coverImage.assetId}`}
               alt={coverImage.altText || "Cover"}
+              style={{
+                objectPosition: coverImage.transform?.crop
+                  ? `${Math.max(0, Math.min(100, coverImage.transform.crop.x + coverImage.transform.crop.width / 2))}% ${Math.max(0, Math.min(100, coverImage.transform.crop.y + coverImage.transform.crop.height / 2))}%`
+                  : "center",
+              }}
               className="w-full h-full object-cover select-none pointer-events-none"
             />
+            {/* Drag drop highlight overlay when dragging over existing cover */}
+            {isDraggingOver && (
+              <div className="absolute inset-0 bg-[#563BFA]/20 backdrop-blur-xs flex items-center justify-center pointer-events-none">
+                <span className="px-3.5 py-1.5 rounded-xl bg-black/80 text-white text-xs font-semibold">
+                  Drop to replace cover
+                </span>
+              </div>
+            )}
             {/* Hover actions overlay */}
             <div className="absolute inset-0 bg-slate-950/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2.5 backdrop-blur-xs">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onOpenCoverUpload?.();
+                  if (onOpenCoverEditor) {
+                    onOpenCoverEditor();
+                  } else {
+                    onOpenCoverUpload?.();
+                  }
                 }}
                 className="px-3.5 py-1.5 rounded-xl bg-white/95 dark:bg-slate-900/95 text-slate-800 dark:text-white hover:bg-white text-xs font-bold shadow-md flex items-center gap-1.5 transition-transform hover:scale-105 cursor-pointer"
               >
@@ -110,13 +195,13 @@ export function FormHeaderEditor({
                 className="text-xs font-semibold text-violet-700 dark:text-violet-300 hover:underline cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onOpenCoverUpload?.();
+                  coverFileInputRef.current?.click();
                 }}
               >
                 Add cover image
               </button>
               <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                Recommended size: 1200 × 300 px
+                Drop image here or click to browse (JPG, PNG, WebP)
               </span>
             </div>
           </>

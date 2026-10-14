@@ -42,15 +42,37 @@ export function MyFormsClient({
 
   // Local items state synced from server props for responsive updates
   const [items, setItems] = useState<MyFormItemDTO[]>(initialData.items);
-  const [viewMode, setViewMode] = useState<FormViewMode>(queryParams.view);
+  const [viewMode, setViewMode] = useState<FormViewMode>(queryParams.view || "grid");
 
   useEffect(() => {
     setItems(initialData.items);
   }, [initialData.items]);
 
+  // Synchronize view mode with URL and persisted localStorage preference
   useEffect(() => {
-    setViewMode(queryParams.view);
-  }, [queryParams.view]);
+    if (typeof window !== "undefined") {
+      const urlView = searchParams.get("view") as FormViewMode | null;
+      if (urlView === "list" || urlView === "grid") {
+        setViewMode(urlView);
+        try {
+          localStorage.setItem("formly_my_forms_view", urlView);
+        } catch {}
+      } else {
+        try {
+          const saved = localStorage.getItem("formly_my_forms_view") as FormViewMode | null;
+          if (saved === "list" || saved === "grid") {
+            setViewMode(saved);
+          } else {
+            setViewMode(queryParams.view || "grid");
+          }
+        } catch {
+          setViewMode(queryParams.view || "grid");
+        }
+      }
+    } else {
+      setViewMode(queryParams.view || "grid");
+    }
+  }, [queryParams.view, searchParams]);
 
   // Selection state (current page only)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -155,7 +177,7 @@ export function MyFormsClient({
       params.delete("direction");
     }
 
-    if (nextView && nextView !== "list") {
+    if (nextView && nextView !== "grid") {
       params.set("view", nextView);
     } else {
       params.delete("view");
@@ -381,9 +403,12 @@ export function MyFormsClient({
         onSortChange={(sort, direction) => updateURL({ sort, direction }, "push")}
         onViewModeChange={(v) => {
           setViewMode(v);
+          try {
+            localStorage.setItem("formly_my_forms_view", v);
+          } catch {}
           if (typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
-            if (v && v !== "list") {
+            if (v && v !== "grid") {
               params.set("view", v);
             } else {
               params.delete("view");

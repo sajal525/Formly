@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -73,6 +73,8 @@ export function QuestionCard({
   onMoveUp,
   onMoveDown,
 }: QuestionCardProps) {
+  const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
+
   const {
     attributes,
     listeners,
@@ -85,6 +87,51 @@ export function QuestionCard({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const hasDescription =
+    question.description !== null && question.description !== undefined;
+  const isTextType = [
+    "SHORT_TEXT",
+    "LONG_TEXT",
+    "EMAIL",
+    "PHONE",
+    "NUMBER",
+  ].includes(question.type);
+
+  const textLengthSetting = () => {
+    if (question.settings?.minLength) return "MIN";
+    if (question.settings?.maxLength) return "MAX";
+    return "NONE";
+  };
+
+  const handleLengthModeChange = (mode: string) => {
+    const current = question.settings || {};
+    if (mode === "NONE") {
+      onChange({
+        settings: {
+          ...current,
+          minLength: undefined,
+          maxLength: undefined,
+        },
+      });
+    } else if (mode === "MIN") {
+      onChange({
+        settings: {
+          ...current,
+          minLength: current.minLength || 5,
+          maxLength: undefined,
+        },
+      });
+    } else if (mode === "MAX") {
+      onChange({
+        settings: {
+          ...current,
+          minLength: undefined,
+          maxLength: current.maxLength || 100,
+        },
+      });
+    }
   };
 
   const handleTypeChange = (newType: BuilderQuestionType) => {
@@ -117,7 +164,11 @@ export function QuestionCard({
     onChange({
       options: currentOptions.map((opt) =>
         opt.id === optId
-          ? { ...opt, label: newLabel, value: newLabel.toLowerCase().replace(/\s+/g, "_") || opt.value }
+          ? {
+              ...opt,
+              label: newLabel,
+              value: newLabel.toLowerCase().replace(/\s+/g, "_") || opt.value,
+            }
           : opt
       ),
     });
@@ -282,22 +333,50 @@ export function QuestionCard({
         </div>
 
         {/* Optional Question Description (if present) */}
-        {question.description !== undefined && question.description !== null && (
-          <input
-            type="text"
-            value={question.description || ""}
-            onChange={(e) => onChange({ description: e.target.value })}
-            onKeyDown={(e) => {
-              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+        {hasDescription ? (
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={question.description || ""}
+              onChange={(e) => onChange({ description: e.target.value })}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+                  e.stopPropagation();
+                  e.currentTarget.select();
+                }
+              }}
+              placeholder="Description / helper text (optional)"
+              maxLength={500}
+              className="flex-1 text-xs text-slate-500 dark:text-slate-400 placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-slate-300 dark:focus:border-slate-600 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
+              aria-label="Question helper text"
+            />
+            <button
+              type="button"
+              onClick={(e) => {
                 e.stopPropagation();
-                e.currentTarget.select();
-              }
-            }}
-            placeholder="Description / helper text (optional)"
-            maxLength={500}
-            className="w-full text-xs text-slate-500 dark:text-slate-400 placeholder:text-slate-400 bg-transparent border-0 border-b border-transparent focus:border-slate-300 focus:outline-none py-1 transition-colors selection:bg-[#563BFA]/20 selection:text-[#563BFA]"
-            aria-label="Question helper text"
-          />
+                onChange({ description: null });
+              }}
+              className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+              title="Remove description"
+              aria-label="Remove description"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <div className="pt-0.5">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange({ description: "" });
+              }}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer"
+            >
+              <Plus className="w-3 h-3" />
+              <span>Add description</span>
+            </button>
+          </div>
         )}
 
         {/* Lightweight Interactive Question Respondent Preview & Placeholder Editor */}
@@ -485,8 +564,11 @@ export function QuestionCard({
           )}
 
           {question.type === "RATING" && (
-            <div className="flex items-center gap-2 py-1">
-              {[1, 2, 3, 4, 5].map((star) => (
+            <div className="flex items-center gap-2 py-1 flex-wrap">
+              {Array.from(
+                { length: question.settings?.maxRating || 5 },
+                (_, i) => i + 1
+              ).map((star) => (
                 <div
                   key={star}
                   className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 flex items-center justify-center"
@@ -494,13 +576,40 @@ export function QuestionCard({
                   <Star className="w-5 h-5 text-amber-400 fill-amber-400/40" />
                 </div>
               ))}
-              <span className="text-xs text-slate-400 ml-2">(1 to 5 scale)</span>
+              <span className="text-xs text-slate-400 ml-2">
+                (1 to {question.settings?.maxRating || 5} scale)
+              </span>
             </div>
           )}
         </div>
 
-        {/* Bottom controls inside card: Required Toggle */}
-        <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-end gap-3">
+        {/* Bottom controls inside card: More Options toggle + Required Toggle */}
+        <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex flex-wrap items-center justify-between gap-3">
+          {/* More options button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMoreOptionsOpen((prev) => !prev);
+            }}
+            aria-expanded={isMoreOptionsOpen}
+            aria-controls={`more-options-${question.id}`}
+            className={cn(
+              "inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
+              isMoreOptionsOpen
+                ? "bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800 shadow-2xs"
+                : "bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200/80 dark:border-slate-700 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+            )}
+          >
+            <span>More options</span>
+            {isMoreOptionsOpen ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
+          </button>
+
+          {/* Required Toggle */}
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
               Required
@@ -510,10 +619,259 @@ export function QuestionCard({
               checked={question.required}
               onChange={(e) => onChange({ required: e.target.checked })}
               className="sr-only peer"
+              aria-label="Required question"
             />
-            <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-violet-600 relative" />
+            <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-violet-500/20 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-violet-600 relative" />
           </label>
         </div>
+
+        {/* Inline Expandable More Options Area */}
+        {isMoreOptionsOpen && (
+          <div
+            id={`more-options-${question.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="mt-3 pt-3 border-t border-slate-100 dark:border-white/5 space-y-3.5 animate-in fade-in-50 duration-150"
+          >
+            {/* Section Header */}
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Question Configuration
+              </span>
+            </div>
+
+            {/* Description toggle */}
+            <div className="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5">
+              <div>
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+                  Add description
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Show helper text under title
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={hasDescription}
+                  onChange={(e) =>
+                    onChange({
+                      description: e.target.checked ? "" : null,
+                    })
+                  }
+                  className="sr-only peer"
+                  aria-label="Toggle description"
+                />
+                <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-violet-600" />
+              </label>
+            </div>
+
+            {/* Placeholder Text (for text types) */}
+            {isTextType && (
+              <div className="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 space-y-1.5">
+                <label
+                  htmlFor={`panel-placeholder-${question.id}`}
+                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Placeholder text
+                </label>
+                <input
+                  id={`panel-placeholder-${question.id}`}
+                  type="text"
+                  value={question.settings?.placeholder ?? ""}
+                  onChange={(e) =>
+                    onChange({
+                      settings: {
+                        ...(question.settings || {}),
+                        placeholder: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="e.g. Type your answer here..."
+                  maxLength={200}
+                  className="w-full h-9 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                />
+              </div>
+            )}
+
+            {/* Response Validation (for text types) */}
+            {isTextType && (
+              <div className="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 space-y-3">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                  Response validation
+                </span>
+
+                {/* Text Length Mode */}
+                <div>
+                  <label
+                    htmlFor={`length-mode-${question.id}`}
+                    className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                  >
+                    Text length
+                  </label>
+                  <select
+                    id={`length-mode-${question.id}`}
+                    value={textLengthSetting()}
+                    onChange={(e) => handleLengthModeChange(e.target.value)}
+                    className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                  >
+                    <option value="NONE">No limit</option>
+                    <option value="MIN">Minimum character count</option>
+                    <option value="MAX">Maximum character count</option>
+                  </select>
+                </div>
+
+                {textLengthSetting() === "MIN" && (
+                  <div>
+                    <label
+                      htmlFor={`min-len-${question.id}`}
+                      className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                    >
+                      Minimum characters
+                    </label>
+                    <input
+                      id={`min-len-${question.id}`}
+                      type="number"
+                      min={1}
+                      max={5000}
+                      value={question.settings?.minLength || 5}
+                      onChange={(e) =>
+                        onChange({
+                          settings: {
+                            ...question.settings,
+                            minLength: parseInt(e.target.value, 10) || 1,
+                          },
+                        })
+                      }
+                      className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                    />
+                  </div>
+                )}
+
+                {textLengthSetting() === "MAX" && (
+                  <div>
+                    <label
+                      htmlFor={`max-len-${question.id}`}
+                      className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                    >
+                      Maximum characters
+                    </label>
+                    <input
+                      id={`max-len-${question.id}`}
+                      type="number"
+                      min={1}
+                      max={5000}
+                      value={question.settings?.maxLength || 100}
+                      onChange={(e) =>
+                        onChange({
+                          settings: {
+                            ...question.settings,
+                            maxLength: parseInt(e.target.value, 10) || 100,
+                          },
+                        })
+                      }
+                      className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                    />
+                  </div>
+                )}
+
+                {/* Pattern */}
+                <div>
+                  <label
+                    htmlFor={`pattern-${question.id}`}
+                    className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                  >
+                    Pattern
+                  </label>
+                  <input
+                    id={`pattern-${question.id}`}
+                    type="text"
+                    placeholder="e.g. [0-9]+"
+                    value={question.settings?.pattern || ""}
+                    onChange={(e) =>
+                      onChange({
+                        settings: {
+                          ...question.settings,
+                          pattern: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                  />
+                </div>
+
+                {/* Custom Error Message */}
+                <div>
+                  <label
+                    htmlFor={`custom-err-${question.id}`}
+                    className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                  >
+                    Custom error message
+                  </label>
+                  <input
+                    id={`custom-err-${question.id}`}
+                    type="text"
+                    placeholder="Enter error message"
+                    value={question.settings?.customErrorMessage || ""}
+                    onChange={(e) =>
+                      onChange({
+                        settings: {
+                          ...question.settings,
+                          customErrorMessage: e.target.value,
+                        },
+                      })
+                    }
+                    className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Rating Settings (for RATING type) */}
+            {question.type === "RATING" && (
+              <div className="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 space-y-2">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                  Rating scale
+                </span>
+                <div>
+                  <label
+                    htmlFor={`rating-scale-${question.id}`}
+                    className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1"
+                  >
+                    Maximum rating
+                  </label>
+                  <select
+                    id={`rating-scale-${question.id}`}
+                    value={question.settings?.maxRating || 5}
+                    onChange={(e) =>
+                      onChange({
+                        settings: {
+                          ...question.settings,
+                          maxRating: parseInt(e.target.value, 10) || 5,
+                        },
+                      })
+                    }
+                    className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                  >
+                    <option value={3}>3 stars</option>
+                    <option value={5}>5 stars (Default)</option>
+                    <option value={7}>7 stars</option>
+                    <option value={10}>10 stars</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {/* Conditional Logic Note */}
+            <div className="p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-white/5 text-xs text-slate-500 dark:text-slate-400">
+              <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">
+                Conditional logic
+              </span>
+              <p className="text-[11px] leading-relaxed">
+                Branching rules will be available when the conditional logic engine is fully integrated.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

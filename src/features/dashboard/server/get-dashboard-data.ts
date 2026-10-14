@@ -8,8 +8,12 @@ export interface DashboardFormItemDTO {
   title: string;
   description: string | null;
   status: FormStatus;
-  updatedAt: Date;
-  createdAt: Date;
+  themeKey?: string | null;
+  coverAssetId?: string | null;
+  responsesCount?: number;
+  viewsCount?: number;
+  updatedAt: Date | string;
+  createdAt: Date | string;
 }
 
 export interface DashboardDataDTO {
@@ -64,14 +68,22 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
       orderBy: {
         updatedAt: "desc",
       },
-      take: 5,
+      take: 6,
       select: {
         id: true,
         title: true,
         description: true,
         status: true,
+        themeKey: true,
+        definition: true,
         updatedAt: true,
         createdAt: true,
+        _count: {
+          select: {
+            responses: true,
+            sessions: true,
+          },
+        },
       },
     }),
   ]);
@@ -92,6 +104,20 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
       totalForms,
       draftForms,
     },
-    recentForms,
+    recentForms: recentForms.map((f) => {
+      const def = (f.definition as any) || {};
+      return {
+        id: f.id,
+        title: f.title,
+        description: f.description,
+        status: f.status,
+        themeKey: f.themeKey || def.themeKey || "soft-lavender",
+        coverAssetId: def.coverImage?.assetId || null,
+        responsesCount: f._count?.responses ?? 0,
+        viewsCount: f._count?.sessions ?? 0,
+        updatedAt: f.updatedAt,
+        createdAt: f.createdAt,
+      };
+    }),
   };
 }

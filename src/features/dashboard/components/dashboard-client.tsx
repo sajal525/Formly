@@ -90,6 +90,7 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
           <RecentFormsSection
             forms={initialData.recentForms}
             onCreateClick={() => setIsModalOpen(true)}
+            onRetry={() => router.refresh()}
           />
         </div>
       </div>

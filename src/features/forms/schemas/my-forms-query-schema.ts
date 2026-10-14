@@ -33,7 +33,7 @@ export const myFormsQuerySchema = z.object({
     .default(""),
   sort: formSortFieldSchema.catch("updatedAt"),
   direction: formSortDirectionSchema.catch("desc"),
-  view: formViewModeSchema.catch("list"),
+  view: formViewModeSchema.catch("grid"),
   page: z.coerce
     .number()
     .int()
@@ -81,7 +81,7 @@ export function parseMyFormsQueryParams(
     q: "",
     sort: "updatedAt",
     direction: "desc",
-    view: "list",
+    view: "grid",
     page: 1,
     pageSize: 10,
   };

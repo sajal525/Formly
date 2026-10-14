@@ -24,6 +24,7 @@ import {
   BuilderImageBlock,
 } from "@/features/builder/schemas/builder-definition-schema";
 import { RenderedImageBlock } from "@/features/builder/components/image-block/rendered-image-block";
+import { FormCoverBanner } from "@/features/builder/components/cover-image/form-cover-banner";
 
 interface PublicRespondentFormProps {
   form: PublicFormDTO;
@@ -149,15 +150,50 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
     if (!currentQuestion) return;
 
     const val = answers[currentQuestion.id];
-    if (currentQuestion.required) {
+    const hasValue =
+      val !== undefined &&
+      val !== null &&
+      val !== "" &&
+      (!Array.isArray(val) || val.length > 0);
+
+    if (currentQuestion.required && !hasValue) {
+      setValidationError("This question requires an answer.");
+      return;
+    }
+
+    if (hasValue && typeof val === "string") {
       if (
-        val === undefined ||
-        val === null ||
-        val === "" ||
-        (Array.isArray(val) && val.length === 0)
+        currentQuestion.settings?.minLength &&
+        val.length < currentQuestion.settings.minLength
       ) {
-        setValidationError("This question requires an answer.");
+        setValidationError(
+          currentQuestion.settings.customErrorMessage ||
+            `Minimum ${currentQuestion.settings.minLength} characters required.`
+        );
         return;
+      }
+      if (
+        currentQuestion.settings?.maxLength &&
+        val.length > currentQuestion.settings.maxLength
+      ) {
+        setValidationError(
+          currentQuestion.settings.customErrorMessage ||
+            `Maximum ${currentQuestion.settings.maxLength} characters allowed.`
+        );
+        return;
+      }
+      if (currentQuestion.settings?.pattern) {
+        try {
+          const regex = new RegExp(currentQuestion.settings.pattern);
+          if (!regex.test(val)) {
+            setValidationError(
+              currentQuestion.settings.customErrorMessage || "Invalid format."
+            );
+            return;
+          }
+        } catch {
+          // ignore invalid pattern
+        }
       }
     }
 
@@ -597,7 +633,8 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
       <main className="w-full max-w-2xl mx-auto my-auto py-8">
         <div
           className={cn(
-            "p-6 sm:p-10 transition-all duration-200",
+            form.definition.coverImage ? "overflow-hidden" : "p-6 sm:p-10",
+            "transition-all duration-200",
             resolved.isNothing
               ? "bg-white text-neutral-950 border border-neutral-900 rounded-2xl shadow-none"
               : "bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-xl"
@@ -605,24 +642,17 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
         >
           {/* Cover image banner if configured on form */}
           {form.definition.coverImage && (
-            <div
-              className={cn(
-                "w-full rounded-2xl overflow-hidden relative mb-6 border border-slate-100 dark:border-white/10 shadow-sm",
-                form.definition.coverImage.transform?.aspectPreset === "16:9"
-                  ? "aspect-[16/9] max-h-[380px]"
-                  : "aspect-[4/1] min-h-[130px] max-h-[260px]"
-              )}
-            >
-              <img
-                src={`/api/public/forms/${form.id}/assets/${form.definition.coverImage.assetId}`}
-                alt={form.definition.coverImage.altText || "Cover banner"}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <FormCoverBanner
+              coverImage={form.definition.coverImage}
+              imageUrl={`/api/public/forms/${form.id}/assets/${form.definition.coverImage.assetId}`}
+              isNothingTheme={resolved.isNothing}
+            />
           )}
 
-          {/* Render any image blocks positioned with this question */}
-          {currentStepImages.map((imgBlock) => (
+          {/* Question and Interactive Content Wrapper */}
+          <div className={form.definition.coverImage ? "p-6 sm:p-10" : ""}>
+            {/* Render any image blocks positioned with this question */}
+            {currentStepImages.map((imgBlock) => (
             <RenderedImageBlock
               key={imgBlock.id}
               block={imgBlock}
@@ -921,6 +951,7 @@ export function PublicRespondentForm({ form }: PublicRespondentFormProps) {
             </div>
           </div>
         </div>
+      </div>
       </main>
 
       {/* Bottom Footer */}

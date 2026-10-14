@@ -121,6 +121,13 @@ export async function getNotificationsForUser(
         invitationId: true,
         readAt: true,
         createdAt: true,
+        form: {
+          select: {
+            id: true,
+            status: true,
+            title: true,
+          },
+        },
       },
     }),
     prisma.notification.count({
@@ -139,18 +146,27 @@ export async function getNotificationsForUser(
     }
   }
 
-  const notifications: NotificationDTO[] = items.map((item) => ({
-    id: item.id,
-    type: item.type as NotificationDTO["type"],
-    title: item.title,
-    message: item.message,
-    formId: item.formId,
-    responseId: item.responseId,
-    invitationId: item.invitationId,
-    readAt: item.readAt ? item.readAt.toISOString() : null,
-    createdAt: item.createdAt.toISOString(),
-    targetHref: buildTargetHref(item.type, item.formId, item.responseId),
-  }));
+  const notifications: NotificationDTO[] = items.map((item) => {
+    const isTrashedOrMissing = Boolean(
+      item.formId && (!item.form || item.form.status === "TRASHED")
+    );
+
+    return {
+      id: item.id,
+      type: item.type as NotificationDTO["type"],
+      title: item.title,
+      message: item.message,
+      formId: item.formId,
+      responseId: item.responseId,
+      invitationId: item.invitationId,
+      readAt: item.readAt ? item.readAt.toISOString() : null,
+      createdAt: item.createdAt.toISOString(),
+      targetHref: isTrashedOrMissing
+        ? null
+        : buildTargetHref(item.type, item.formId, item.responseId),
+      destinationUnavailable: isTrashedOrMissing,
+    };
+  });
 
   return {
     notifications,

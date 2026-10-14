@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AutosaveIndicator, AutosaveStatus } from "./autosave-indicator";
 import { ThemeToggle } from "@/components/branding/theme-toggle";
+import { NotificationsPopover } from "@/features/notifications/components/notifications-popover";
 import {
   getDefaultTextSelectProps,
   isUntouchedDefaultValue,
@@ -263,19 +264,11 @@ export function BuilderTopbar({
           <ThemeToggle className="w-8 h-8 rounded-lg" />
         </div>
 
-        {/* Notifications & User Pill */}
-        <div className="hidden lg:flex items-center gap-2 border-r border-slate-200 dark:border-white/10 pr-2 mr-1">
-          <button
-            type="button"
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 relative"
-            title="Notifications"
-          >
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
-              3
-            </span>
-          </button>
+        {/* Shared Notifications Popover (visible across desktop, tablet, and mobile) */}
+        <NotificationsPopover />
 
+        {/* User Pill (desktop) */}
+        <div className="hidden lg:flex items-center gap-2 border-r border-slate-200 dark:border-white/10 pr-2 mr-1">
           <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
             <span className="w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold">
               {userInitial}

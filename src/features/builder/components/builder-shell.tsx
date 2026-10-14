@@ -7,7 +7,6 @@ import { BuilderTabs, BuilderTab } from "./builder-tabs";
 import { FormHeaderEditor } from "./form-header-editor";
 import { QuestionList } from "./question-list";
 import { QuickActionsToolbar } from "./quick-actions-toolbar";
-import { QuestionSettingsPanel } from "./question-settings-panel";
 import { ThemeWorkspace } from "@/features/forms/themes/components/theme-workspace";
 import { ThemeOverrides } from "@/features/forms/themes/schema";
 import { FormSettingsPanel } from "./form-settings-panel";
@@ -28,6 +27,7 @@ import {
 } from "../schemas/builder-definition-schema";
 import { FormDraftDTO } from "../server/get-form-draft";
 import { ImageUploadModal } from "./image-block/image-upload-modal";
+import { CoverImageEditorModal } from "./cover-image/cover-image-editor-modal";
 
 interface BuilderShellProps {
   initialDraft: FormDraftDTO;
@@ -75,7 +75,28 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
   const [isImageUploadOpen, setIsImageUploadOpen] = useState(false);
   const [editingImageBlock, setEditingImageBlock] = useState<BuilderImageBlock | null>(null);
-  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+  const [isCoverEditorOpen, setIsCoverEditorOpen] = useState(false);
+  const [coverEditorFile, setCoverEditorFile] = useState<File | null>(null);
+  const [coverEditorPreviewUrl, setCoverEditorPreviewUrl] = useState<string | null>(null);
+
+  const handleSelectCoverFile = useCallback((file: File) => {
+    setCoverEditorFile(file);
+    setCoverEditorPreviewUrl(null);
+    setIsCoverEditorOpen(true);
+  }, []);
+
+  const handleOpenCoverEditor = useCallback(() => {
+    setCoverEditorFile(null);
+    setCoverEditorPreviewUrl(null);
+    setIsCoverEditorOpen(true);
+  }, []);
+
+  const handleCloseCoverEditor = useCallback(() => {
+    setIsCoverEditorOpen(false);
+    setCoverEditorFile(null);
+    setCoverEditorPreviewUrl(null);
+  }, []);
+
   const headerCardRef = useRef<HTMLDivElement>(null);
 
   // In-memory Undo / Redo history
@@ -480,8 +501,6 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
     headerCardRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const selectedQuestion =
-    definition.questions?.find((q) => q.id === selectedBlockId) || null;
   const contentBlocks = ensureDefinitionBlocks(definition);
 
   return (
@@ -523,83 +542,59 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         {/* Tab View Body */}
         <div className="flex-1 overflow-y-auto min-h-0 bg-slate-50/60 dark:bg-slate-950/60">
           {activeTab === "questions" && (
-            <div className="h-full flex flex-col lg:flex-row min-w-0">
-              {/* Central Canvas Area */}
-              <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-                <div className="max-w-3xl mx-auto flex items-start gap-4">
-                  {/* Central Stack: Header + Question Cards */}
-                  <div className="flex-1 min-w-0 space-y-4">
-                    <div ref={headerCardRef}>
-                      <FormHeaderEditor
-                        title={definition.title ?? ""}
-                        description={definition.description}
-                        onTitleChange={handleTitleChange}
-                        onDescriptionChange={handleDescriptionChange}
-                        isSelected={selectedBlockId === null}
-                        onSelect={() => setSelectedBlockId(null)}
-                        coverImage={definition.coverImage}
-                        onOpenCoverUpload={() => setIsCoverModalOpen(true)}
-                        onRemoveCoverImage={handleRemoveCoverImage}
-                        formId={initialDraft.id}
-                      />
-                    </div>
-
-                    <QuestionList
-                      blocks={contentBlocks}
-                      selectedBlockId={selectedBlockId}
-                      onSelectBlock={setSelectedBlockId}
-                      onUpdateQuestion={handleUpdateQuestion}
-                      onUpdateImageBlock={handleUpdateImageBlock}
-                      onDuplicateBlock={handleDuplicateBlock}
-                      onDeleteBlock={handleDeleteBlock}
-                      onReorderBlocks={handleReorderBlocks}
-                      onAddQuestion={handleAddQuestion}
-                      onAddImage={() => {
-                        setEditingImageBlock(null);
-                        setIsImageUploadOpen(true);
-                      }}
-                      onEditImage={handleEditImage}
+            <main className="h-full w-full p-4 sm:p-6 lg:p-8 overflow-y-auto">
+              <div className="max-w-4xl mx-auto flex items-start gap-4 lg:gap-6">
+                {/* Central Stack: Header + Question Cards */}
+                <div className="flex-1 min-w-0 space-y-4">
+                  <div ref={headerCardRef}>
+                    <FormHeaderEditor
+                      title={definition.title ?? ""}
+                      description={definition.description}
+                      onTitleChange={handleTitleChange}
+                      onDescriptionChange={handleDescriptionChange}
+                      isSelected={selectedBlockId === null}
+                      onSelect={() => setSelectedBlockId(null)}
+                      coverImage={definition.coverImage}
+                      onSelectCoverFile={handleSelectCoverFile}
+                      onOpenCoverEditor={handleOpenCoverEditor}
+                      onOpenCoverUpload={handleOpenCoverEditor}
+                      onRemoveCoverImage={handleRemoveCoverImage}
                       formId={initialDraft.id}
                     />
                   </div>
 
-                  {/* Floating Quick Actions Toolbar on Right of Canvas */}
-                  <div className="sticky top-6 hidden sm:block">
-                    <QuickActionsToolbar
-                      onAddQuestion={handleAddQuestion}
-                      onFocusHeader={handleFocusHeader}
-                      onAddImage={() => {
-                        setEditingImageBlock(null);
-                        setIsImageUploadOpen(true);
-                      }}
-                    />
-                  </div>
+                  <QuestionList
+                    blocks={contentBlocks}
+                    selectedBlockId={selectedBlockId}
+                    onSelectBlock={setSelectedBlockId}
+                    onUpdateQuestion={handleUpdateQuestion}
+                    onUpdateImageBlock={handleUpdateImageBlock}
+                    onDuplicateBlock={handleDuplicateBlock}
+                    onDeleteBlock={handleDeleteBlock}
+                    onReorderBlocks={handleReorderBlocks}
+                    onAddQuestion={handleAddQuestion}
+                    onAddImage={() => {
+                      setEditingImageBlock(null);
+                      setIsImageUploadOpen(true);
+                    }}
+                    onEditImage={handleEditImage}
+                    formId={initialDraft.id}
+                  />
                 </div>
-              </main>
 
-              {/* Contextual Question Settings Panel */}
-              <div className="shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200/80 dark:border-white/10">
-                <QuestionSettingsPanel
-                  question={selectedQuestion}
-                  onClose={() => setSelectedBlockId(null)}
-                  onChange={(updates) => {
-                    if (selectedBlockId) {
-                      handleUpdateQuestion(selectedBlockId, updates);
-                    }
-                  }}
-                  onDuplicate={() => {
-                    if (selectedBlockId) {
-                      handleDuplicateBlock(selectedBlockId);
-                    }
-                  }}
-                  onDelete={() => {
-                    if (selectedBlockId) {
-                      handleDeleteBlock(selectedBlockId);
-                    }
-                  }}
-                />
+                {/* Floating Quick Actions Toolbar on Right of Canvas */}
+                <div className="sticky top-6 hidden sm:block">
+                  <QuickActionsToolbar
+                    onAddQuestion={handleAddQuestion}
+                    onFocusHeader={handleFocusHeader}
+                    onAddImage={() => {
+                      setEditingImageBlock(null);
+                      setIsImageUploadOpen(true);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            </main>
           )}
 
           {activeTab === "theme" && (
@@ -655,14 +650,15 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         onSaveExistingBlock={handleSaveExistingImageBlock}
       />
 
-      {/* Cover Image Upload and Adjustment Modal */}
-      <ImageUploadModal
-        isOpen={isCoverModalOpen}
-        onClose={() => setIsCoverModalOpen(false)}
+      {/* Cover Image Positioning and Cropping Editor Modal */}
+      <CoverImageEditorModal
+        isOpen={isCoverEditorOpen}
+        onClose={handleCloseCoverEditor}
         formId={initialDraft.id}
-        mode="cover"
-        onSaveCoverImage={handleSaveCoverImage}
+        initialFile={coverEditorFile}
+        initialPreviewUrl={coverEditorPreviewUrl}
         editingCoverImage={definition.coverImage}
+        onSaveCoverImage={handleSaveCoverImage}
       />
     </div>
   );

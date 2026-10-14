@@ -10,6 +10,8 @@ export interface FormlyLogoProps {
   variant?: "auto" | "light" | "dark";
   /** Whether to render the mark inside a rounded app icon tile */
   asTile?: boolean;
+  /** Whether the wordmark is compact at rest on desktop and expands on hover/focus */
+  expandOnHover?: boolean;
   /** Accessible name for screen readers when used without adjacent text */
   accessibleName?: string;
   /** Custom className for the root container */
@@ -26,6 +28,7 @@ export function FormlyLogo({
   showWordmark = true,
   variant = "auto",
   asTile = false,
+  expandOnHover = false,
   accessibleName,
   className,
 }: FormlyLogoProps) {
@@ -207,16 +210,19 @@ export function FormlyLogo({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2.5 select-none shrink-0 transition-opacity",
+        "inline-flex items-center select-none shrink-0",
+        !expandOnHover && "gap-2.5 transition-opacity",
+        expandOnHover && "gap-0 formly-logo-trigger",
         className
       )}
-      role={accessibleName || !showWordmark ? "img" : undefined}
-      aria-label={accessibleName || (!showWordmark ? "Formly" : undefined)}
+      role={accessibleName || (!showWordmark && !expandOnHover) ? "img" : undefined}
+      aria-label={accessibleName || (!showWordmark && !expandOnHover ? "Formly" : undefined)}
     >
       {/* 1. Mark Container */}
       <div
         className={cn(
-          "relative flex items-center justify-center shrink-0 transition-transform duration-200 hover:scale-105",
+          "relative flex items-center justify-center shrink-0 transition-transform duration-200",
+          !expandOnHover && "hover:scale-105",
           markDimensions,
           tileClasses
         )}
@@ -240,6 +246,7 @@ export function FormlyLogo({
       {/* 2. Formly Wordmark */}
       {showWordmark && (
         <span
+          aria-hidden={expandOnHover ? "true" : undefined}
           className={cn(
             "font-extrabold tracking-[-0.035em] leading-none transition-colors",
             variant === "auto"
@@ -247,7 +254,8 @@ export function FormlyLogo({
               : variant === "light"
               ? "text-[#060B1E]"
               : "text-white",
-            textSizes
+            textSizes,
+            expandOnHover && "formly-logo-wordmark-expandable"
           )}
         >
           Formly

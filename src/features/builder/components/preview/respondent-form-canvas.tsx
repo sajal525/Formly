@@ -8,6 +8,7 @@ import {
 import { resolveThemeTokens } from "@/features/forms/themes/resolver";
 import { PreviewDisplayOptions } from "./preview-options-types";
 import { RenderedImageBlock } from "../image-block/rendered-image-block";
+import { FormCoverBanner } from "../cover-image/form-cover-banner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -96,15 +97,34 @@ export function RespondentFormCanvas({
     const newErrors: Record<string, string> = {};
 
     questions.forEach((q) => {
-      if (q.required) {
-        const val = answers[q.id];
-        if (
-          val === undefined ||
-          val === null ||
-          val === "" ||
-          (Array.isArray(val) && val.length === 0)
-        ) {
-          newErrors[q.id] = "This question is required.";
+      const val = answers[q.id];
+      const hasValue =
+        val !== undefined &&
+        val !== null &&
+        val !== "" &&
+        (!Array.isArray(val) || val.length > 0);
+
+      if (q.required && !hasValue) {
+        newErrors[q.id] = "This question is required.";
+      } else if (hasValue && typeof val === "string") {
+        if (q.settings?.minLength && val.length < q.settings.minLength) {
+          newErrors[q.id] =
+            q.settings.customErrorMessage ||
+            `Minimum ${q.settings.minLength} characters required.`;
+        } else if (q.settings?.maxLength && val.length > q.settings.maxLength) {
+          newErrors[q.id] =
+            q.settings.customErrorMessage ||
+            `Maximum ${q.settings.maxLength} characters allowed.`;
+        } else if (q.settings?.pattern) {
+          try {
+            const regex = new RegExp(q.settings.pattern);
+            if (!regex.test(val)) {
+              newErrors[q.id] =
+                q.settings.customErrorMessage || "Invalid format.";
+            }
+          } catch {
+            // ignore invalid regex
+          }
         }
       }
     });
@@ -254,8 +274,8 @@ export function RespondentFormCanvas({
               className={cn(
                 "border transition-all duration-200 relative overflow-hidden",
                 cardSurfaceClass,
-                resolved.headerPaddingClass,
-                resolved.headerAlignment === "center" ? "text-center" : "text-left"
+                !definition.coverImage && resolved.headerPaddingClass,
+                !definition.coverImage && (resolved.headerAlignment === "center" ? "text-center" : "text-left")
               )}
             >
               {/* Nothing Corner Red Dot Accent */}
@@ -268,20 +288,15 @@ export function RespondentFormCanvas({
 
               {/* Cover Banner or Decorative illustration */}
               {definition.coverImage ? (
-                <div
-                  className={cn(
-                    "w-full relative overflow-hidden border-b border-slate-100 dark:border-white/10 -mt-6 -mx-6 sm:-mt-8 sm:-mx-8 mb-6",
-                    definition.coverImage.transform?.aspectPreset === "16:9"
-                      ? "aspect-[16/9] max-h-[380px]"
-                      : "aspect-[4/1] min-h-[130px] max-h-[260px]"
-                  )}
-                >
-                  <img
-                    src={formId ? `/api/v1/forms/${formId}/assets/${definition.coverImage.assetId}` : `/api/v1/assets/${definition.coverImage.assetId}`}
-                    alt={definition.coverImage.altText || "Cover banner"}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <FormCoverBanner
+                  coverImage={definition.coverImage}
+                  imageUrl={
+                    formId
+                      ? `/api/v1/forms/${formId}/assets/${definition.coverImage.assetId}`
+                      : `/api/v1/assets/${definition.coverImage.assetId}`
+                  }
+                  isNothingTheme={isNothing}
+                />
               ) : !isNothing ? (
                 <div
                   className="absolute top-0 right-0 w-48 sm:w-64 h-full pointer-events-none opacity-30 sm:opacity-50 select-none overflow-hidden"
@@ -323,53 +338,62 @@ export function RespondentFormCanvas({
                 </div>
               ) : null}
 
-              {/* Header Icon Badge */}
+              {/* Header Title & Details Content */}
               <div
                 className={cn(
-                  "w-11 h-11 rounded-2xl flex items-center justify-center mb-4 shadow-xs relative z-10",
-                  isNothing
-                    ? "border border-neutral-200 bg-white text-neutral-950"
-                    : "",
-                  resolved.headerAlignment === "center" ? "mx-auto" : ""
+                  "relative z-10",
+                  definition.coverImage ? resolved.headerPaddingClass : "",
+                  resolved.headerAlignment === "center" ? "text-center" : "text-left"
                 )}
-                style={
-                  isNothing
-                    ? undefined
-                    : {
-                        backgroundColor: `${resolved.accentColor}18`,
-                        color: resolved.accentColor,
-                      }
-                }
               >
-                {isNothing && (
-                  <span
-                    className="w-1.5 h-1.5 rounded-full bg-red-600 absolute -top-0.5 -right-0.5"
-                    aria-hidden="true"
-                  />
-                )}
-                <GraduationCap className="w-6 h-6" />
-              </div>
-
-              {/* Title & Description */}
-              <div className="relative z-10 max-w-lg">
-                <h1
+                {/* Header Icon Badge */}
+                <div
                   className={cn(
-                    "text-2xl sm:text-3xl font-extrabold tracking-tight mb-2",
-                    resolved.headingFontClass
+                    "w-11 h-11 rounded-2xl flex items-center justify-center mb-4 shadow-xs relative z-10",
+                    isNothing
+                      ? "border border-neutral-200 bg-white text-neutral-950"
+                      : "",
+                    resolved.headerAlignment === "center" ? "mx-auto" : ""
                   )}
+                  style={
+                    isNothing
+                      ? undefined
+                      : {
+                          backgroundColor: `${resolved.accentColor}18`,
+                          color: resolved.accentColor,
+                        }
+                  }
                 >
-                  {definition.title || "Untitled form"}
-                </h1>
-                {definition.description && (
-                  <p
+                  {isNothing && (
+                    <span
+                      className="w-1.5 h-1.5 rounded-full bg-red-600 absolute -top-0.5 -right-0.5"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+
+                {/* Title & Description */}
+                <div className={cn("relative z-10 max-w-lg", resolved.headerAlignment === "center" ? "mx-auto" : "")}>
+                  <h1
                     className={cn(
-                      "text-xs sm:text-sm leading-relaxed opacity-80",
-                      resolved.bodyFontClass
+                      "text-2xl sm:text-3xl font-extrabold tracking-tight mb-2",
+                      resolved.headingFontClass
                     )}
                   >
-                    {definition.description}
-                  </p>
-                )}
+                    {definition.title || "Untitled form"}
+                  </h1>
+                  {definition.description && (
+                    <p
+                      className={cn(
+                        "text-xs sm:text-sm leading-relaxed opacity-80",
+                        resolved.bodyFontClass
+                      )}
+                    >
+                      {definition.description}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

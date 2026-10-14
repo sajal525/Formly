@@ -97,10 +97,10 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
         <div className="h-10 flex items-center mb-6 pl-1">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] rounded-xl"
+            className="group inline-flex items-center h-10 px-2 -ml-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] dark:focus-visible:ring-[#7C67FA] transition-colors"
             aria-label="Formly home"
           >
-            <FormlyLogo size="md" />
+            <FormlyLogo size="md" expandOnHover />
           </Link>
         </div>
 

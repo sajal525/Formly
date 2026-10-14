@@ -98,9 +98,9 @@ export function QuickStartCards({ onBlankFormClick }: QuickStartCardsProps) {
         </div>
       </div>
 
-      {/* 4. Empty Placeholder Card (Reserved for future feature) */}
+      {/* 4. Reserved fourth feature slot (invisible, preserves 4-column grid spacing and alignment) */}
       <div
-        className="rounded-3xl bg-white/50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-white/5 h-[126px] sm:h-[132px] lg:h-[138px]"
+        className="hidden lg:block pointer-events-none select-none"
         aria-hidden="true"
       />
     </div>

@@ -28,6 +28,7 @@ export interface NotificationDTO {
   readAt: string | null;
   createdAt: string;
   targetHref: string | null;
+  destinationUnavailable?: boolean;
 }
 
 export interface NotificationListResponse {
