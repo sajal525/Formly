@@ -40,6 +40,7 @@ export default async function ProfilePage() {
     id: userId,
     username,
     displayName,
+    avatarUrl: profile.avatarUrl,
   };
 
   return (

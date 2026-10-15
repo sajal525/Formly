@@ -21,6 +21,7 @@ export interface DashboardDataDTO {
     id: string;
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
   stats: {
     totalForms: number;
@@ -46,7 +47,7 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
   const [userProfile, totalForms, draftForms, recentForms] = await Promise.all([
     prisma.profile.findUnique({
       where: { userId },
-      select: { displayName: true },
+      select: { displayName: true, avatarObjectKey: true, updatedAt: true },
     }),
     prisma.form.count({
       where: {
@@ -94,11 +95,16 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
     sessionData.user.username ||
     "Creator";
 
+  const avatarUrl = userProfile?.avatarObjectKey
+    ? `/api/v1/profile/avatar?v=${userProfile.updatedAt.getTime()}`
+    : (sessionData.user.image || null);
+
   return {
     user: {
       id: userId,
       username,
       displayName,
+      avatarUrl,
     },
     stats: {
       totalForms,

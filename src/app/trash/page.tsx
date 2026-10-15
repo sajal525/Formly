@@ -1,7 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/lib/auth-dal";
-import { prisma } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth-dal";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { trashQueryParamsSchema } from "@/features/trash/schemas/trash-query-schema";
 import { getTrashPage } from "@/features/trash/server/get-trash-page";
@@ -24,34 +23,11 @@ interface TrashPageProps {
 }
 
 export default async function TrashPage({ searchParams }: TrashPageProps) {
-  const sessionData = await getCurrentSession();
+  const user = await getAuthenticatedUser();
 
-  if (!sessionData?.user) {
+  if (!user) {
     redirect("/login");
   }
-
-  const userId = sessionData.user.id;
-  const username =
-    sessionData.user.username ||
-    sessionData.user.name ||
-    "Creator";
-
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
-
-  const displayName =
-    userProfile?.displayName ||
-    sessionData.user.name ||
-    sessionData.user.username ||
-    "Creator";
-
-  const userDTO = {
-    id: userId,
-    username,
-    displayName,
-  };
 
   const rawParams = await searchParams;
   const parsedParams = trashQueryParamsSchema.parse({
@@ -62,10 +38,10 @@ export default async function TrashPage({ searchParams }: TrashPageProps) {
     pageSize: rawParams.pageSize,
   });
 
-  const trashData = await getTrashPage(userId, parsedParams);
+  const trashData = await getTrashPage(user.id, parsedParams);
 
   return (
-    <AppShell user={userDTO}>
+    <AppShell user={user}>
       <TrashWorkspaceClient
         initialData={trashData}
         queryParams={parsedParams}

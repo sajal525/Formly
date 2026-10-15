@@ -1,7 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/lib/auth-dal";
-import { prisma } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth-dal";
 import { AppShell } from "@/components/app-shell/app-shell";
 import {
   responseWorkspaceQuerySchema,
@@ -20,9 +19,9 @@ interface PageProps {
 }
 
 export default async function ResponsesPage({ searchParams }: PageProps) {
-  const sessionData = await getCurrentSession();
+  const user = await getAuthenticatedUser();
 
-  if (!sessionData?.user) {
+  if (!user) {
     redirect("/login");
   }
 
@@ -32,38 +31,14 @@ export default async function ResponsesPage({ searchParams }: PageProps) {
     ? parsedParamsResult.data
     : responseWorkspaceQuerySchema.parse({});
 
-  const userId = sessionData.user.id;
-  const username =
-    sessionData.user.username ||
-    sessionData.user.name ||
-    "Creator";
-
-  const [userProfile, workspaceData] = await Promise.all([
-    prisma.profile.findUnique({
-      where: { userId },
-      select: { displayName: true },
-    }),
-    getResponsesWorkspace(validatedParams),
-  ]);
+  const workspaceData = await getResponsesWorkspace(validatedParams);
 
   if (!workspaceData) {
     redirect("/login");
   }
 
-  const displayName =
-    userProfile?.displayName ||
-    sessionData.user.name ||
-    sessionData.user.username ||
-    "Creator";
-
-  const userDTO = {
-    id: userId,
-    username,
-    displayName,
-  };
-
   return (
-    <AppShell user={userDTO}>
+    <AppShell user={user}>
       <ResponsesWorkspaceClient
         initialData={workspaceData}
         currentTab={validatedParams.tab}

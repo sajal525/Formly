@@ -77,6 +77,14 @@ export async function POST(req: NextRequest) {
 
     const avatarUrl = `/api/v1/profile/avatar?v=${Date.now()}`;
 
+    // Synchronize Better Auth user record image field
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        image: avatarUrl,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       avatarUrl,
@@ -150,6 +158,10 @@ export async function DELETE(req: NextRequest) {
       await prisma.profile.update({
         where: { userId: session.user.id },
         data: { avatarObjectKey: null },
+      });
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { image: null },
       });
     }
 

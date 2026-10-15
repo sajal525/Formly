@@ -1,7 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/lib/auth-dal";
-import { prisma } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth-dal";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { analyticsQuerySchema } from "@/features/analytics/schemas/analytics-query-schema";
 import { getFormAnalytics } from "@/features/analytics/server/get-form-analytics";
@@ -18,9 +17,9 @@ interface PageProps {
 }
 
 export default async function AnalyticsPage({ searchParams }: PageProps) {
-  const sessionData = await getCurrentSession();
+  const user = await getAuthenticatedUser();
 
-  if (!sessionData?.user) {
+  if (!user) {
     redirect("/login");
   }
 
@@ -30,38 +29,14 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
     ? parsedParamsResult.data
     : analyticsQuerySchema.parse({});
 
-  const userId = sessionData.user.id;
-  const username =
-    sessionData.user.username ||
-    sessionData.user.name ||
-    "Creator";
-
-  const [userProfile, analyticsData] = await Promise.all([
-    prisma.profile.findUnique({
-      where: { userId },
-      select: { displayName: true },
-    }),
-    getFormAnalytics(validatedParams),
-  ]);
+  const analyticsData = await getFormAnalytics(validatedParams);
 
   if (!analyticsData) {
     redirect("/login");
   }
 
-  const displayName =
-    userProfile?.displayName ||
-    sessionData.user.name ||
-    sessionData.user.username ||
-    "Creator";
-
-  const userDTO = {
-    id: userId,
-    username,
-    displayName,
-  };
-
   return (
-    <AppShell user={userDTO}>
+    <AppShell user={user}>
       <AnalyticsWorkspaceClient initialData={analyticsData} />
     </AppShell>
   );

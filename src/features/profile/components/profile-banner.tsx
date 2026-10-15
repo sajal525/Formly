@@ -5,6 +5,8 @@ import { Camera, Image as ImageIcon } from "lucide-react";
 import { ProfileDTO } from "../schemas/profile-schema";
 import { ProfileCoverModal } from "./profile-cover-modal";
 import { ProfileAvatarModal } from "./profile-avatar-modal";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { notifyAvatarUpdated } from "../utils/avatar-sync";
 
 interface ProfileBannerProps {
   profile: ProfileDTO;
@@ -66,17 +68,13 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
         <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5 -mt-16 sm:-mt-20">
           {/* Avatar Container with Overlapping Camera Button */}
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-3xl sm:text-4xl ring-4 ring-white dark:ring-slate-900 shadow-md relative">
-              {profile.avatarUrl ? (
-                <img
-                  src={profile.avatarUrl}
-                  alt={`${profile.displayName || profile.username}'s profile picture`}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span>{initial}</span>
-              )}
-            </div>
+            <UserAvatar
+              src={profile.avatarUrl}
+              name={profile.displayName || profile.username}
+              size="xl"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-white dark:ring-slate-900 shadow-md font-extrabold"
+              alt={`${profile.displayName || profile.username}'s profile picture`}
+            />
             
             {/* Camera Action Button */}
             <button
@@ -137,6 +135,7 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
         onClose={() => setIsAvatarModalOpen(false)}
         currentAvatarUrl={profile.avatarUrl}
         onAvatarSaved={(newAvatarUrl) => {
+          notifyAvatarUpdated(newAvatarUrl);
           onProfileUpdated?.({
             ...profile,
             avatarUrl: newAvatarUrl,

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { UploadCloud, Trash2, Loader2, AlertCircle } from "lucide-react";
 import { ProfileDTO } from "../schemas/profile-schema";
 import { ProfileAvatarModal } from "./profile-avatar-modal";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { notifyAvatarUpdated } from "../utils/avatar-sync";
 
 interface ProfilePictureCardProps {
   profile: ProfileDTO;
@@ -37,6 +39,8 @@ export function ProfilePictureCard({ profile, onProfileUpdated }: ProfilePicture
         throw new Error(data.error || "Failed to remove profile photo.");
       }
 
+      notifyAvatarUpdated(null);
+
       onProfileUpdated?.({
         ...profile,
         avatarUrl: null,
@@ -60,17 +64,13 @@ export function ProfilePictureCard({ profile, onProfileUpdated }: ProfilePicture
 
       <div className="mt-5 flex items-center gap-5">
         {/* Avatar Display */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full overflow-hidden bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-extrabold text-2xl sm:text-3xl shadow-sm ring-2 ring-slate-100 dark:ring-white/10 relative">
-          {profile.avatarUrl ? (
-            <img
-              src={profile.avatarUrl}
-              alt={`${profile.displayName || profile.username}'s profile picture`}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span>{initial}</span>
-          )}
-        </div>
+        <UserAvatar
+          src={profile.avatarUrl}
+          name={profile.displayName || profile.username}
+          size="lg"
+          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full shadow-sm ring-2 ring-slate-100 dark:ring-white/10 font-extrabold"
+          alt={`${profile.displayName || profile.username}'s profile picture`}
+        />
 
         {/* Action Buttons */}
         <div className="flex-1 space-y-2">
@@ -115,6 +115,7 @@ export function ProfilePictureCard({ profile, onProfileUpdated }: ProfilePicture
         onClose={() => setIsAvatarModalOpen(false)}
         currentAvatarUrl={profile.avatarUrl}
         onAvatarSaved={(newAvatarUrl) => {
+          notifyAvatarUpdated(newAvatarUrl);
           onProfileUpdated?.({
             ...profile,
             avatarUrl: newAvatarUrl,

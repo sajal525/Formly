@@ -2,6 +2,7 @@
 
 import React from "react";
 import { UniversalImageEditorModal } from "@/components/image-editor/universal-image-editor-modal";
+import { notifyAvatarUpdated } from "../utils/avatar-sync";
 
 export interface ProfileAvatarModalProps {
   isOpen: boolean;
@@ -26,7 +27,10 @@ export function ProfileAvatarModal({
       onClose={onClose}
       destination="avatar"
       existingAssetUrl={currentAvatarUrl}
-      onSaveAvatarUrl={onAvatarSaved}
+      onSaveAvatarUrl={(url) => {
+        notifyAvatarUpdated(url);
+        onAvatarSaved(url);
+      }}
     />
   );
 }

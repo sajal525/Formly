@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/branding/theme-toggle";
 import { NotificationsPopover } from "@/features/notifications/components/notifications-popover";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { useCurrentUserAvatar } from "@/features/profile/utils/avatar-sync";
 import { authClient } from "@/lib/auth-client";
 import {
   Search,
@@ -21,11 +23,13 @@ interface AppTopbarProps {
     id: string;
     username: string;
     displayName: string;
+    avatarUrl?: string | null;
   };
   onOpenMobileMenu?: () => void;
 }
 
 export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
+  const currentAvatarUrl = useCurrentUserAvatar(user.avatarUrl);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -110,8 +114,6 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
       window.location.href = "/login";
     }
   }
-
-  const initial = (user.displayName || user.username || "U")[0]?.toUpperCase() || "U";
 
   return (
     <header className="h-[72px] shrink-0 w-full px-4 sm:px-6 md:px-8 border-b border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md flex items-center justify-between sticky top-0 z-30 transition-colors duration-200">
@@ -211,9 +213,12 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
             aria-expanded={isDropdownOpen}
             aria-haspopup="true"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#329CF5] to-[#563BFA] flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              {initial}
-            </div>
+            <UserAvatar
+              src={currentAvatarUrl}
+              name={user.displayName || user.username}
+              size="sm"
+              className="w-8 h-8 rounded-full shadow-sm ring-1 ring-slate-200/60 dark:ring-white/10"
+            />
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[120px] truncate hidden md:inline">
               {user.displayName || user.username}
             </span>
@@ -222,16 +227,24 @@ export function AppTopbar({ user, onOpenMobileMenu }: AppTopbarProps) {
 
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-white/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-white/5">
-                <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                  {user.displayName}
-                </p>
-                <p className="text-[11px] text-slate-400 truncate">
-                  @{user.username}
-                </p>
-                <div className="mt-1.5 inline-flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  <ShieldCheck className="w-3 h-3" />
-                  <span>Neon DB Connected</span>
+              <div className="px-4 py-2.5 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+                <UserAvatar
+                  src={currentAvatarUrl}
+                  name={user.displayName || user.username}
+                  size="sm"
+                  className="w-9 h-9 rounded-full ring-2 ring-slate-100 dark:ring-white/10 shrink-0 shadow-xs"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                    {user.displayName}
+                  </p>
+                  <p className="text-[11px] text-slate-400 truncate">
+                    @{user.username}
+                  </p>
+                  <div className="mt-1 inline-flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>Neon DB Connected</span>
+                  </div>
                 </div>
               </div>
 
