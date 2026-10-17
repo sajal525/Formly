@@ -45,37 +45,39 @@ export function AccountStatsCard({ stats }: AccountStatsCardProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 p-6 shadow-sm transition-colors duration-200">
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/5">
+    <div className="bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A] p-5">
+      <div className="flex items-center justify-between pb-3.5 border-b border-[#E5E7EB] dark:border-[#27272A]">
         <div>
-          <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+          <h2 className="text-xs font-semibold text-neutral-900 dark:text-white">
             Account Stats
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] font-mono text-neutral-400 mt-0.5">
             Real activity across your active forms.
           </p>
         </div>
-        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+        <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-100 dark:bg-[#1C1F26] text-neutral-500">
           All time
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-3.5 grid grid-cols-2 gap-2.5">
         {statItems.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.label}
-              className={`p-3.5 rounded-2xl ${item.bgColor} border ${item.borderColor} flex flex-col justify-between transition-transform duration-150 hover:scale-[1.02]`}
+              className="p-3 rounded-lg bg-neutral-50 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex flex-col justify-between"
             >
               <div className="flex items-center justify-between">
-                <Icon className={`w-4 h-4 ${item.color}`} />
+                <div className="w-6 h-6 rounded-md bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-500">
+                  <Icon className="w-3.5 h-3.5" />
+                </div>
               </div>
-              <div className="mt-2.5">
-                <div className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              <div className="mt-2">
+                <div className="text-lg font-mono font-bold text-neutral-900 dark:text-white">
                   {item.value.toLocaleString()}
                 </div>
-                <div className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                <div className="text-[10px] font-mono text-neutral-400 truncate mt-0.5">
                   {item.label}
                 </div>
               </div>

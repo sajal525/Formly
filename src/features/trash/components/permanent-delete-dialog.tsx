@@ -48,27 +48,27 @@ export function PermanentDeleteDialog({
       aria-modal="true"
     >
       <div
-        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:border-white/10 space-y-5 relative"
+        className="w-full max-w-md bg-white dark:bg-[#121417] rounded-xl p-6 shadow-xl border border-[#E5E7EB] dark:border-[#27272A] space-y-4 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center text-rose-600 dark:text-rose-400">
-              <AlertTriangle className="w-5 h-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/40 flex items-center justify-center text-rose-600 dark:text-rose-400">
+              <AlertTriangle className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
+              <h2 className="text-sm font-bold text-neutral-900 dark:text-white leading-tight">
                 Permanently delete {targetTitle}?
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                This action is irreversible and cannot be undone.
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 font-mono">
+                Irreversible. Purges all associated submissions.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#181B20] transition-colors"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
@@ -76,23 +76,23 @@ export function PermanentDeleteDialog({
         </div>
 
         {/* Warning callout */}
-        <div className="p-3.5 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/40 text-xs text-rose-800 dark:text-rose-300 space-y-1.5">
+        <div className="p-3 rounded-lg bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 text-xs text-rose-800 dark:text-rose-300 space-y-1 font-mono">
           <p className="font-semibold flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
             Permanent Data Destruction
           </p>
           <p className="text-[11px] leading-relaxed">
-            The form definition, questions, and all associated response records
+            The form definition and all associated response records
             {!isBulk && responseCount !== null ? ` (${responseCount} submissions)` : ""}{" "}
-            will be permanently purged from Formly's primary database.
+            will be permanently purged from the database.
           </p>
         </div>
 
         {/* Confirmation Input */}
-        <div className="space-y-1.5 text-xs">
+        <div className="space-y-1.5 text-xs font-mono">
           <label
             htmlFor="delete-confirm-input"
-            className="font-medium text-slate-700 dark:text-slate-300 block"
+            className="font-medium text-neutral-700 dark:text-neutral-300 block"
           >
             Please type <strong className="text-rose-600 font-bold">DELETE</strong> to confirm:
           </label>
@@ -104,17 +104,17 @@ export function PermanentDeleteDialog({
             placeholder="DELETE"
             disabled={isSubmitting}
             autoFocus
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-1 focus:ring-rose-500"
+            className="w-full px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-50 dark:bg-[#181B20] text-xs text-neutral-900 dark:text-white font-mono focus:outline-none focus:border-rose-500"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-2.5 pt-2">
+        <div className="flex items-center justify-end gap-2 pt-2 font-mono">
           <Button
             type="button"
             variant="ghost"
             onClick={onClose}
             disabled={isSubmitting}
-            className="rounded-xl text-xs"
+            className="rounded-lg text-xs h-8"
           >
             Cancel
           </Button>
@@ -123,17 +123,17 @@ export function PermanentDeleteDialog({
             type="button"
             onClick={() => onConfirm(confirmInput)}
             disabled={!isConfirmed || isSubmitting}
-            className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium gap-1.5 h-8 disabled:opacity-50 disabled:cursor-not-allowed shadow-none"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3 h-3 animate-spin" />
                 <span>Deleting...</span>
               </>
             ) : (
               <>
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete Permanently</span>
+                <Trash2 className="w-3 h-3" />
+                <span>Purge Permanently</span>
               </>
             )}
           </Button>

@@ -131,11 +131,11 @@ export function SettingsSectionNav({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 shadow-xs",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-2",
         className
       )}
     >
-      <nav className="space-y-1" aria-label="Settings categories">
+      <nav className="space-y-0.5" aria-label="Settings categories">
         {sections.map((sec) => {
           const Icon = sec.icon;
           const isActive = activeSection === sec.id;
@@ -146,37 +146,37 @@ export function SettingsSectionNav({
               type="button"
               onClick={() => onSelectSection(sec.id)}
               className={cn(
-                "w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all group",
+                "w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors group",
                 isActive
-                  ? "bg-[#EEF0FF] dark:bg-indigo-950/60 text-[#563BFA] dark:text-indigo-400 font-semibold shadow-xs"
+                  ? "bg-[#563BFA]/10 text-[#563BFA] dark:text-[#8B77FF] font-semibold border border-[#563BFA]/20"
                   : sec.isAvailable
-                  ? "hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  : "opacity-60 hover:bg-slate-50 dark:hover:bg-slate-800/40 text-slate-400 dark:text-slate-500"
+                  ? "hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-700 dark:text-neutral-300 border border-transparent"
+                  : "opacity-60 hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-400 dark:text-neutral-500 border border-transparent"
               )}
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <div
                   className={cn(
-                    "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                    "w-7 h-7 rounded-md flex items-center justify-center shrink-0 border",
                     isActive
-                      ? "bg-violet-100 dark:bg-indigo-900/50 text-[#563BFA] dark:text-indigo-400"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                      ? "bg-[#563BFA] text-white border-[#563BFA]"
+                      : "bg-neutral-100 dark:bg-[#1C1F26] border-[#E5E7EB] dark:border-[#27272A] text-neutral-500"
                   )}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs font-semibold truncate leading-tight">
+                  <div className="text-xs font-medium truncate leading-tight">
                     {sec.label}
                   </div>
-                  <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                  <div className="text-[10px] font-mono text-neutral-400 truncate mt-0.5">
                     {sec.subtext}
                   </div>
                 </div>
               </div>
 
               {!sec.isAvailable && (
-                <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 shrink-0">
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-100 dark:bg-[#1C1F26] text-neutral-400 shrink-0">
                   Soon
                 </span>
               )}

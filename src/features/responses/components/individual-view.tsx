@@ -92,16 +92,16 @@ export function IndividualView({
   return (
     <div className="max-w-4xl mx-auto space-y-4">
       {/* Navigation Top Toolbar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex items-center justify-between">
+      <div className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-violet-600 text-white font-bold text-base flex items-center justify-center shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-800 dark:text-neutral-200 font-mono font-bold text-sm flex items-center justify-center">
             {selectedResponse.rowNumber}
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+            <h3 className="text-xs font-semibold text-neutral-900 dark:text-white">
               Response #{selectedResponse.rowNumber} of {totalResponses}
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-[11px] font-mono text-neutral-400">
               Submitted on {formatTimestamp(selectedResponse.submittedAt)}
             </p>
           </div>
@@ -113,9 +113,9 @@ export function IndividualView({
             size="sm"
             disabled={!selectedResponse.prevResponseId}
             onClick={() => selectedResponse.prevResponseId && onNavigate(selectedResponse.prevResponseId)}
-            className="gap-1.5 text-xs rounded-xl"
+            className="gap-1 text-xs font-mono h-7 px-2.5 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3 h-3" />
             Previous
           </Button>
           <Button
@@ -123,83 +123,83 @@ export function IndividualView({
             size="sm"
             disabled={!selectedResponse.nextResponseId}
             onClick={() => selectedResponse.nextResponseId && onNavigate(selectedResponse.nextResponseId)}
-            className="gap-1.5 text-xs rounded-xl"
+            className="gap-1 text-xs font-mono h-7 px-2.5 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
           >
             Next
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3 h-3" />
           </Button>
         </div>
       </div>
 
       {/* Main Details Card */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-5 sm:p-6 space-y-5">
         {/* Meta summary pills */}
-        <div className="flex flex-wrap items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 text-xs">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">
-            <Calendar className="w-3.5 h-3.5 text-violet-500" />
+        <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-[#E5E7EB] dark:border-[#27272A] text-xs font-mono">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-50 dark:bg-[#181B20] text-neutral-600 dark:text-neutral-400">
+            <Calendar className="w-3 h-3 text-neutral-400" />
             <span>{formatTimestamp(selectedResponse.submittedAt)}</span>
           </div>
 
           {selectedResponse.durationSeconds !== null && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300">
-              <Clock className="w-3.5 h-3.5 text-blue-500" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-50 dark:bg-[#181B20] text-neutral-600 dark:text-neutral-400">
+              <Clock className="w-3 h-3 text-neutral-400" />
               <span>Completion time: {formatDuration(selectedResponse.durationSeconds)}</span>
             </div>
           )}
         </div>
 
         {/* Question & Answer List */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {selectedResponse.answers.map((ans, idx) => (
             <div
               key={ans.questionId || idx}
-              className="p-4 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/40 dark:bg-slate-950/20 space-y-2"
+              className="p-3.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-50 dark:bg-[#181B20] space-y-1.5"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
                   Question {idx + 1}
                 </span>
-                <span className="text-[11px] text-slate-400 font-mono">
+                <span className="text-[10px] text-neutral-400 font-mono">
                   {ans.type.toLowerCase().replace(/_/g, " ")}
                 </span>
               </div>
 
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 dark:text-white">
                 {ans.label}
               </h4>
 
               <div className="pt-1">
                 {ans.type === "RATING" && ans.value ? (
-                  <div className="flex items-center gap-1.5 text-amber-400">
+                  <div className="flex items-center gap-1 text-amber-500">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
                         className={cn(
-                          "w-5 h-5",
+                          "w-4 h-4",
                           star <= Number(ans.value)
-                            ? "fill-amber-400"
-                            : "text-slate-200 dark:text-slate-700"
+                            ? "fill-amber-500"
+                            : "text-neutral-300 dark:text-neutral-700"
                         )}
                       />
                     ))}
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-2">
+                    <span className="text-xs font-mono font-bold text-neutral-700 dark:text-neutral-300 ml-1.5">
                       {ans.value} / 5 Stars
                     </span>
                   </div>
                 ) : ans.type === "CHECKBOX" && Array.isArray(ans.value) ? (
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {ans.value.map((item, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200"
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-xs font-mono text-neutral-800 dark:text-neutral-200"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-violet-600" />
+                        <CheckCircle2 className="w-3 h-3 text-[#563BFA]" />
                         {item}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200/60 dark:border-slate-800 text-sm text-slate-800 dark:text-slate-200 break-words whitespace-pre-wrap leading-relaxed">
+                  <div className="bg-white dark:bg-[#121417] p-2.5 rounded-md border border-[#E5E7EB] dark:border-[#27272A] text-xs text-neutral-800 dark:text-neutral-200 break-words whitespace-pre-wrap leading-relaxed">
                     {ans.formattedValue}
                   </div>
                 )}

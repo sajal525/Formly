@@ -27,14 +27,14 @@ export function CompletionFunnel({ stages, className }: CompletionFunnelProps) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between",
         className
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-1.5">
-          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-            Response Completion Funnel
+          <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
+            Completion Funnel
           </h3>
           <div className="relative">
             <button
@@ -42,13 +42,13 @@ export function CompletionFunnel({ stages, className }: CompletionFunnelProps) {
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               onClick={() => setShowTooltip(!showTooltip)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
               title="Cohort definition"
             >
-              <Info className="w-3.5 h-3.5" />
+              <Info className="w-3 h-3" />
             </button>
             {showTooltip && (
-              <div className="absolute left-0 bottom-full mb-1 z-50 w-56 p-2 text-[10px] bg-slate-900 text-white rounded-lg shadow-lg pointer-events-none">
+              <div className="absolute left-0 bottom-full mb-1 z-50 w-56 p-2 text-[10px] font-mono bg-neutral-900 text-white rounded border border-neutral-800 shadow-lg pointer-events-none">
                 Cohort of sessions started in the selected date range. Stages are
                 monotonic and represent true progression from arrival to submission.
               </div>
@@ -60,22 +60,22 @@ export function CompletionFunnel({ stages, className }: CompletionFunnelProps) {
           type="button"
           onClick={() => setShowTable(!showTable)}
           title="Toggle accessible table view"
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+          className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
         >
           <TableIcon className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {baseCount === 0 ? (
-        <div className="h-[180px] flex flex-col items-center justify-center text-xs text-slate-400 text-center p-4">
-          <Filter className="w-6 h-6 mb-1 text-slate-300" />
+        <div className="h-[180px] flex flex-col items-center justify-center text-xs font-mono text-neutral-400 text-center p-4">
+          <Filter className="w-5 h-5 mb-1 text-neutral-300 dark:text-neutral-700" />
           <span>No session cohort data recorded in this period.</span>
         </div>
       ) : showTable ? (
-        <div className="max-h-[180px] overflow-y-auto text-xs border rounded-lg p-2">
+        <div className="max-h-[180px] overflow-y-auto text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] rounded-lg p-2">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b text-slate-500">
+              <tr className="border-b border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 text-[10px] uppercase">
                 <th className="pb-1">Funnel Stage</th>
                 <th className="pb-1 text-right">Count</th>
                 <th className="pb-1 text-right">% of Views</th>

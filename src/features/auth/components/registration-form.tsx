@@ -65,14 +65,14 @@ export function RegistrationForm() {
   };
 
   return (
-    <div className="w-full max-w-[410px] lg:max-w-[430px] xl:max-w-[460px] 2xl:max-w-[480px] mx-auto bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl rounded-[24px] 2xl:rounded-[28px] p-6 sm:p-7 xl:p-8 border border-slate-200/80 dark:border-white/10 shadow-[0_15px_50px_-15px_rgba(86,59,250,0.12)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] transition-all">
+    <div className="w-full max-w-[410px] lg:max-w-[430px] xl:max-w-[460px] 2xl:max-w-[480px] mx-auto bg-white dark:bg-[#121417] rounded-xl p-6 sm:p-7 xl:p-8 border border-[#E5E7EB] dark:border-[#27272A] shadow-sm transition-colors">
       {/* Brand Header */}
       <div className="flex flex-col items-center text-center mb-4 sm:mb-5">
         <FormlyLogo size="md" className="mb-2 sm:mb-3" />
-        <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--ink)] tracking-tight">
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
           Create your account
         </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
           Just a username and password to get started.
         </p>
       </div>
@@ -82,7 +82,7 @@ export function RegistrationForm() {
         <div
           role="alert"
           aria-live="polite"
-          className="mb-3.5 p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/50 flex items-start gap-2 text-xs text-rose-800 dark:text-rose-200"
+          className="mb-3.5 p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/50 flex items-start gap-2 text-xs text-rose-800 dark:text-rose-200"
         >
           <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
           <span>{submitError}</span>
@@ -90,17 +90,17 @@ export function RegistrationForm() {
       )}
 
       {/* Form Fields */}
-      <form onSubmit={handleSubmit(onSubmit)} method="POST" noValidate className="space-y-3.5 sm:space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} method="POST" noValidate className="space-y-3.5">
         {/* Username Field */}
         <div className="space-y-1">
           <label
             htmlFor="reg-username-input"
-            className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300"
           >
             Username
           </label>
           <div className="relative flex items-center">
-            <span className="absolute left-3.5 text-slate-400 dark:text-slate-500 pointer-events-none">
+            <span className="absolute left-3.5 text-zinc-400 dark:text-zinc-500 pointer-events-none">
               <User className="w-4 h-4" />
             </span>
             <input
@@ -111,10 +111,10 @@ export function RegistrationForm() {
               disabled={isSubmitting}
               {...register("username")}
               className={cn(
-                "w-full h-11 sm:h-11.5 pl-10 pr-3.5 rounded-xl text-sm bg-white dark:bg-slate-800/90 text-slate-900 dark:text-slate-100",
-                "border border-slate-200 dark:border-white/10 placeholder:text-slate-400 dark:placeholder:text-slate-500",
-                "focus:outline-none focus:border-[#563BFA] focus:ring-4 focus:ring-[#563BFA]/15 transition-all shadow-sm",
-                errors.username && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                "w-full h-10 pl-10 pr-3.5 rounded-lg text-sm bg-zinc-50 dark:bg-[#181B20] text-zinc-900 dark:text-zinc-100",
+                "border border-[#E5E7EB] dark:border-[#27272A] placeholder:text-zinc-400 dark:placeholder:text-zinc-500",
+                "focus:outline-none focus:border-[#563BFA] focus:ring-1 focus:ring-[#563BFA] transition-colors",
+                errors.username && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
               )}
             />
           </div>
@@ -123,7 +123,7 @@ export function RegistrationForm() {
               {errors.username.message}
             </p>
           ) : (
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 pl-1">
+            <p className="text-[11px] text-zinc-400 dark:text-zinc-500 pl-1">
               Choose a unique username
             </p>
           )}
@@ -133,12 +133,12 @@ export function RegistrationForm() {
         <div className="space-y-1">
           <label
             htmlFor="reg-password-input"
-            className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300"
           >
             Password
           </label>
           <div className="relative flex items-center">
-            <span className="absolute left-3.5 text-slate-400 dark:text-slate-500 pointer-events-none">
+            <span className="absolute left-3.5 text-zinc-400 dark:text-zinc-500 pointer-events-none">
               <Lock className="w-4 h-4" />
             </span>
             <input
@@ -149,17 +149,17 @@ export function RegistrationForm() {
               disabled={isSubmitting}
               {...register("password")}
               className={cn(
-                "w-full h-11 sm:h-11.5 pl-10 pr-10 rounded-xl text-sm bg-white dark:bg-slate-800/90 text-slate-900 dark:text-slate-100",
-                "border border-slate-200 dark:border-white/10 placeholder:text-slate-400 dark:placeholder:text-slate-500",
-                "focus:outline-none focus:border-[#563BFA] focus:ring-4 focus:ring-[#563BFA]/15 transition-all shadow-sm",
-                errors.password && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                "w-full h-10 pl-10 pr-10 rounded-lg text-sm bg-zinc-50 dark:bg-[#181B20] text-zinc-900 dark:text-zinc-100",
+                "border border-[#E5E7EB] dark:border-[#27272A] placeholder:text-zinc-400 dark:placeholder:text-zinc-500",
+                "focus:outline-none focus:border-[#563BFA] focus:ring-1 focus:ring-[#563BFA] transition-colors",
+                errors.password && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
               )}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA]"
+              className="absolute right-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#563BFA] cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -169,7 +169,7 @@ export function RegistrationForm() {
               {errors.password.message}
             </p>
           ) : (
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 pl-1">
+            <p className="text-[11px] text-zinc-400 dark:text-zinc-500 pl-1">
               Use at least 12 characters
             </p>
           )}
@@ -180,10 +180,9 @@ export function RegistrationForm() {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            "w-full h-11 sm:h-11.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 mt-2",
-            "bg-gradient-to-r from-[#329CF5] via-[#563BFA] to-[#BD45E8]",
-            "hover:opacity-95 hover:shadow-lg hover:shadow-[#563BFA]/25 active:scale-[0.99] transition-all",
-            "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#563BFA]/30 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            "w-full h-10 rounded-lg font-medium text-xs text-white flex items-center justify-center gap-2 mt-2",
+            "bg-[#563BFA] hover:bg-[#4830D9] transition-colors cursor-pointer",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] disabled:opacity-60 disabled:cursor-not-allowed"
           )}
         >
           {isSubmitting ? (
@@ -200,11 +199,11 @@ export function RegistrationForm() {
         </button>
       </form>
 
-      {/* Terms & Privacy Copy (matching 2.png) */}
-      <div className="mt-5 text-center text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed px-2">
+      {/* Terms & Privacy Copy */}
+      <div className="mt-4 text-center text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed px-2">
         By creating an account, you agree to our{" "}
         <span
-          className="text-[#563BFA] dark:text-indigo-400 hover:underline cursor-pointer font-medium"
+          className="text-[#563BFA] dark:text-violet-400 hover:underline cursor-pointer font-medium"
           onClick={() =>
             alert("Terms of Use: Formly is dedicated to privacy and secure form creation.")
           }
@@ -213,7 +212,7 @@ export function RegistrationForm() {
         </span>{" "}
         and{" "}
         <span
-          className="text-[#563BFA] dark:text-indigo-400 hover:underline cursor-pointer font-medium"
+          className="text-[#563BFA] dark:text-violet-400 hover:underline cursor-pointer font-medium"
           onClick={() =>
             alert("Privacy Policy: Your data is safely stored and never shared with third parties.")
           }
@@ -224,11 +223,11 @@ export function RegistrationForm() {
       </div>
 
       {/* Mobile-only Sign-in link */}
-      <div className="mt-4 sm:hidden text-center text-xs text-slate-500 dark:text-slate-400">
+      <div className="mt-4 sm:hidden text-center text-xs text-zinc-500 dark:text-zinc-400">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-bold text-[#563BFA] dark:text-indigo-400 hover:underline inline-block transition-colors"
+          className="font-medium text-[#563BFA] dark:text-violet-400 hover:underline inline-block transition-colors"
         >
           Sign in
         </Link>

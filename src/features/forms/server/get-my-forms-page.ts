@@ -9,10 +9,12 @@ export interface MyFormItemDTO {
   description: string | null;
   status: FormStatus;
   themeKey: string | null;
+  coverAssetId?: string | null;
+  coverImage?: any | null;
   createdAt: string;
   updatedAt: string;
-  responsesCount: null;
-  viewsCount: null;
+  responsesCount: number | null;
+  viewsCount: number | null;
 }
 
 export interface StatusCountsDTO {
@@ -105,8 +107,15 @@ export async function getMyFormsPage(
         description: true,
         status: true,
         themeKey: true,
+        definition: true,
         createdAt: true,
         updatedAt: true,
+        _count: {
+          select: {
+            responses: true,
+            sessions: true,
+          },
+        },
       },
     }),
   ]);
@@ -146,23 +155,35 @@ export async function getMyFormsPage(
         description: true,
         status: true,
         themeKey: true,
+        definition: true,
         createdAt: true,
         updatedAt: true,
+        _count: {
+          select: {
+            responses: true,
+            sessions: true,
+          },
+        },
       },
     });
   }
 
-  const items: MyFormItemDTO[] = rawForms.map((f) => ({
-    id: f.id,
-    title: f.title,
-    description: f.description,
-    status: f.status,
-    themeKey: f.themeKey,
-    createdAt: f.createdAt.toISOString(),
-    updatedAt: f.updatedAt.toISOString(),
-    responsesCount: null,
-    viewsCount: null,
-  }));
+  const items: MyFormItemDTO[] = rawForms.map((f: any) => {
+    const def = (f.definition as any) || {};
+    return {
+      id: f.id,
+      title: f.title,
+      description: f.description,
+      status: f.status,
+      themeKey: f.themeKey,
+      coverAssetId: def.coverImage?.assetId || null,
+      coverImage: def.coverImage || null,
+      createdAt: f.createdAt.toISOString(),
+      updatedAt: f.updatedAt.toISOString(),
+      responsesCount: f._count?.responses ?? 0,
+      viewsCount: f._count?.sessions ?? 0,
+    };
+  });
 
   return {
     items,

@@ -186,31 +186,31 @@ export function QuestionCard({
       style={style}
       onClick={onSelect}
       className={cn(
-        "w-full bg-white dark:bg-slate-900 rounded-3xl border transition-all duration-200 shadow-xs relative group",
-        isDragging && "opacity-50 ring-2 ring-violet-500 z-50",
+        "w-full bg-white dark:bg-[#121417] rounded-xl border transition-all duration-150 relative group",
+        isDragging && "opacity-50 ring-1 ring-[#563BFA] z-50",
         isSelected
-          ? "border-violet-500/80 ring-2 ring-violet-500/20 shadow-md"
-          : "border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20"
+          ? "border-[#563BFA] ring-1 ring-[#563BFA]/30"
+          : "border-[#E5E7EB] dark:border-[#27272A] hover:border-neutral-300 dark:hover:border-neutral-700"
       )}
     >
       {/* Top Bar inside card: Drag handle + Question Number Badge + Move Buttons + Duplicate + Delete */}
-      <div className="px-5 sm:px-6 pt-5 pb-2 flex items-center justify-between border-b border-slate-100 dark:border-white/5">
+      <div className="px-4 sm:px-5 pt-3.5 pb-2 flex items-center justify-between border-b border-[#E5E7EB] dark:border-[#27272A]">
         <div className="flex items-center gap-2">
           {/* Drag Handle */}
           <button
             type="button"
             {...attributes}
             {...listeners}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-grab active:cursor-grabbing hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 cursor-grab active:cursor-grabbing hover:bg-neutral-100 dark:hover:bg-[#181B20] transition-colors"
             title="Drag to reorder"
             aria-label="Drag handle"
           >
-            <GripVertical className="w-4.5 h-4.5" />
+            <GripVertical className="w-4 h-4" />
           </button>
 
           {/* Question Number Badge */}
-          <span className="text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-50 dark:bg-violet-950/60 px-2.5 py-1 rounded-full border border-violet-100 dark:border-violet-900/30">
-            Question {index + 1}
+          <span className="text-[10px] font-mono uppercase font-semibold text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-[#181B20] px-2 py-0.5 rounded border border-[#E5E7EB] dark:border-[#27272A]">
+            Q{index + 1}
           </span>
         </div>
 

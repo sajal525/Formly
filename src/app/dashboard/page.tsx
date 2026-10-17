@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <AppShell user={data.user}>
+    <AppShell user={data.user} variant="minimal">
       <DashboardClient initialData={data} />
     </AppShell>
   );

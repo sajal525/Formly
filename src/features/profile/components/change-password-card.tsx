@@ -79,14 +79,14 @@ export function ChangePasswordCard() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 p-6 sm:p-7 shadow-sm transition-colors duration-200">
+    <div className="bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A] p-5 sm:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-white/5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E7EB] dark:border-[#27272A]">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">
             Change Password
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] font-mono text-neutral-400 mt-0.5">
             Update your password to keep your account secure.
           </p>
         </div>
@@ -96,14 +96,14 @@ export function ChangePasswordCard() {
           type="button"
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 h-7 px-3 rounded-md bg-neutral-900 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-white text-white dark:text-neutral-900 text-xs font-mono font-medium transition-colors disabled:opacity-50 cursor-pointer self-start sm:self-auto"
         >
           {isSubmitting ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <Loader2 className="w-3 h-3 animate-spin" />
           ) : (
-            <KeyRound className="w-3.5 h-3.5 text-[#563BFA] dark:text-indigo-400" />
+            <KeyRound className="w-3 h-3 text-neutral-400" />
           )}
-          <span>Change Password</span>
+          <span>Update Password</span>
         </button>
       </div>
 

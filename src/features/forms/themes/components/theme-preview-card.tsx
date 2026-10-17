@@ -22,20 +22,20 @@ export function ThemePreviewCard({
   const questions = definition.questions || [];
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A] overflow-hidden flex flex-col">
       {/* Header bar of preview card */}
-      <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-violet-600 dark:text-violet-400" />
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+      <div className="px-3.5 py-2.5 border-b border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-between font-mono">
+        <div className="flex items-center gap-1.5">
+          <Eye className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
+          <h3 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
             Theme Preview
           </h3>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-100 dark:bg-[#181B20] text-neutral-600 dark:text-neutral-300">
             {resolved.preset.name}
           </span>
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300">
+          <span className="text-[10px] font-mono uppercase px-1.5 py-0.2 rounded bg-[#563BFA]/10 text-[#563BFA] dark:text-[#a594fd] border border-[#563BFA]/20">
             Live
           </span>
         </div>

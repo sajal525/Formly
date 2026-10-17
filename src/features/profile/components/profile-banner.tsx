@@ -29,9 +29,9 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
   if (profile.studyYear && subtitleParts.length === 0) subtitleParts.push(profile.studyYear);
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm transition-colors duration-200">
+    <div className="relative w-full rounded-xl overflow-hidden border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
       {/* Visual Cover Area */}
-      <div className="relative h-44 sm:h-52 w-full bg-gradient-to-r from-blue-400/30 via-indigo-400/25 to-purple-400/35 dark:from-blue-900/40 dark:via-indigo-950/50 dark:to-purple-900/40 overflow-hidden">
+      <div className="relative h-44 sm:h-52 w-full bg-neutral-100 dark:bg-[#181B20] overflow-hidden">
         {profile.coverUrl ? (
           <img
             src={profile.coverUrl}
@@ -39,25 +39,20 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
             className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
           />
         ) : (
-          <>
-            {/* Subtle decorative curved gradient mesh */}
-            <div className="absolute inset-0 opacity-60 dark:opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-300/40 via-purple-300/20 to-transparent pointer-events-none" />
-            <div className="absolute -bottom-10 -right-10 w-96 h-96 rounded-full bg-gradient-to-br from-indigo-400/20 to-pink-400/20 blur-3xl pointer-events-none" />
-          </>
+          <div className="absolute inset-0 flex items-center justify-center text-neutral-300 dark:text-neutral-700">
+            <ImageIcon className="w-12 h-12 stroke-1" />
+          </div>
         )}
 
-        {/* Subtle vignette/gradient at bottom to ensure contrast */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-
         {/* Change Cover Button (Upper Right) */}
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-3.5 right-3.5 z-10">
           <button
             type="button"
             onClick={() => setIsCoverModalOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 backdrop-blur-md border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/95 dark:bg-[#121417]/95 border border-[#E5E7EB] dark:border-[#27272A] text-xs font-mono text-neutral-700 dark:text-neutral-200 transition-colors cursor-pointer"
             title="Change cover image"
           >
-            <ImageIcon className="w-3.5 h-3.5 text-[#563BFA] dark:text-indigo-400" />
+            <ImageIcon className="w-3.5 h-3.5 text-neutral-500" />
             <span>Change Cover</span>
           </button>
         </div>
@@ -72,7 +67,7 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
               src={profile.avatarUrl}
               name={profile.displayName || profile.username}
               size="xl"
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-white dark:ring-slate-900 shadow-md font-extrabold"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl ring-2 ring-white dark:ring-[#121417] font-mono font-bold"
               alt={`${profile.displayName || profile.username}'s profile picture`}
             />
             
@@ -80,11 +75,11 @@ export function ProfileBanner({ profile, onProfileUpdated }: ProfileBannerProps)
             <button
               type="button"
               onClick={() => setIsAvatarModalOpen(true)}
-              className="absolute bottom-0 right-0 p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 shadow-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              className="absolute -bottom-1 -right-1 p-1.5 rounded-lg bg-white dark:bg-[#121417] text-neutral-600 dark:text-neutral-300 border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] transition-colors cursor-pointer"
               aria-label="Upload profile photo"
               title="Upload profile photo"
             >
-              <Camera className="w-4 h-4 text-[#563BFA] dark:text-indigo-400" />
+              <Camera className="w-3.5 h-3.5 text-neutral-500" />
             </button>
           </div>
 

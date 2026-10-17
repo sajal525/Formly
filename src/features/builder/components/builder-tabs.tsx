@@ -42,7 +42,7 @@ export function BuilderTabs({
   ];
 
   return (
-    <div className="h-14 shrink-0 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between select-none transition-colors">
+    <div className="h-10 shrink-0 bg-white dark:bg-[#121417] border-b border-[#E5E7EB] dark:border-[#27272A] px-4 sm:px-6 flex items-center justify-between select-none transition-colors">
       <nav className="flex items-center gap-1 sm:gap-2 h-full" aria-label="Editor tabs">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -54,26 +54,26 @@ export function BuilderTabs({
               type="button"
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "h-full px-3 sm:px-4 flex items-center gap-2 text-xs sm:text-sm font-semibold relative transition-all border-b-2",
+                "h-full px-3 flex items-center gap-1.5 text-xs font-mono font-medium relative transition-all border-b-2",
                 isActive
-                  ? "border-violet-600 text-violet-600 dark:text-violet-400 font-bold"
-                  : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:border-slate-300"
+                  ? "border-[#563BFA] text-[#563BFA] dark:text-[#a594fd] font-semibold"
+                  : "border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200"
               )}
             >
               <Icon
                 className={cn(
-                  "w-4 h-4",
-                  isActive ? "text-violet-600 dark:text-violet-400" : "text-slate-400"
+                  "w-3.5 h-3.5",
+                  isActive ? "text-[#563BFA] dark:text-[#a594fd]" : "text-neutral-400"
                 )}
               />
               <span>{tab.label}</span>
               {tab.count !== undefined && tab.count > 0 && (
                 <span
                   className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
+                    "text-[10px] font-mono px-1.5 py-0.2 rounded border",
                     isActive
-                      ? "bg-violet-100 text-violet-700 dark:bg-violet-950/70 dark:text-violet-300"
-                      : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                      ? "bg-[#563BFA]/10 text-[#563BFA] dark:text-[#a594fd] border-[#563BFA]/30"
+                      : "bg-neutral-100 dark:bg-[#181B20] text-neutral-500 dark:text-neutral-400 border-[#E5E7EB] dark:border-[#27272A]"
                   )}
                 >
                   {tab.count}

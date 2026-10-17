@@ -62,7 +62,7 @@ export function FormRowActions({
       <button
         type="button"
         onClick={() => onViewDetails(form)}
-        className="h-8 px-3 rounded-xl bg-[#563BFA] hover:bg-[#482fe0] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs active:scale-[0.98]"
+        className="h-7 px-2.5 rounded-lg bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
         title="View form details"
       >
         <span>View</span>
@@ -73,23 +73,23 @@ export function FormRowActions({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           aria-label="More options"
           aria-haspopup="true"
           aria-expanded={isOpen}
         >
-          <MoreVertical className="w-4 h-4" />
+          <MoreVertical className="w-3.5 h-3.5" />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1.5 w-44 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-white/10 py-1.5 z-40 animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute right-0 bottom-full mb-1 w-44 bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-zinc-200/90 dark:border-zinc-800 py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100 text-left">
             <Link
               href={`/forms/${form.id}/edit`}
               prefetch={true}
-              className="w-full px-3.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 flex items-center gap-2.5 transition-colors"
+              className="w-full px-3.5 py-2 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex items-center gap-2.5 transition-colors"
             >
-              <Edit3 className="w-3.5 h-3.5 text-violet-600" />
-              <span className="font-semibold text-violet-600 dark:text-violet-400">Edit form</span>
+              <Edit3 className="w-3.5 h-3.5 text-purple-600" />
+              <span className="font-semibold text-purple-600 dark:text-purple-400">Edit form</span>
             </Link>
 
             <button

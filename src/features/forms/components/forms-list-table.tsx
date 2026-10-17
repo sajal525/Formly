@@ -2,10 +2,11 @@
 
 import React from "react";
 import { MyFormItemDTO } from "../server/get-my-forms-page";
-import { FormThumbnail } from "./form-thumbnail";
 import { FormStatusBadge } from "./form-status-badge";
 import { FormRowActions } from "./form-row-actions";
 import { formatDate, formatDateTime, formatRelativeTime } from "../utils/formatters";
+import { FileText } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FormsListTableProps {
   forms: MyFormItemDTO[];
@@ -36,13 +37,13 @@ export function FormsListTable({
     forms.some((f) => selectedIds.has(f.id)) && !isAllSelected;
 
   return (
-    <div className="w-full bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-sm overflow-hidden">
+    <div className="w-full bg-white dark:bg-zinc-900/80 rounded-xl border border-zinc-200/90 dark:border-zinc-800 overflow-hidden shadow-2xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/40 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+            <tr className="border-b border-zinc-200/90 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/50 text-[10px] font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
               {/* Checkbox */}
-              <th scope="col" className="w-12 px-4 py-3.5 text-center">
+              <th scope="col" className="w-10 px-3 py-3 text-center">
                 <input
                   type="checkbox"
                   checked={isAllSelected}
@@ -53,86 +54,97 @@ export function FormsListTable({
                   }}
                   onChange={onToggleSelectAll}
                   aria-label="Select all forms on this page"
-                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-[#563BFA] focus:ring-[#563BFA] accent-[#563BFA] cursor-pointer"
+                  className="w-3.5 h-3.5 rounded border-zinc-300 dark:border-zinc-600 text-purple-600 focus:ring-purple-500 accent-purple-600 cursor-pointer"
                 />
               </th>
 
               {/* Form title/desc */}
-              <th scope="col" className="px-4 py-3.5">
+              <th scope="col" className="px-3.5 py-3 font-medium">
                 Form
               </th>
 
               {/* Status */}
-              <th scope="col" className="px-4 py-3.5 w-28">
+              <th scope="col" className="px-3.5 py-3 w-28 font-medium">
                 Status
               </th>
 
-              {/* Responses (truthful —) */}
-              <th scope="col" className="px-4 py-3.5 w-24 hidden lg:table-cell">
+              {/* Responses */}
+              <th scope="col" className="px-3.5 py-3 w-24 hidden lg:table-cell font-medium">
                 Responses
               </th>
 
-              {/* Views (truthful —) */}
-              <th scope="col" className="px-4 py-3.5 w-20 hidden lg:table-cell">
+              {/* Views */}
+              <th scope="col" className="px-3.5 py-3 w-20 hidden lg:table-cell font-medium">
                 Views
               </th>
 
               {/* Created */}
-              <th scope="col" className="px-4 py-3.5 w-32 hidden md:table-cell">
+              <th scope="col" className="px-3.5 py-3 w-28 hidden md:table-cell font-medium">
                 Created
               </th>
 
               {/* Last Updated */}
-              <th scope="col" className="px-4 py-3.5 w-36">
-                Last Updated
+              <th scope="col" className="px-3.5 py-3 w-32 font-medium">
+                Updated
               </th>
 
               {/* Actions */}
-              <th scope="col" className="px-4 py-3.5 w-28 text-right">
+              <th scope="col" className="px-3.5 py-3 w-28 text-right font-medium">
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
             {forms.map((form) => {
               const isSelected = selectedIds.has(form.id);
 
               return (
                 <tr
                   key={form.id}
-                  className={`group transition-colors ${
+                  className={cn(
+                    "group transition-colors",
                     isSelected
-                      ? "bg-indigo-50/40 dark:bg-indigo-950/20"
-                      : "hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
-                  }`}
+                      ? "bg-purple-50/50 dark:bg-purple-950/20"
+                      : "hover:bg-zinc-50/70 dark:hover:bg-zinc-800/40"
+                  )}
                 >
                   {/* Select Checkbox */}
-                  <td className="px-4 py-3.5 text-center">
+                  <td className="px-3 py-3 text-center">
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => onToggleSelect(form.id)}
                       aria-label={`Select form ${form.title}`}
-                      className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-[#563BFA] focus:ring-[#563BFA] accent-[#563BFA] cursor-pointer"
+                      className="w-3.5 h-3.5 rounded border-zinc-300 dark:border-zinc-600 text-purple-600 focus:ring-purple-500 accent-purple-600 cursor-pointer"
                     />
                   </td>
 
                   {/* Form Thumbnail & Title */}
-                  <td className="px-4 py-3.5">
+                  <td className="px-3.5 py-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <FormThumbnail themeKey={form.themeKey} />
+                      <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center text-zinc-500 shrink-0 overflow-hidden">
+                        {form.coverAssetId ? (
+                          <img
+                            src={`/api/v1/forms/${form.id}/assets/${form.coverAssetId}`}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FileText className="w-3.5 h-3.5" />
+                        )}
+                      </div>
                       <div className="min-w-0 flex-1">
                         <button
                           type="button"
                           onClick={() => onViewDetails(form)}
-                          className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate block max-w-xs sm:max-w-md lg:max-w-lg hover:text-[#563BFA] dark:hover:text-indigo-400 text-left transition-colors"
+                          className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white truncate block max-w-xs sm:max-w-md lg:max-w-lg hover:text-purple-600 dark:hover:text-purple-400 text-left transition-colors font-sans cursor-pointer"
                           title={form.title}
                         >
                           {form.title}
                         </button>
                         <p
-                          className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-xs sm:max-w-md lg:max-w-lg mt-0.5"
+                          className="text-[11px] text-zinc-400 dark:text-zinc-500 truncate max-w-xs sm:max-w-md lg:max-w-lg mt-0.5"
                           title={form.description || "No description"}
                         >
                           {form.description || "No description"}
@@ -142,27 +154,31 @@ export function FormsListTable({
                   </td>
 
                   {/* Status Badge */}
-                  <td className="px-4 py-3.5 whitespace-nowrap">
+                  <td className="px-3.5 py-3 whitespace-nowrap">
                     <FormStatusBadge status={form.status} />
                   </td>
 
                   {/* Responses */}
-                  <td className="px-4 py-3.5 text-xs text-slate-400 font-medium whitespace-nowrap hidden lg:table-cell">
-                    —
+                  <td className="px-3.5 py-3 text-xs text-zinc-700 dark:text-zinc-300 font-mono font-medium whitespace-nowrap hidden lg:table-cell">
+                    {form.responsesCount !== null && form.responsesCount !== undefined
+                      ? form.responsesCount
+                      : "—"}
                   </td>
 
                   {/* Views */}
-                  <td className="px-4 py-3.5 text-xs text-slate-400 font-medium whitespace-nowrap hidden lg:table-cell">
-                    —
+                  <td className="px-3.5 py-3 text-xs text-zinc-700 dark:text-zinc-300 font-mono font-medium whitespace-nowrap hidden lg:table-cell">
+                    {form.viewsCount !== null && form.viewsCount !== undefined
+                      ? form.viewsCount
+                      : "—"}
                   </td>
 
                   {/* Created */}
-                  <td className="px-4 py-3.5 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap hidden md:table-cell">
+                  <td className="px-3.5 py-3 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono whitespace-nowrap hidden md:table-cell">
                     {formatDate(form.createdAt)}
                   </td>
 
                   {/* Last Updated */}
-                  <td className="px-4 py-3.5 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                  <td className="px-3.5 py-3 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono whitespace-nowrap">
                     <time
                       dateTime={form.updatedAt}
                       title={formatDateTime(form.updatedAt)}
@@ -173,7 +189,7 @@ export function FormsListTable({
                   </td>
 
                   {/* Actions */}
-                  <td className="px-4 py-3.5 whitespace-nowrap text-right">
+                  <td className="px-3.5 py-3 whitespace-nowrap text-right">
                     <FormRowActions
                       form={form}
                       onViewDetails={onViewDetails}

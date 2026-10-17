@@ -35,22 +35,25 @@ export function AppearanceSettingsCard({
     <div
       id="appearance-section"
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-5",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-5 space-y-5",
         className
       )}
     >
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+        <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold mb-1">
+          Preferences // Appearance
+        </div>
+        <h3 className="text-sm font-bold text-neutral-900 dark:text-white">
           Appearance
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
           Customize how Formly looks for you.
         </p>
       </div>
 
       {/* Theme Mode Preview Tiles */}
       <div className="space-y-2">
-        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+        <span className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block">
           Theme Mode
         </span>
         <div className="grid grid-cols-3 gap-3">
@@ -59,27 +62,27 @@ export function AppearanceSettingsCard({
             type="button"
             onClick={() => onChange("themeMode", "light")}
             className={cn(
-              "flex flex-col items-center gap-2 p-2 rounded-xl border transition-all text-center",
+              "flex flex-col items-center gap-2 p-2 rounded-lg border transition-all text-center",
               settings.themeMode === "light"
-                ? "border-violet-600 ring-2 ring-violet-500/20 bg-violet-50/20 dark:bg-violet-950/20"
-                : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40"
+                ? "border-[#563BFA] bg-[#563BFA]/5 text-[#563BFA] dark:text-[#a594fd]"
+                : "border-[#E5E7EB] dark:border-[#27272A] hover:border-neutral-300 dark:hover:border-neutral-700 bg-neutral-50 dark:bg-[#181B20]"
             )}
           >
             {/* Visual Mini Mockup */}
-            <div className="w-full h-14 rounded-lg bg-slate-100 border border-slate-200/70 p-1 flex flex-col justify-between overflow-hidden shadow-2xs">
-              <div className="flex items-center gap-1 border-b border-slate-200/60 pb-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                <span className="w-8 h-1 rounded bg-slate-300" />
+            <div className="w-full h-14 rounded-md bg-white border border-[#E5E7EB] p-1 flex flex-col justify-between overflow-hidden">
+              <div className="flex items-center gap-1 border-b border-[#E5E7EB] pb-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#563BFA]" />
+                <span className="w-8 h-1 rounded bg-neutral-300" />
               </div>
               <div className="flex gap-1 flex-1 pt-1">
-                <div className="w-3 h-full rounded bg-slate-200/80" />
+                <div className="w-3 h-full rounded bg-neutral-100" />
                 <div className="flex-1 space-y-1">
-                  <div className="w-full h-2 rounded bg-white" />
-                  <div className="w-3/4 h-2 rounded bg-white" />
+                  <div className="w-full h-2 rounded bg-neutral-100" />
+                  <div className="w-3/4 h-2 rounded bg-neutral-100" />
                 </div>
               </div>
             </div>
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-mono font-semibold text-neutral-800 dark:text-neutral-200">
               Light
             </span>
           </button>
@@ -89,27 +92,27 @@ export function AppearanceSettingsCard({
             type="button"
             onClick={() => onChange("themeMode", "dark")}
             className={cn(
-              "flex flex-col items-center gap-2 p-2 rounded-xl border transition-all text-center",
+              "flex flex-col items-center gap-2 p-2 rounded-lg border transition-all text-center",
               settings.themeMode === "dark"
-                ? "border-violet-600 ring-2 ring-violet-500/20 bg-violet-50/20 dark:bg-violet-950/20"
-                : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40"
+                ? "border-[#563BFA] bg-[#563BFA]/5 text-[#563BFA] dark:text-[#a594fd]"
+                : "border-[#E5E7EB] dark:border-[#27272A] hover:border-neutral-300 dark:hover:border-neutral-700 bg-neutral-50 dark:bg-[#181B20]"
             )}
           >
             {/* Visual Mini Mockup */}
-            <div className="w-full h-14 rounded-lg bg-slate-900 border border-slate-800 p-1 flex flex-col justify-between overflow-hidden shadow-2xs">
-              <div className="flex items-center gap-1 border-b border-slate-800 pb-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
-                <span className="w-8 h-1 rounded bg-slate-700" />
+            <div className="w-full h-14 rounded-md bg-[#090A0B] border border-[#27272A] p-1 flex flex-col justify-between overflow-hidden">
+              <div className="flex items-center gap-1 border-b border-[#27272A] pb-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#563BFA]" />
+                <span className="w-8 h-1 rounded bg-neutral-700" />
               </div>
               <div className="flex gap-1 flex-1 pt-1">
-                <div className="w-3 h-full rounded bg-slate-800" />
+                <div className="w-3 h-full rounded bg-[#181B20]" />
                 <div className="flex-1 space-y-1">
-                  <div className="w-full h-2 rounded bg-slate-800/90" />
-                  <div className="w-3/4 h-2 rounded bg-slate-800/90" />
+                  <div className="w-full h-2 rounded bg-[#181B20]" />
+                  <div className="w-3/4 h-2 rounded bg-[#181B20]" />
                 </div>
               </div>
             </div>
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-mono font-semibold text-neutral-800 dark:text-neutral-200">
               Dark
             </span>
           </button>
@@ -119,24 +122,24 @@ export function AppearanceSettingsCard({
             type="button"
             onClick={() => onChange("themeMode", "system")}
             className={cn(
-              "flex flex-col items-center gap-2 p-2 rounded-xl border transition-all text-center",
+              "flex flex-col items-center gap-2 p-2 rounded-lg border transition-all text-center",
               settings.themeMode === "system"
-                ? "border-violet-600 ring-2 ring-violet-500/20 bg-violet-50/20 dark:bg-violet-950/20"
-                : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40"
+                ? "border-[#563BFA] bg-[#563BFA]/5 text-[#563BFA] dark:text-[#a594fd]"
+                : "border-[#E5E7EB] dark:border-[#27272A] hover:border-neutral-300 dark:hover:border-neutral-700 bg-neutral-50 dark:bg-[#181B20]"
             )}
           >
             {/* Visual Mini Mockup */}
-            <div className="w-full h-14 rounded-lg border border-slate-300 dark:border-slate-700 p-1 flex overflow-hidden shadow-2xs">
-              <div className="w-1/2 h-full bg-slate-100 p-0.5 space-y-1 border-r border-slate-200">
-                <span className="w-1 h-1 rounded-full bg-violet-500 block" />
-                <span className="w-full h-2 rounded bg-white block" />
+            <div className="w-full h-14 rounded-md border border-[#E5E7EB] dark:border-[#27272A] p-0 flex overflow-hidden">
+              <div className="w-1/2 h-full bg-white p-1 space-y-1 border-r border-[#E5E7EB]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#563BFA] block" />
+                <span className="w-full h-2 rounded bg-neutral-100 block" />
               </div>
-              <div className="w-1/2 h-full bg-slate-900 p-0.5 space-y-1">
-                <span className="w-1 h-1 rounded-full bg-violet-400 block" />
-                <span className="w-full h-2 rounded bg-slate-800 block" />
+              <div className="w-1/2 h-full bg-[#090A0B] p-1 space-y-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#563BFA] block" />
+                <span className="w-full h-2 rounded bg-[#181B20] block" />
               </div>
             </div>
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-mono font-semibold text-neutral-800 dark:text-neutral-200">
               System
             </span>
           </button>
@@ -144,8 +147,8 @@ export function AppearanceSettingsCard({
       </div>
 
       {/* Accent Color Swatches */}
-      <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+      <div className="space-y-2 pt-3 border-t border-[#E5E7EB] dark:border-[#27272A]">
+        <span className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block">
           Accent Color
         </span>
         <div className="flex items-center gap-2 flex-wrap">
@@ -161,7 +164,7 @@ export function AppearanceSettingsCard({
                 className={cn(
                   "w-7 h-7 rounded-full flex items-center justify-center transition-all focus:outline-none relative",
                   isSelected
-                    ? "ring-2 ring-offset-2 ring-slate-900 dark:ring-white scale-110"
+                    ? "ring-2 ring-offset-2 ring-neutral-900 dark:ring-white dark:ring-offset-[#121417] scale-110"
                     : "hover:scale-105 opacity-90 hover:opacity-100"
                 )}
                 style={{ backgroundColor: color.hex }}

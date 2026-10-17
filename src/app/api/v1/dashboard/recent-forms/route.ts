@@ -17,7 +17,7 @@ export async function GET() {
       orderBy: {
         updatedAt: "desc",
       },
-      take: 6,
+      take: 8,
       select: {
         id: true,
         title: true,
@@ -45,6 +45,7 @@ export async function GET() {
         status: f.status,
         themeKey: f.themeKey || def.themeKey || "soft-lavender",
         coverAssetId: def.coverImage?.assetId || null,
+        coverImage: def.coverImage || null,
         responsesCount: f._count?.responses ?? 0,
         viewsCount: f._count?.sessions ?? 0,
         updatedAt: f.updatedAt,

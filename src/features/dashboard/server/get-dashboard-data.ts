@@ -10,6 +10,7 @@ export interface DashboardFormItemDTO {
   status: FormStatus;
   themeKey?: string | null;
   coverAssetId?: string | null;
+  coverImage?: any | null;
   responsesCount?: number;
   viewsCount?: number;
   updatedAt: Date | string;
@@ -26,6 +27,9 @@ export interface DashboardDataDTO {
   stats: {
     totalForms: number;
     draftForms: number;
+    activeForms: number;
+    totalResponses: number;
+    totalViews: number;
   };
   recentForms: DashboardFormItemDTO[];
 }
@@ -43,8 +47,16 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
     sessionData.user.name ||
     "Creator";
 
-  // Run profile, stats, and recent forms queries concurrently scoped strictly to userId
-  const [userProfile, totalForms, draftForms, recentForms] = await Promise.all([
+  // Run profile, real metrics, and recent forms queries concurrently scoped strictly to userId
+  const [
+    userProfile,
+    totalForms,
+    draftForms,
+    activeForms,
+    totalResponses,
+    totalViews,
+    recentForms,
+  ] = await Promise.all([
     prisma.profile.findUnique({
       where: { userId },
       select: { displayName: true, avatarObjectKey: true, updatedAt: true },
@@ -61,6 +73,28 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
         status: "DRAFT",
       },
     }),
+    prisma.form.count({
+      where: {
+        ownerId: userId,
+        status: "PUBLISHED",
+      },
+    }),
+    prisma.formResponse.count({
+      where: {
+        form: {
+          ownerId: userId,
+          status: { not: "TRASHED" },
+        },
+      },
+    }),
+    prisma.responseSession.count({
+      where: {
+        form: {
+          ownerId: userId,
+          status: { not: "TRASHED" },
+        },
+      },
+    }),
     prisma.form.findMany({
       where: {
         ownerId: userId,
@@ -69,7 +103,7 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
       orderBy: {
         updatedAt: "desc",
       },
-      take: 6,
+      take: 8,
       select: {
         id: true,
         title: true,
@@ -109,6 +143,9 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
     stats: {
       totalForms,
       draftForms,
+      activeForms,
+      totalResponses,
+      totalViews,
     },
     recentForms: recentForms.map((f) => {
       const def = (f.definition as any) || {};
@@ -119,6 +156,7 @@ export async function getDashboardData(): Promise<DashboardDataDTO | null> {
         status: f.status,
         themeKey: f.themeKey || def.themeKey || "soft-lavender",
         coverAssetId: def.coverImage?.assetId || null,
+        coverImage: def.coverImage || null,
         responsesCount: f._count?.responses ?? 0,
         viewsCount: f._count?.sessions ?? 0,
         updatedAt: f.updatedAt,

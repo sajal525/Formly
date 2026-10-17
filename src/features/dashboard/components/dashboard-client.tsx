@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardDataDTO } from "../server/get-dashboard-data";
 import { WelcomeHeader } from "./welcome-header";
-import { QuickStartCards } from "./quick-start-cards";
+import { DashboardStats } from "./dashboard-stats";
 import { RecentFormsSection } from "./recent-forms";
 import { CreateFormModal } from "@/features/forms/components/create-form-modal";
 import { CheckCircle2, X } from "lucide-react";
@@ -53,10 +53,10 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
   }
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 sm:gap-5 lg:gap-6 min-h-0">
-      {/* Success Notification Toast */}
+    <div className="w-full h-full flex flex-col gap-4 sm:gap-5 min-h-0">
+      {/* Toast Notification */}
       {createdToast && (
-        <div className="shrink-0 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center justify-between shadow-sm animate-in slide-in-from-top-2 duration-200">
+        <div className="shrink-0 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center justify-between shadow-2xs animate-in slide-in-from-top-2 duration-200">
           <div className="flex items-center gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{createdToast}</span>
@@ -72,20 +72,24 @@ export function DashboardClient({ initialData }: DashboardClientProps) {
         </div>
       )}
 
-      {/* Main Workspace (Full width, no right rail) */}
-      <div className="w-full flex-1 flex flex-col gap-3.5 sm:gap-4 lg:gap-5 min-h-0">
+      {/* Main Workspace */}
+      <div className="w-full flex-1 flex flex-col gap-4 sm:gap-5 min-h-0">
+        {/* 1. Welcome & Create Action */}
         <div className="shrink-0">
           <WelcomeHeader
+            displayName={initialData.user.displayName}
+            username={initialData.user.username}
             onCreateClick={() => setIsModalOpen(true)}
+            onBlankFormDirect={handleBlankFormDirect}
           />
         </div>
 
+        {/* 2. Account Activity Summary (4 Metric Cards) */}
         <div className="shrink-0">
-          <QuickStartCards
-            onBlankFormClick={handleBlankFormDirect}
-          />
+          <DashboardStats stats={initialData.stats} />
         </div>
 
+        {/* 3. Recent Forms Cover-Image Grid */}
         <div className="flex-1 min-h-0 flex flex-col">
           <RecentFormsSection
             forms={initialData.recentForms}

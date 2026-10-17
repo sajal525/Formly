@@ -37,16 +37,16 @@ export function QuestionWiseAnalysis({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between",
         className
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
-          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+          <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
             Question-wise Analysis
           </h3>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-[11px] font-mono text-neutral-400">
             ({total} answered)
           </span>
         </div>
@@ -57,7 +57,7 @@ export function QuestionWiseAnalysis({
               <select
                 value={selectedQuestionId}
                 onChange={(e) => setSelectedQuestionId(e.target.value)}
-                className="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-lg py-1 pl-2.5 pr-7 focus:outline-none focus:ring-1 focus:ring-violet-500 font-medium max-w-[200px] truncate"
+                className="appearance-none bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-700 dark:text-neutral-200 text-xs font-mono rounded-md py-1 pl-2.5 pr-7 focus:outline-none focus:ring-1 focus:ring-[#563BFA] max-w-[200px] truncate"
               >
                 {questions.map((q, idx) => (
                   <option key={q.questionId} value={q.questionId}>

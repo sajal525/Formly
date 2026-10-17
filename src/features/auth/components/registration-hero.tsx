@@ -8,23 +8,22 @@ export function RegistrationHero() {
       {/* Top Badge & Headline & Description */}
       <div className="space-y-3 sm:space-y-4">
         {/* Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-100/80 dark:border-indigo-800/40 shadow-sm">
-          <span className="text-xs sm:text-sm" aria-hidden="true">🚀</span>
-          <span className="text-[11px] sm:text-xs font-semibold text-[#563BFA] dark:text-indigo-300 tracking-wide">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A]">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
             Join Formly
           </span>
         </div>
 
-        {/* Headline with Gradient */}
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-[60px] font-extrabold tracking-tight leading-[1.08] text-[var(--ink)]">
+        {/* Headline */}
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[52px] font-bold tracking-tight leading-[1.08] text-zinc-900 dark:text-zinc-100">
           Create your{" "}
-          <span className="block mt-0.5 bg-gradient-to-r from-[#329CF5] via-[#563BFA] to-[#BD45E8] bg-clip-text text-transparent">
+          <span className="block mt-0.5 text-[#563BFA]">
             Formly account
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm lg:text-sm xl:text-base max-w-xl leading-relaxed">
+        <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm max-w-xl leading-relaxed">
           Start creating beautiful forms in seconds. Your forms, responses and settings are synced
           across all your devices.
         </p>

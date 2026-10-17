@@ -66,19 +66,19 @@ export function TrashToolbar({
               type="button"
               onClick={() => onTypeChange(cat.key)}
               className={cn(
-                "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 shadow-2xs",
+                "px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all shrink-0 flex items-center gap-1.5 border",
                 isActive
-                  ? "bg-[#563BFA] text-white shadow-xs"
-                  : "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                  ? "bg-[#563BFA] text-white border-[#563BFA]"
+                  : "bg-white dark:bg-[#121417] border-[#E5E7EB] dark:border-[#27272A] text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-[#181B20]"
               )}
             >
               <span>{cat.label}</span>
               <span
                 className={cn(
-                  "text-[11px] px-1.5 py-0.2 rounded-full",
+                  "text-[10px] font-mono px-1.5 py-0.2 rounded",
                   isActive
                     ? "bg-white/20 text-white"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                    : "bg-neutral-100 dark:bg-[#181B20] text-neutral-500 dark:text-neutral-400 border border-[#E5E7EB] dark:border-[#27272A]"
                 )}
               >
                 {cat.count}
@@ -92,7 +92,7 @@ export function TrashToolbar({
       <div className="flex items-center gap-2.5">
         {/* Search Input */}
         <div className="relative flex-1 sm:w-60">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search deleted items..."
@@ -100,7 +100,7 @@ export function TrashToolbar({
             onChange={(e) => setLocalSearch(e.target.value)}
             onBlur={() => onSearchChange(localSearch)}
             onKeyDown={handleKeyDown}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-violet-500 shadow-2xs transition-colors"
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-xs font-mono text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:border-[#563BFA] transition-colors"
           />
         </div>
 
@@ -109,13 +109,13 @@ export function TrashToolbar({
           <button
             type="button"
             onClick={() => setSortOpen(!sortOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-2xs transition-colors whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-xs font-mono text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#181B20] transition-colors whitespace-nowrap"
           >
-            <span className="text-slate-400">Sort by:</span>
-            <span className="font-semibold text-slate-900 dark:text-white">
+            <span className="text-neutral-400">Sort:</span>
+            <span className="font-semibold text-neutral-900 dark:text-white">
               {SORT_LABELS[currentSort]}
             </span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
+            <ChevronDown className="w-3.5 h-3.5 text-neutral-400 ml-0.5" />
           </button>
 
           {sortOpen && (
@@ -124,7 +124,7 @@ export function TrashToolbar({
                 className="fixed inset-0 z-40"
                 onClick={() => setSortOpen(false)}
               />
-              <div className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-[#121417] rounded-lg shadow-lg border border-[#E5E7EB] dark:border-[#27272A] py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
                 {(Object.keys(SORT_LABELS) as TrashSort[]).map((sortKey) => {
                   const isSelected = currentSort === sortKey;
                   return (
@@ -136,10 +136,10 @@ export function TrashToolbar({
                         setSortOpen(false);
                       }}
                       className={cn(
-                        "w-full px-3.5 py-2 text-left text-xs font-medium flex items-center justify-between transition-colors",
+                        "w-full px-3 py-1.5 text-left text-xs font-mono flex items-center justify-between transition-colors",
                         isSelected
-                          ? "bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 font-semibold"
-                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80"
+                          ? "bg-[#563BFA]/10 text-[#563BFA] dark:text-[#a594fd] font-semibold"
+                          : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#181B20]"
                       )}
                     >
                       <span>{SORT_LABELS[sortKey]}</span>

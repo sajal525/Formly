@@ -22,21 +22,21 @@ export function FormsEmptyState({
   // Scenario 1: User has 0 forms in total
   if (totalFormsCount === 0) {
     return (
-      <div className="py-16 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-sm">
-        <div className="w-14 h-14 rounded-3xl bg-[#EEF0FF] dark:bg-indigo-950/60 flex items-center justify-center text-[#563BFA] dark:text-indigo-400 mb-4 shadow-sm">
-          <Inbox className="w-7 h-7" />
+      <div className="py-16 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A]">
+        <div className="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-500 dark:text-neutral-400 mb-4">
+          <Inbox className="w-6 h-6" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
           No forms yet
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-6 leading-relaxed">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm mb-6 leading-relaxed">
           You haven&apos;t created any forms yet. Start by creating a blank draft
           form to begin collecting responses.
         </p>
         <button
           type="button"
           onClick={onCreateClick}
-          className="h-10 px-5 rounded-xl bg-[#563BFA] hover:bg-[#482fe0] text-white text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-2 transition-all active:scale-[0.98]"
+          className="h-8 px-4 rounded-lg bg-[#563BFA] hover:bg-[#482fe0] text-white text-xs font-medium flex items-center gap-2 transition-colors"
         >
           <FilePlus className="w-4 h-4" />
           <span>Create your first form</span>
@@ -48,16 +48,16 @@ export function FormsEmptyState({
   // Scenario 2: Search has no results
   if (searchQuery.trim().length > 0) {
     return (
-      <div className="py-14 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-sm">
-        <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
+      <div className="py-14 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A]">
+        <div className="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-400 mb-4">
           <SearchX className="w-6 h-6" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
           No results found
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-5 leading-relaxed">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm mb-5 leading-relaxed">
           No forms matched your search for &quot;
-          <span className="font-semibold text-slate-700 dark:text-slate-300">
+          <span className="font-mono font-semibold text-neutral-800 dark:text-neutral-200">
             {searchQuery}
           </span>
           &quot;
@@ -69,7 +69,7 @@ export function FormsEmptyState({
         <button
           type="button"
           onClick={onResetFilters}
-          className="h-9 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2 transition-colors"
+          className="h-8 px-3.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-700 dark:text-neutral-200 text-xs font-medium flex items-center gap-2 transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset search & filters</span>
@@ -89,20 +89,20 @@ export function FormsEmptyState({
     }[statusFilter] || statusFilter;
 
   return (
-    <div className="py-14 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-sm">
-      <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
+    <div className="py-14 px-4 flex flex-col items-center justify-center text-center bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A]">
+      <div className="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-400 mb-4">
         <Inbox className="w-6 h-6" />
       </div>
-      <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+      <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
         No {statusLabel} forms yet
       </h3>
-      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-5 leading-relaxed">
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-sm mb-5 leading-relaxed">
         You do not have any forms currently marked as {statusLabel}.
       </p>
       <button
         type="button"
         onClick={onResetFilters}
-        className="h-9 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2 transition-colors"
+        className="h-8 px-3.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-700 dark:text-neutral-200 text-xs font-medium flex items-center gap-2 transition-colors"
       >
         <span>View all forms</span>
       </button>

@@ -136,27 +136,28 @@ export function SettingsWorkspaceClient({
       {/* Toast Notification */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-sm animate-in fade-in slide-in-from-bottom-3 duration-200 ${
+          className={cn(
+            "fixed bottom-6 right-6 z-50 flex items-center gap-2 px-3.5 py-2 rounded-lg border text-xs font-mono shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-150",
             toast.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200"
-              : "bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950 dark:border-rose-800 dark:text-rose-200"
-          }`}
+              ? "bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-[#121417] dark:border-emerald-800 dark:text-emerald-300"
+              : "bg-rose-50/90 border-rose-200 text-rose-800 dark:bg-[#121417] dark:border-rose-800 dark:text-rose-300"
+          )}
         >
           {toast.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
           )}
-          <span className="font-medium">{toast.text}</span>
+          <span className="font-semibold">{toast.text}</span>
         </div>
       )}
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">
           Settings
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
           Customize your Formly experience and manage your preferences.
         </p>
       </div>

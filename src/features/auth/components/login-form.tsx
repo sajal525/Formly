@@ -54,14 +54,14 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-[410px] lg:max-w-[430px] xl:max-w-[460px] 2xl:max-w-[480px] mx-auto bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl rounded-[24px] 2xl:rounded-[28px] p-6 sm:p-7 xl:p-8 border border-slate-200/80 dark:border-white/10 shadow-[0_15px_50px_-15px_rgba(86,59,250,0.12)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] transition-all">
+    <div className="w-full max-w-[410px] lg:max-w-[430px] xl:max-w-[460px] 2xl:max-w-[480px] mx-auto bg-white dark:bg-[#121417] rounded-xl p-6 sm:p-7 xl:p-8 border border-[#E5E7EB] dark:border-[#27272A] shadow-sm transition-colors">
       {/* Brand Header */}
       <div className="flex flex-col items-center text-center mb-4 sm:mb-5">
         <FormlyLogo size="md" className="mb-2 sm:mb-3" />
-        <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--ink)] tracking-tight">
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
           Welcome back
         </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
           Sign in to your account
         </p>
       </div>
@@ -100,10 +100,10 @@ export function LoginForm() {
               disabled={isSubmitting}
               {...register("username")}
               className={cn(
-                "w-full h-11 sm:h-11.5 pl-10 pr-3.5 rounded-xl text-sm bg-white dark:bg-slate-800/90 text-slate-900 dark:text-slate-100",
-                "border border-slate-200 dark:border-white/10 placeholder:text-slate-400 dark:placeholder:text-slate-500",
-                "focus:outline-none focus:border-[#563BFA] focus:ring-4 focus:ring-[#563BFA]/15 transition-all shadow-sm",
-                errors.username && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                "w-full h-10 pl-10 pr-3.5 rounded-lg text-sm bg-zinc-50 dark:bg-[#181B20] text-zinc-900 dark:text-zinc-100",
+                "border border-[#E5E7EB] dark:border-[#27272A] placeholder:text-zinc-400 dark:placeholder:text-zinc-500",
+                "focus:outline-none focus:border-[#563BFA] focus:ring-1 focus:ring-[#563BFA] transition-colors",
+                errors.username && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
               )}
             />
           </div>
@@ -134,17 +134,17 @@ export function LoginForm() {
               disabled={isSubmitting}
               {...register("password")}
               className={cn(
-                "w-full h-11 sm:h-11.5 pl-10 pr-10 rounded-xl text-sm bg-white dark:bg-slate-800/90 text-slate-900 dark:text-slate-100",
-                "border border-slate-200 dark:border-white/10 placeholder:text-slate-400 dark:placeholder:text-slate-500",
-                "focus:outline-none focus:border-[#563BFA] focus:ring-4 focus:ring-[#563BFA]/15 transition-all shadow-sm",
-                errors.password && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                "w-full h-10 pl-10 pr-10 rounded-lg text-sm bg-zinc-50 dark:bg-[#181B20] text-zinc-900 dark:text-zinc-100",
+                "border border-[#E5E7EB] dark:border-[#27272A] placeholder:text-zinc-400 dark:placeholder:text-zinc-500",
+                "focus:outline-none focus:border-[#563BFA] focus:ring-1 focus:ring-[#563BFA] transition-colors",
+                errors.password && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
               )}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA]"
+              className="absolute right-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#563BFA] cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -158,18 +158,18 @@ export function LoginForm() {
 
         {/* Remember Me & Forgot Password Row */}
         <div className="flex items-center justify-between pt-0.5 pb-0.5 text-xs">
-          <label className="flex items-center gap-2 cursor-pointer select-none text-slate-600 dark:text-slate-300 font-medium">
+          <label className="flex items-center gap-2 cursor-pointer select-none text-zinc-600 dark:text-zinc-400 font-medium">
             <input
               type="checkbox"
               {...register("rememberMe")}
-              className="w-3.5 h-3.5 rounded text-[#563BFA] focus:ring-[#563BFA] border-slate-300 dark:border-slate-600 dark:bg-slate-800 accent-[#563BFA]"
+              className="w-3.5 h-3.5 rounded text-[#563BFA] focus:ring-[#563BFA] border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 accent-[#563BFA]"
             />
             <span className="text-[11px] sm:text-xs">Remember me</span>
           </label>
 
-          {/* Forgot password placeholder per Section 2: defer active link until recovery exists */}
+          {/* Forgot password placeholder */}
           <span
-            className="text-[11px] sm:text-xs text-[#563BFA] dark:text-indigo-400 font-medium hover:underline cursor-pointer"
+            className="text-[11px] sm:text-xs text-[#563BFA] dark:text-violet-400 font-medium hover:underline cursor-pointer"
             onClick={() =>
               alert("Password recovery will be enabled once verified account recovery is configured.")
             }
@@ -183,10 +183,9 @@ export function LoginForm() {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            "w-full h-11 sm:h-11.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2",
-            "bg-gradient-to-r from-[#329CF5] via-[#563BFA] to-[#BD45E8]",
-            "hover:opacity-95 hover:shadow-lg hover:shadow-[#563BFA]/25 active:scale-[0.99] transition-all",
-            "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#563BFA]/30 disabled:opacity-60 disabled:cursor-not-allowed"
+            "w-full h-10 rounded-lg font-medium text-xs text-white flex items-center justify-center gap-2",
+            "bg-[#563BFA] hover:bg-[#4830D9] transition-colors cursor-pointer",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563BFA] disabled:opacity-60 disabled:cursor-not-allowed"
           )}
         >
           {isSubmitting ? (
@@ -204,27 +203,27 @@ export function LoginForm() {
       </form>
 
       {/* Social Providers Divider */}
-      <div className="relative my-4 sm:my-4.5">
+      <div className="relative my-4">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200/80 dark:border-white/10" />
+          <div className="w-full border-t border-[#E5E7EB] dark:border-[#27272A]" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="bg-white/90 dark:bg-slate-900/90 px-3 text-[11px] text-slate-400 dark:text-slate-500">
+          <span className="bg-white dark:bg-[#121417] px-2.5 text-[10px] font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
             or continue with
           </span>
         </div>
       </div>
 
-      {/* Social Buttons (Visual row per 1.png; deferred action per Section 2) */}
-      <div className="grid grid-cols-3 gap-2.5">
+      {/* Social Buttons */}
+      <div className="grid grid-cols-3 gap-2">
         {/* Google */}
         <button
           type="button"
           onClick={() => alert("Google sign-in will be enabled in a future auth step.")}
           aria-label="Sign in with Google (available soon)"
-          className="h-10 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+          className="h-9 rounded-lg bg-zinc-50/50 dark:bg-[#181B20]/40 border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -249,9 +248,9 @@ export function LoginForm() {
           type="button"
           onClick={() => alert("GitHub sign-in will be enabled in a future auth step.")}
           aria-label="Sign in with GitHub (available soon)"
-          className="h-10 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-800 dark:text-white shadow-sm"
+          className="h-9 rounded-lg bg-zinc-50/50 dark:bg-[#181B20]/40 border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-800 dark:text-zinc-200 cursor-pointer"
         >
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
           </svg>
         </button>
@@ -261,9 +260,9 @@ export function LoginForm() {
           type="button"
           onClick={() => alert("Microsoft sign-in will be enabled in a future auth step.")}
           aria-label="Sign in with Microsoft (available soon)"
-          className="h-10 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+          className="h-9 rounded-lg bg-zinc-50/50 dark:bg-[#181B20]/40 border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
             <path fill="#F25022" d="M1 1h10v10H1z" />
             <path fill="#7FBA00" d="M13 1h10v10H13z" />
             <path fill="#00A4EF" d="M1 13h10v10H1z" />
@@ -273,11 +272,11 @@ export function LoginForm() {
       </div>
 
       {/* Account Creation Prompt */}
-      <div className="mt-4 sm:mt-5 text-center text-xs text-slate-500 dark:text-slate-400">
+      <div className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="font-bold text-[#563BFA] dark:text-indigo-400 hover:underline inline-block transition-colors"
+          className="font-medium text-[#563BFA] dark:text-violet-400 hover:underline inline-block transition-colors"
         >
           Create one
         </Link>

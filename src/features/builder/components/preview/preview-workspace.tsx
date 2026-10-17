@@ -56,19 +56,19 @@ export function PreviewWorkspace({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 bg-slate-100/60 dark:bg-slate-950/60 overflow-hidden">
-      {/* Subheader / Device & Preview Action Toolbar (matches B4.png) */}
-      <div className="h-13 shrink-0 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200/80 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between gap-3 select-none z-20 backdrop-blur-xs transition-colors">
+    <div className="flex-1 flex flex-col h-full min-h-0 bg-[#FAFAFA] dark:bg-[#090A0B] overflow-hidden">
+      {/* Subheader / Device & Preview Action Toolbar */}
+      <div className="h-12 shrink-0 bg-white dark:bg-[#121417] border-b border-[#E5E7EB] dark:border-[#27272A] px-4 sm:px-6 flex items-center justify-between gap-3 select-none z-20 transition-colors">
         {/* Left: Device Presets Selector */}
-        <div className="flex items-center gap-1 sm:gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+        <div className="flex items-center gap-1 bg-zinc-100 dark:bg-[#181B20] p-0.5 rounded-lg border border-[#E5E7EB] dark:border-[#27272A]">
           <button
             type="button"
             onClick={() => setDevicePreset("desktop")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-colors cursor-pointer",
               devicePreset === "desktop"
-                ? "bg-violet-600 text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                ? "bg-[#563BFA] text-white"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             )}
             title="Desktop preview (1366 × 768)"
           >
@@ -80,10 +80,10 @@ export function PreviewWorkspace({
             type="button"
             onClick={() => setDevicePreset("tablet")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-colors cursor-pointer",
               devicePreset === "tablet"
-                ? "bg-violet-600 text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                ? "bg-[#563BFA] text-white"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             )}
             title="Tablet preview (768 × 1024)"
           >
@@ -95,10 +95,10 @@ export function PreviewWorkspace({
             type="button"
             onClick={() => setDevicePreset("mobile")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-colors cursor-pointer",
               devicePreset === "mobile"
-                ? "bg-violet-600 text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                ? "bg-[#563BFA] text-white"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             )}
             title="Mobile preview (375 × 812)"
           >
@@ -114,16 +114,16 @@ export function PreviewWorkspace({
             variant="outline"
             size="sm"
             onClick={handleOpenStandalonePreview}
-            className="h-8.5 px-3 rounded-xl text-xs font-semibold gap-1.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="h-8 px-3 rounded-lg text-xs font-medium gap-1.5 border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#181B20] text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            <Eye className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+            <Eye className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
             <span>View as respondent</span>
           </Button>
 
           <button
             type="button"
             onClick={handleOpenStandalonePreview}
-            className="w-8.5 h-8.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#181B20] flex items-center justify-center text-zinc-500 hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Open preview in new tab"
             aria-label="Open preview in new tab"
           >

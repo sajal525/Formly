@@ -33,17 +33,17 @@ export function ResponseDetailsPanel({
     return (
       <div
         className={cn(
-          "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-xs min-h-[360px]",
+          "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-8 flex flex-col items-center justify-center text-center min-h-[360px]",
           className
         )}
       >
-        <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mb-3">
-          <FileText className="w-6 h-6" />
+        <div className="w-10 h-10 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 flex items-center justify-center mb-3">
+          <FileText className="w-5 h-5" />
         </div>
-        <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <h4 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
           No Response Selected
         </h4>
-        <p className="text-xs text-slate-400 max-w-xs mt-1">
+        <p className="text-xs text-neutral-400 max-w-xs mt-1">
           Click &ldquo;View&rdquo; or click a row in the responses table to review complete submission details and answers.
         </p>
       </div>
@@ -91,22 +91,22 @@ export function ResponseDetailsPanel({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs flex flex-col overflow-hidden",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl flex flex-col overflow-hidden",
         className
       )}
     >
       {/* Panel Header */}
-      <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-violet-600 text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs">
+      <div className="p-3.5 border-b border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-800 dark:text-neutral-200 font-mono font-bold text-xs flex items-center justify-center shrink-0">
             {initialLetter}
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+            <h3 className="text-xs font-semibold text-neutral-900 dark:text-white truncate">
               {respondentTitle}
             </h3>
             {respondentSubtitle && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+              <p className="text-[11px] font-mono text-neutral-400 truncate">
                 {respondentSubtitle}
               </p>
             )}
@@ -114,29 +114,29 @@ export function ResponseDetailsPanel({
         </div>
 
         <div className="flex items-center gap-1">
-          <span className="text-[11px] text-slate-400 mr-2 hidden sm:inline-block">
+          <span className="text-[10px] font-mono text-neutral-400 mr-2 hidden sm:inline-block">
             {formatTimestamp(selectedResponse.submittedAt)}
           </span>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close details panel"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-md text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-[#1C1F26] transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
       {/* Meta Bar */}
-      <div className="px-4 py-2 bg-slate-50/60 dark:bg-slate-950/40 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+      <div className="px-3.5 py-1.5 bg-neutral-50 dark:bg-[#181B20] border-b border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-between text-xs font-mono text-neutral-500">
         <div className="flex items-center gap-3">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">
+          <span className="font-semibold text-neutral-700 dark:text-neutral-300">
             Submission #{selectedResponse.rowNumber}
           </span>
           {selectedResponse.durationSeconds !== null && (
             <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <Clock className="w-3 h-3 text-neutral-400" />
               {formatDuration(selectedResponse.durationSeconds)}
             </span>
           )}
@@ -147,25 +147,25 @@ export function ResponseDetailsPanel({
       </div>
 
       {/* Answers Scroll Area */}
-      <div className="p-4 overflow-y-auto max-h-[460px] space-y-3.5 divide-y divide-slate-100 dark:divide-slate-800/60">
+      <div className="p-3.5 overflow-y-auto max-h-[460px] space-y-3 divide-y divide-[#E5E7EB] dark:divide-[#27272A]">
         {selectedResponse.answers.map((ans, idx) => (
-          <div key={ans.questionId || idx} className={cn("space-y-1", idx > 0 ? "pt-3" : "")}>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+          <div key={ans.questionId || idx} className={cn("space-y-1", idx > 0 ? "pt-2.5" : "")}>
+            <span className="text-[10px] font-mono font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider block">
               {ans.label}
             </span>
 
             {ans.type === "RATING" && ans.value ? (
-              <div className="flex items-center gap-1 text-amber-400 pt-0.5">
+              <div className="flex items-center gap-1 text-amber-500 pt-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
                     className={cn(
-                      "w-4 h-4",
-                      star <= Number(ans.value) ? "fill-amber-400" : "text-slate-200 dark:text-slate-700"
+                      "w-3.5 h-3.5",
+                      star <= Number(ans.value) ? "fill-amber-500" : "text-neutral-300 dark:text-neutral-700"
                     )}
                   />
                 ))}
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1.5">
+                <span className="text-xs font-mono font-bold text-neutral-700 dark:text-neutral-300 ml-1.5">
                   {ans.value} / 5
                 </span>
               </div>
@@ -174,15 +174,15 @@ export function ResponseDetailsPanel({
                 {ans.value.map((item, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-100 dark:bg-[#1C1F26] text-neutral-700 dark:text-neutral-300 text-xs font-mono"
                   >
-                    <CheckCircle2 className="w-3 h-3 text-violet-500" />
+                    <CheckCircle2 className="w-3 h-3 text-[#563BFA]" />
                     {item}
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 break-words whitespace-pre-wrap leading-relaxed">
+              <p className="text-xs font-medium text-neutral-800 dark:text-neutral-200 break-words whitespace-pre-wrap leading-relaxed">
                 {ans.formattedValue}
               </p>
             )}
@@ -191,19 +191,19 @@ export function ResponseDetailsPanel({
       </div>
 
       {/* Navigation Footer */}
-      <div className="p-3 bg-slate-50/80 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-auto">
+      <div className="p-3 bg-neutral-50 dark:bg-[#181B20] border-t border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-between gap-2 mt-auto">
         <Button
           variant="outline"
           size="sm"
           disabled={!selectedResponse.prevResponseId}
           onClick={() => selectedResponse.prevResponseId && onNavigate(selectedResponse.prevResponseId)}
-          className="gap-1 text-xs"
+          className="gap-1 text-xs font-mono h-7 px-2.5 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <ChevronLeft className="w-3 h-3" />
           Previous
         </Button>
 
-        <span className="text-[11px] text-slate-400 font-medium">
+        <span className="text-[11px] font-mono text-neutral-400">
           Response #{selectedResponse.rowNumber}
         </span>
 
@@ -212,10 +212,10 @@ export function ResponseDetailsPanel({
           size="sm"
           disabled={!selectedResponse.nextResponseId}
           onClick={() => selectedResponse.nextResponseId && onNavigate(selectedResponse.nextResponseId)}
-          className="gap-1 text-xs"
+          className="gap-1 text-xs font-mono h-7 px-2.5 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
         >
           Next
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight className="w-3 h-3" />
         </Button>
       </div>
     </div>

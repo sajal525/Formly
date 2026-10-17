@@ -504,8 +504,8 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   const contentBlocks = ensureDefinitionBlocks(definition);
 
   return (
-    <div className="min-h-screen lg:h-screen lg:overflow-hidden flex w-full bg-[var(--page-bg,#F8F9FA)] text-[var(--body-text,#1E293B)] transition-colors duration-200">
-      {/* Shared Formly Left Sidebar (about 244-250px) */}
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden flex w-full bg-[#FAFAFA] dark:bg-[#090A0B] text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+      {/* Shared Formly Left Sidebar */}
       <div className="hidden lg:block h-full shrink-0 z-40">
         <AppSidebar />
       </div>
@@ -540,7 +540,7 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         />
 
         {/* Tab View Body */}
-        <div className="flex-1 overflow-y-auto min-h-0 bg-slate-50/60 dark:bg-slate-950/60">
+        <div className="flex-1 overflow-y-auto min-h-0 bg-[#FAFAFA] dark:bg-[#090A0B]">
           {activeTab === "questions" && (
             <main className="h-full w-full p-4 sm:p-6 lg:p-8 overflow-y-auto">
               <div className="max-w-4xl mx-auto flex items-start gap-4 lg:gap-6">

@@ -18,9 +18,10 @@ import { cn } from "@/lib/utils";
 interface AppSidebarProps {
   className?: string;
   onNavigate?: () => void;
+  variant?: "default" | "minimal";
 }
 
-export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
+export function AppSidebar({ className, onNavigate, variant = "minimal" }: AppSidebarProps) {
   const pathname = usePathname();
   const [optimisticPath, setOptimisticPath] = React.useState<string | null>(null);
 
@@ -84,6 +85,116 @@ export function AppSidebar({ className, onNavigate }: AppSidebarProps) {
       comingSoon: false,
     },
   ];
+
+  if (variant === "minimal") {
+    return (
+      <aside
+        className={cn(
+          "w-16 shrink-0 h-full flex flex-col items-center bg-white dark:bg-zinc-950 border-r border-zinc-200/90 dark:border-zinc-800 select-none py-4 transition-colors z-40",
+          className
+        )}
+      >
+        {/* Brand Mark */}
+        <div className="h-10 flex items-center justify-center mb-5">
+          <Link
+            href="/dashboard"
+            className="p-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 transition-colors"
+            aria-label="Formly home"
+          >
+            <FormlyLogo size="sm" showWordmark={false} />
+          </Link>
+        </div>
+
+        {/* Main Nav (Icons with Tooltips & Purple Active Connector) */}
+        <nav className="flex flex-col items-center space-y-2 w-full px-2" aria-label="Main navigation">
+          {mainNav.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                prefetch={true}
+                title={item.title}
+                aria-label={item.title}
+                onClick={() => {
+                  setOptimisticPath(item.href);
+                  onNavigate?.();
+                }}
+                className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center transition-colors relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                  item.active
+                    ? "text-zinc-900 dark:text-white"
+                    : "text-zinc-400 hover:text-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                )}
+              >
+                <Icon className="w-5 h-5 stroke-[1.75]" />
+
+                {/* Precise Purple Active Marker (Line + Dot touching right border) */}
+                {item.active && (
+                  <span className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                    <span className="w-2 h-[2px] bg-purple-600 rounded-full" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-600 -ml-0.5" />
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Subtle Divider */}
+        <div className="my-3.5 w-6 h-[1px] bg-zinc-200 dark:bg-zinc-800" />
+
+        {/* Secondary Nav */}
+        <nav className="flex flex-col items-center space-y-2 w-full px-2" aria-label="Secondary navigation">
+          {secondaryNav.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                prefetch={true}
+                title={item.title}
+                aria-label={item.title}
+                onClick={() => {
+                  setOptimisticPath(item.href);
+                  onNavigate?.();
+                }}
+                className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center transition-colors relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                  item.active
+                    ? "text-zinc-900 dark:text-white"
+                    : "text-zinc-400 hover:text-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                )}
+              >
+                <Icon className="w-5 h-5 stroke-[1.75]" />
+
+                {item.active && (
+                  <span className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                    <span className="w-2 h-[2px] bg-purple-600 rounded-full" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-600 -ml-0.5" />
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom Circular Dark Action Button */}
+        <div className="mt-auto mb-1 flex items-center justify-center">
+          <button
+            type="button"
+            className="w-7 h-7 rounded-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 flex items-center justify-center transition-opacity shadow-2xs"
+            title="Formly"
+            aria-label="Formly workspace"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-zinc-950" />
+          </button>
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside

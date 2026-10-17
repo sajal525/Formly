@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 
 interface ThemeToggleProps {
   className?: string;
+  variant?: "default" | "minimal";
 }
 
-export function ThemeToggle({ className }: ThemeToggleProps) {
+export function ThemeToggle({ className, variant = "default" }: ThemeToggleProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
@@ -43,7 +44,34 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
 
   if (!mounted) {
     return (
-      <div className={cn("w-9 h-9 rounded-full bg-slate-200/50 animate-pulse", className)} />
+      <div
+        className={cn(
+          variant === "minimal"
+            ? "w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 animate-pulse"
+            : "w-9 h-9 rounded-full bg-slate-200/50 animate-pulse",
+          className
+        )}
+      />
+    );
+  }
+
+  if (variant === "minimal") {
+    return (
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+        className={cn(
+          "w-8 h-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+          className
+        )}
+      >
+        {theme === "light" ? (
+          <Moon className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
+        ) : (
+          <Sun className="w-4 h-4 text-zinc-300" />
+        )}
+      </button>
     );
   }
 

@@ -72,15 +72,15 @@ export function FormsPagination({
   const pageSizes: FormPageSize[] = [10, 20, 50];
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-6 text-xs text-slate-500 dark:text-slate-400">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-6 text-xs text-neutral-500 dark:text-neutral-400">
       {/* Left: Summary text */}
-      <p className="font-medium text-center sm:text-left">
+      <p className="font-mono text-xs text-center sm:text-left">
         Showing{" "}
-        <span className="font-semibold text-slate-800 dark:text-slate-200">
+        <span className="font-bold text-neutral-900 dark:text-white">
           {startRecord}–{endRecord}
         </span>{" "}
         of{" "}
-        <span className="font-semibold text-slate-800 dark:text-slate-200">
+        <span className="font-bold text-neutral-900 dark:text-white">
           {totalMatching}
         </span>{" "}
         forms
@@ -90,23 +90,23 @@ export function FormsPagination({
       <div className="flex items-center gap-4">
         {/* Rows per page selector */}
         <div className="flex items-center gap-2" ref={dropdownRef}>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
-            Rows per page:
+          <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 dark:text-neutral-500 hidden sm:inline">
+            Per page:
           </span>
           <div className="relative">
             <button
               type="button"
               onClick={() => setIsSizeDropdownOpen(!isSizeDropdownOpen)}
-              className="h-8 px-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-all shadow-2xs"
+              className="h-7 px-2.5 rounded-md bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] text-xs font-mono font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-[#1C1F26] flex items-center gap-1.5 transition-colors"
               aria-label="Select number of rows per page"
               aria-expanded={isSizeDropdownOpen}
             >
               <span>{pageSize}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
             </button>
 
             {isSizeDropdownOpen && (
-              <div className="absolute right-0 bottom-full mb-1 w-20 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200/80 dark:border-white/10 py-1 z-30 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 bottom-full mb-1 w-20 bg-white dark:bg-[#121417] rounded-md border border-[#E5E7EB] dark:border-[#27272A] py-1 z-30 shadow-sm animate-in fade-in zoom-in-95 duration-100">
                 {pageSizes.map((size) => (
                   <button
                     key={size}
@@ -115,10 +115,10 @@ export function FormsPagination({
                       onPageSizeChange(size);
                       setIsSizeDropdownOpen(false);
                     }}
-                    className={`w-full px-3 py-1.5 text-left text-xs font-semibold transition-colors ${
+                    className={`w-full px-3 py-1.5 text-left text-xs font-mono transition-colors ${
                       pageSize === size
-                        ? "text-[#563BFA] dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/40"
-                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                        ? "text-[#563BFA] dark:text-[#8B77FF] bg-[#563BFA]/5 dark:bg-[#563BFA]/10 font-bold"
+                        : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                     }`}
                   >
                     {size}
@@ -136,10 +136,10 @@ export function FormsPagination({
             type="button"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] flex items-center justify-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-[#1C1F26] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             aria-label="Previous page"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
 
           {/* Numbered pages */}
@@ -148,7 +148,7 @@ export function FormsPagination({
               return (
                 <span
                   key={`ellipsis-${idx}`}
-                  className="w-8 h-8 flex items-center justify-center text-slate-400"
+                  className="w-7 h-7 flex items-center justify-center font-mono text-neutral-400 text-xs"
                 >
                   ...
                 </span>
@@ -162,10 +162,10 @@ export function FormsPagination({
                 type="button"
                 onClick={() => onPageChange(num)}
                 aria-current={isCurrent ? "page" : undefined}
-                className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
+                className={`w-7 h-7 rounded-md text-xs font-mono font-medium transition-colors ${
                   isCurrent
-                    ? "bg-[#563BFA] text-white shadow-xs shadow-indigo-500/20"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-[#563BFA] text-white border border-[#563BFA]"
+                    : "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                 }`}
               >
                 {num}
@@ -178,10 +178,10 @@ export function FormsPagination({
             type="button"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= pageCount}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-7 h-7 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] flex items-center justify-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-[#1C1F26] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             aria-label="Next page"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </nav>
       </div>

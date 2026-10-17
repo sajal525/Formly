@@ -77,14 +77,14 @@ export function ResponseAnalyticsSection({
 
   if (totalResponses === 0) {
     return (
-      <div className={cn("p-8 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 text-center bg-white/50 dark:bg-slate-900/50", className)}>
-        <div className="w-12 h-12 rounded-full bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400 flex items-center justify-center mx-auto mb-3">
-          <Activity className="w-6 h-6" />
+      <div className={cn("p-8 rounded-xl border border-[#E5E7EB] dark:border-[#27272A] text-center bg-white dark:bg-[#121417]", className)}>
+        <div className="w-10 h-10 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 flex items-center justify-center mx-auto mb-3">
+          <Activity className="w-5 h-5" />
         </div>
-        <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
+        <h3 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
           No Analytics Available Yet
         </h3>
-        <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+        <p className="text-xs text-neutral-400 max-w-sm mx-auto mt-1">
           Once your published form receives respondent submissions, real time-series metrics and question distribution charts will appear here.
         </p>
       </div>
@@ -127,13 +127,13 @@ export function ResponseAnalyticsSection({
     <div className={cn("space-y-4", className)}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Chart 1: Responses Over Time */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between gap-2 mb-3">
             <div>
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+              <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
                 Responses Over Time
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] font-mono text-neutral-400">
                 {timeSeries.reduce((acc, p) => acc + p.count, 0)} submissions in range
               </p>
             </div>
@@ -143,7 +143,7 @@ export function ResponseAnalyticsSection({
                 type="button"
                 onClick={() => setShowTable1(!showTable1)}
                 title="Toggle accessible table"
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+                className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
               >
                 <TableIcon className="w-3.5 h-3.5" />
               </button>
@@ -152,13 +152,13 @@ export function ResponseAnalyticsSection({
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    className="flex items-center gap-1 px-2 py-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] text-xs font-mono font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                   >
                     <span>{dateRangeLabels[currentDateRange]}</span>
-                    <ChevronDown className="w-3 h-3 text-slate-400" />
+                    <ChevronDown className="w-3 h-3 text-neutral-400" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="text-xs">
+                <DropdownMenuContent align="end" className="text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
                   <DropdownMenuItem onClick={() => onDateRangeChange("7d")}>
                     Last 7 days
                   </DropdownMenuItem>
@@ -270,13 +270,13 @@ export function ResponseAnalyticsSection({
         </div>
 
         {/* Chart 2: Answer Distribution (Bar Chart) */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="min-w-0">
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider truncate">
+              <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider truncate">
                 {question1 ? question1.label : "Question Distribution"}
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] font-mono text-neutral-400">
                 {question1?.answeredCount || 0} answered
               </p>
             </div>
@@ -286,7 +286,7 @@ export function ResponseAnalyticsSection({
                 type="button"
                 onClick={() => setShowTable2(!showTable2)}
                 title="Toggle accessible table"
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+                className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
               >
                 <TableIcon className="w-3.5 h-3.5" />
               </button>
@@ -296,13 +296,13 @@ export function ResponseAnalyticsSection({
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                       title="Select question"
                     >
                       <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="text-xs max-w-xs">
+                  <DropdownMenuContent align="end" className="text-xs font-mono max-w-xs border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
                     {eligibleQuestions.map((q, idx) => (
                       <DropdownMenuItem
                         key={q.questionId}
@@ -319,14 +319,14 @@ export function ResponseAnalyticsSection({
           </div>
 
           {!question1 || !question1.distribution || question1.distribution.length === 0 ? (
-            <div className="h-[160px] flex items-center justify-center text-xs text-slate-400 text-center">
+            <div className="h-[160px] flex items-center justify-center text-xs font-mono text-neutral-400 text-center">
               No choice questions available to chart.
             </div>
           ) : showTable2 ? (
-            <div className="max-h-[160px] overflow-y-auto text-xs border rounded-lg p-2">
+            <div className="max-h-[160px] overflow-y-auto text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] rounded-lg p-2">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b text-slate-500">
+                  <tr className="border-b border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 text-[10px] uppercase">
                     <th className="pb-1">Option</th>
                     <th className="pb-1 text-right">Count</th>
                     <th className="pb-1 text-right">%</th>
@@ -334,12 +334,12 @@ export function ResponseAnalyticsSection({
                 </thead>
                 <tbody>
                   {question1.distribution.map((opt) => (
-                    <tr key={opt.value} className="border-b last:border-0">
-                      <td className="py-1 text-slate-700 dark:text-slate-300 truncate max-w-[120px]">
+                    <tr key={opt.value} className="border-b border-[#E5E7EB] dark:border-[#27272A] last:border-0">
+                      <td className="py-1 text-neutral-700 dark:text-neutral-300 truncate max-w-[120px]">
                         {opt.label}
                       </td>
-                      <td className="py-1 text-right font-medium">{opt.count}</td>
-                      <td className="py-1 text-right text-slate-400">
+                      <td className="py-1 text-right font-medium text-neutral-900 dark:text-white">{opt.count}</td>
+                      <td className="py-1 text-right text-neutral-400">
                         {opt.percentage}%
                       </td>
                     </tr>
@@ -353,15 +353,15 @@ export function ResponseAnalyticsSection({
                 const color = colorPalette[idx % colorPalette.length];
                 return (
                   <div key={opt.value} className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-700 dark:text-slate-300 truncate max-w-[180px]">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-neutral-700 dark:text-neutral-300 truncate max-w-[180px]">
                         {opt.label}
                       </span>
-                      <span className="text-slate-500 font-semibold text-[11px]">
+                      <span className="text-neutral-400 text-[11px]">
                         {opt.count} ({opt.percentage}%)
                       </span>
                     </div>
-                    <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-neutral-100 dark:bg-[#1C1F26] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-300"
                         style={{
@@ -376,19 +376,19 @@ export function ResponseAnalyticsSection({
             </div>
           )}
 
-          <div className="text-[10px] text-slate-400 mt-2">
+          <div className="text-[10px] font-mono text-neutral-400 mt-2">
             Top choice distribution
           </div>
         </div>
 
         {/* Chart 3: Question Breakdown (Donut Chart) */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="min-w-0">
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider truncate">
+              <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider truncate">
                 {question2 ? question2.label : "Breakdown"}
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] font-mono text-neutral-400">
                 {question2?.answeredCount || 0} answered
               </p>
             </div>
@@ -398,7 +398,7 @@ export function ResponseAnalyticsSection({
                 type="button"
                 onClick={() => setShowTable3(!showTable3)}
                 title="Toggle accessible table"
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+                className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
               >
                 <TableIcon className="w-3.5 h-3.5" />
               </button>
@@ -408,13 +408,13 @@ export function ResponseAnalyticsSection({
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                       title="Select question"
                     >
                       <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="text-xs max-w-xs">
+                  <DropdownMenuContent align="end" className="text-xs font-mono max-w-xs border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
                     {eligibleQuestions.map((q, idx) => (
                       <DropdownMenuItem
                         key={q.questionId}

@@ -29,22 +29,22 @@ export function ViewsVsResponsesChart({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between",
         className
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+          <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
             Daily Views vs Responses
           </h3>
-          <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-0.5">
+          <div className="flex items-center gap-3 text-[11px] font-mono text-neutral-400 mt-0.5">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block" />
               Views
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-violet-500 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#563BFA] inline-block" />
               Responses
             </span>
           </div>
@@ -54,7 +54,7 @@ export function ViewsVsResponsesChart({
           type="button"
           onClick={() => setShowTable(!showTable)}
           title="Toggle accessible table view"
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+          className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
         >
           <TableIcon className="w-3.5 h-3.5" />
         </button>

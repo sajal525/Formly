@@ -94,10 +94,10 @@ export function FormHeaderEditor({
     <div
       onClick={onSelect}
       className={cn(
-        "w-full bg-white dark:bg-slate-900 rounded-3xl border transition-all duration-200 overflow-hidden shadow-xs",
+        "w-full bg-white dark:bg-[#121417] rounded-xl border transition-all duration-150 overflow-hidden",
         isSelected
-          ? "border-violet-500/80 ring-2 ring-violet-500/20 shadow-md"
-          : "border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20"
+          ? "border-[#563BFA] ring-1 ring-[#563BFA]/30"
+          : "border-[#E5E7EB] dark:border-[#27272A] hover:border-neutral-300 dark:hover:border-neutral-700"
       )}
     >
       {/* Hidden file input for desktop image picking */}
@@ -120,7 +120,7 @@ export function FormHeaderEditor({
             : undefined
         }
         className={cn(
-          "w-full relative overflow-hidden flex flex-col items-center justify-center border-b border-slate-100 dark:border-white/5 group transition-colors",
+          "w-full relative overflow-hidden flex flex-col items-center justify-center border-b border-[#E5E7EB] dark:border-[#27272A] group transition-colors",
           isDraggingOver && "ring-2 ring-inset ring-[#563BFA] bg-[#563BFA]/10",
           coverImage
             ? coverImage.transform?.aspectPreset === "16:9"
@@ -128,7 +128,7 @@ export function FormHeaderEditor({
               : coverImage.transform?.aspectPreset === "free"
               ? "max-h-[340px]"
               : "aspect-[4/1] max-h-[260px]"
-            : "h-36 sm:h-44 bg-gradient-to-r from-violet-100/70 via-indigo-50/50 to-purple-100/70 dark:from-violet-950/40 dark:via-indigo-950/30 dark:to-purple-950/40"
+            : "h-28 sm:h-32 bg-neutral-100 dark:bg-[#181B20]"
         )}
       >
         {coverImage ? (

@@ -37,27 +37,27 @@ export function RestoreFormDialog({
       aria-modal="true"
     >
       <div
-        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:border-white/10 space-y-5 relative"
+        className="w-full max-w-md bg-white dark:bg-[#121417] rounded-xl p-6 shadow-xl border border-[#E5E7EB] dark:border-[#27272A] space-y-4 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-violet-50 dark:bg-violet-950/60 flex items-center justify-center text-[#563BFA]">
-              <RotateCcw className="w-5 h-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-800 dark:text-neutral-200">
+              <RotateCcw className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
+              <h2 className="text-sm font-bold text-neutral-900 dark:text-white leading-tight">
                 Restore "{item.title}"?
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Moving this form back to your workspace will preserve all questions and responses.
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 font-mono">
+                Preserves all questions and response records.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#181B20] transition-colors"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
@@ -67,28 +67,28 @@ export function RestoreFormDialog({
         {wasPublished && (
           <div
             data-testid="published-restore-notice"
-            className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5"
+            className="p-3 rounded-lg bg-neutral-50 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] text-xs text-neutral-600 dark:text-neutral-300 flex items-start gap-2.5"
           >
-            <Globe className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <Globe className="w-3.5 h-3.5 text-neutral-500 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold">Notice for Published Form</p>
-              <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">
-                Restoring to its previous status will reactivate its public link and allow respondents to submit answers again.
+              <p className="font-semibold text-neutral-900 dark:text-white">Notice for Published Form</p>
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5 font-mono">
+                Restoring to its previous status will reactivate its public link.
               </p>
             </div>
           </div>
         )}
 
         <div className="space-y-2 text-xs">
-          <label className="font-semibold text-slate-700 dark:text-slate-300 block">
+          <label className="font-mono text-[11px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold block">
             Select restoration state:
           </label>
           <div className="space-y-2">
             <label
-              className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                 restoreAs === "previous_status"
-                  ? "border-violet-500 bg-violet-50/20 dark:bg-violet-950/20"
-                  : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                  ? "border-[#563BFA] bg-[#563BFA]/5"
+                  : "border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#181B20]"
               }`}
             >
               <input
@@ -97,23 +97,23 @@ export function RestoreFormDialog({
                 value="previous_status"
                 checked={restoreAs === "previous_status"}
                 onChange={() => setRestoreAs("previous_status")}
-                className="mt-0.5 text-violet-600 focus:ring-violet-500"
+                className="mt-0.5 text-[#563BFA] focus:ring-[#563BFA]"
               />
               <div>
-                <span className="font-semibold text-slate-900 dark:text-white block">
+                <span className="font-semibold text-neutral-900 dark:text-white block">
                   Restore to previous status ({prevStatusLabel})
                 </span>
-                <span className="text-[11px] text-slate-400 block mt-0.5">
+                <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block mt-0.5 font-mono">
                   Restores the exact status before moving to Trash.
                 </span>
               </div>
             </label>
 
             <label
-              className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                 restoreAs === "draft"
-                  ? "border-violet-500 bg-violet-50/20 dark:bg-violet-950/20"
-                  : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                  ? "border-[#563BFA] bg-[#563BFA]/5"
+                  : "border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#181B20]"
               }`}
             >
               <input
@@ -122,13 +122,13 @@ export function RestoreFormDialog({
                 value="draft"
                 checked={restoreAs === "draft"}
                 onChange={() => setRestoreAs("draft")}
-                className="mt-0.5 text-violet-600 focus:ring-violet-500"
+                className="mt-0.5 text-[#563BFA] focus:ring-[#563BFA]"
               />
               <div>
-                <span className="font-semibold text-slate-900 dark:text-white block">
+                <span className="font-semibold text-neutral-900 dark:text-white block">
                   Restore as Draft
                 </span>
-                <span className="text-[11px] text-slate-400 block mt-0.5">
+                <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block mt-0.5 font-mono">
                   Safer option: keeps the form private until you choose to publish it again.
                 </span>
               </div>
@@ -136,13 +136,13 @@ export function RestoreFormDialog({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2.5 pt-2">
+        <div className="flex items-center justify-end gap-2 pt-2 font-mono">
           <Button
             type="button"
             variant="ghost"
             onClick={onClose}
             disabled={isSubmitting}
-            className="rounded-xl text-xs"
+            className="rounded-lg text-xs h-8"
           >
             Cancel
           </Button>
@@ -151,11 +151,11 @@ export function RestoreFormDialog({
             type="button"
             onClick={() => onConfirm(item, restoreAs)}
             disabled={isSubmitting}
-            className="rounded-xl bg-[#563BFA] hover:bg-violet-700 text-white text-xs font-semibold gap-1.5"
+            className="rounded-lg bg-[#563BFA] hover:bg-[#4830d9] text-white text-xs font-medium gap-1.5 h-8 shadow-none"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3 h-3 animate-spin" />
                 <span>Restoring...</span>
               </>
             ) : (

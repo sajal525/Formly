@@ -267,18 +267,19 @@ export function TrashWorkspaceClient({
       {/* Toast Alert */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold animate-in fade-in slide-in-from-bottom-3 duration-150 ${
+          className={cn(
+            "fixed bottom-6 right-6 z-50 flex items-center gap-2 px-3.5 py-2 rounded-lg border text-xs font-mono shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-150",
             toast.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200"
-              : "bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950 dark:border-rose-800 dark:text-rose-200"
-          }`}
+              ? "bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-[#121417] dark:border-emerald-800 dark:text-emerald-300"
+              : "bg-rose-50/90 border-rose-200 text-rose-800 dark:bg-[#121417] dark:border-rose-800 dark:text-rose-300"
+          )}
         >
           {toast.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
           )}
-          <span>{toast.text}</span>
+          <span className="font-semibold">{toast.text}</span>
         </div>
       )}
 
@@ -313,27 +314,27 @@ export function TrashWorkspaceClient({
 
           {/* Pagination */}
           {initialData.totalMatching > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-xs text-slate-500 dark:text-slate-400 select-none">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-xs font-mono text-neutral-500 dark:text-neutral-400 select-none">
               <div>
                 Showing{" "}
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="font-semibold text-neutral-900 dark:text-white">
                   {(initialData.currentPage - 1) * initialData.pageSize + 1}
                 </span>
                 –
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="font-semibold text-neutral-900 dark:text-white">
                   {Math.min(
                     initialData.currentPage * initialData.pageSize,
                     initialData.totalMatching
                   )}
                 </span>{" "}
                 of{" "}
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="font-semibold text-neutral-900 dark:text-white">
                   {initialData.totalMatching}
                 </span>{" "}
                 items
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 font-mono">
                 <Button
                   type="button"
                   variant="outline"
@@ -342,10 +343,10 @@ export function TrashWorkspaceClient({
                   onClick={() =>
                     updateQueryParams({ page: initialData.currentPage - 1 })
                   }
-                  className="h-8 w-8 p-0 rounded-xl"
+                  className="h-7 w-7 p-0 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]"
                   title="Previous page"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </Button>
 
                 {Array.from({ length: initialData.pageCount }, (_, i) => i + 1)
@@ -362,7 +363,7 @@ export function TrashWorkspaceClient({
 
                     return (
                       <React.Fragment key={p}>
-                        {hasGap && <span className="px-1 text-slate-300">…</span>}
+                        {hasGap && <span className="px-1 text-neutral-400">…</span>}
                         <Button
                           type="button"
                           variant={
@@ -372,10 +373,10 @@ export function TrashWorkspaceClient({
                           disabled={isPending}
                           onClick={() => updateQueryParams({ page: p })}
                           className={cn(
-                            "h-8 w-8 p-0 rounded-xl text-xs font-semibold",
+                            "h-7 w-7 p-0 rounded-md text-xs font-mono font-medium border",
                             p === initialData.currentPage
-                              ? "bg-[#563BFA] text-white hover:bg-violet-700"
-                              : "text-slate-700 dark:text-slate-300"
+                              ? "bg-[#563BFA] text-white border-[#563BFA]"
+                              : "border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
                           )}
                         >
                           {p}
@@ -394,10 +395,10 @@ export function TrashWorkspaceClient({
                   onClick={() =>
                     updateQueryParams({ page: initialData.currentPage + 1 })
                   }
-                  className="h-8 w-8 p-0 rounded-xl"
+                  className="h-7 w-7 p-0 rounded-md border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]"
                   title="Next page"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </div>

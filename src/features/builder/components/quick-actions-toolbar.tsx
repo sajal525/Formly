@@ -81,7 +81,7 @@ export function QuickActionsToolbar({
 
   return (
     <aside
-      className="w-14 sm:w-16 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/10 rounded-2xl p-1.5 sm:p-2 shadow-md flex flex-col items-center gap-1.5 select-none shrink-0"
+      className="w-10 bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-lg p-1 flex flex-col items-center gap-1 select-none shrink-0"
       aria-label="Quick actions"
     >
       {actions.map((act) => {
@@ -93,11 +93,11 @@ export function QuickActionsToolbar({
               key={act.id}
               type="button"
               onClick={act.onClick}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-violet-600 hover:bg-violet-700 text-white flex flex-col items-center justify-center shadow-md shadow-violet-500/20 active:scale-95 transition-all group mb-1 cursor-pointer"
+              className="w-8 h-8 rounded-md bg-[#563BFA] hover:bg-[#4830d9] text-white flex items-center justify-center mb-0.5 cursor-pointer shadow-none"
               title={act.label}
               aria-label={act.label}
             >
-              <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <Icon className="w-4 h-4" />
             </button>
           );
         }
@@ -109,15 +109,15 @@ export function QuickActionsToolbar({
             onClick={act.onClick}
             disabled={!act.enabled}
             className={cn(
-              "w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-colors relative group",
+              "w-8 h-8 rounded-md flex items-center justify-center transition-colors relative",
               act.enabled
-                ? "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-                : "text-slate-300 dark:text-slate-600 cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                ? "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-[#181B20] hover:text-neutral-900 dark:hover:text-white cursor-pointer"
+                : "text-neutral-300 dark:text-neutral-600 cursor-not-allowed"
             )}
             title={act.tooltip || act.label}
             aria-label={act.label}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="w-3.5 h-3.5" />
           </button>
         );
       })}

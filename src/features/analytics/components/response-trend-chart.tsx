@@ -53,16 +53,16 @@ export function ResponseTrendChart({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between",
         className
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+          <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
             Responses Over Time
           </h3>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] font-mono text-neutral-400">
             {totalSubmissions} submissions ({rangeLabel})
           </p>
         </div>
@@ -71,28 +71,28 @@ export function ResponseTrendChart({
           type="button"
           onClick={() => setShowTable(!showTable)}
           title="Toggle accessible table view"
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+          className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
         >
           <TableIcon className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {showTable ? (
-        <div className="max-h-[170px] overflow-y-auto text-xs border rounded-lg p-2">
+        <div className="max-h-[170px] overflow-y-auto text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] rounded-lg p-2">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b text-slate-500">
+              <tr className="border-b border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 text-[10px] uppercase">
                 <th className="pb-1">Date</th>
                 <th className="pb-1 text-right">Responses</th>
               </tr>
             </thead>
             <tbody>
               {timeSeries.map((pt) => (
-                <tr key={pt.dateKey} className="border-b last:border-0">
-                  <td className="py-1 text-slate-700 dark:text-slate-300">
+                <tr key={pt.dateKey} className="border-b border-[#E5E7EB] dark:border-[#27272A] last:border-0">
+                  <td className="py-1 text-neutral-700 dark:text-neutral-300">
                     {pt.label}
                   </td>
-                  <td className="py-1 text-right font-medium text-slate-900 dark:text-white">
+                  <td className="py-1 text-right font-medium text-neutral-900 dark:text-white">
                     {pt.responses}
                   </td>
                 </tr>
@@ -108,8 +108,8 @@ export function ResponseTrendChart({
           >
             <defs>
               <linearGradient id="respAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#563BFA" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#563BFA" stopOpacity="0.0" />
               </linearGradient>
             </defs>
 
@@ -125,7 +125,7 @@ export function ResponseTrendChart({
                   y2={y}
                   stroke="currentColor"
                   strokeDasharray="2 3"
-                  className="text-slate-200 dark:text-slate-800"
+                  className="text-neutral-200 dark:text-neutral-800"
                 />
               );
             })}
@@ -136,8 +136,8 @@ export function ResponseTrendChart({
               <path
                 d={linePath}
                 fill="none"
-                stroke="#8B5CF6"
-                strokeWidth="2.5"
+                stroke="#563BFA"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />

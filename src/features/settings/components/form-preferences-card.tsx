@@ -36,32 +36,37 @@ export function FormPreferencesCard({
     <div
       id="form-preferences-section"
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-5",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-5 space-y-5",
         className
       )}
     >
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+        <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold mb-1">
+          Preferences // Forms
+        </div>
+        <h3 className="text-sm font-bold text-neutral-900 dark:text-white">
           Form Preferences
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
           Set default options for new forms you create.
         </p>
       </div>
 
       <div className="space-y-4">
         {/* Default Theme */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3.5 border-b border-[#E5E7EB] dark:border-[#27272A]">
           <div className="flex items-start gap-2.5">
-            <Palette className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+            <div className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center shrink-0 mt-0.5">
+              <Palette className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
+            </div>
             <div>
               <label
                 htmlFor="default-theme"
-                className="text-xs font-semibold text-slate-800 dark:text-slate-200 block"
+                className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block"
               >
                 Default Theme
               </label>
-              <span className="text-[11px] text-slate-400 block">
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block font-mono">
                 Choose a default theme for new forms.
               </span>
             </div>
@@ -72,7 +77,7 @@ export function FormPreferencesCard({
             onChange={(e) =>
               onChange("defaultThemeId", e.target.value as DefaultThemeId)
             }
-            className="w-full sm:w-44 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="w-full sm:w-44 text-xs font-mono rounded-lg border border-[#E5E7EB] dark:border-[#27272A] bg-neutral-50 dark:bg-[#181B20] text-neutral-900 dark:text-neutral-100 py-1.5 px-3 focus:outline-none focus:border-[#563BFA]"
           >
             {themeOptions.map((t) => (
               <option key={t.id} value={t.id}>
@@ -83,14 +88,16 @@ export function FormPreferencesCard({
         </div>
 
         {/* Show Progress Indicator */}
-        <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-[#E5E7EB] dark:border-[#27272A]">
           <div className="flex items-start gap-2.5">
-            <BarChart3 className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+            <div className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center shrink-0 mt-0.5">
+              <BarChart3 className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
+            </div>
             <div>
-              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+              <span className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block">
                 Show Progress Indicator
               </span>
-              <span className="text-[11px] text-slate-400 block">
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block font-mono">
                 Automatically enable progress bar for new forms.
               </span>
             </div>
@@ -105,14 +112,16 @@ export function FormPreferencesCard({
         </div>
 
         {/* Collect Email Addresses */}
-        <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-[#E5E7EB] dark:border-[#27272A]">
           <div className="flex items-start gap-2.5">
-            <Mail className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+            <div className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center shrink-0 mt-0.5">
+              <Mail className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
+            </div>
             <div>
-              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+              <span className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block">
                 Collect Email Addresses
               </span>
-              <span className="text-[11px] text-slate-400 block">
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block font-mono">
                 Enable by default for new forms.
               </span>
             </div>
@@ -129,12 +138,14 @@ export function FormPreferencesCard({
         {/* Allow Multiple Submissions */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
-            <RefreshCw className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+            <div className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center shrink-0 mt-0.5">
+              <RefreshCw className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-300" />
+            </div>
             <div>
-              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
+              <span className="text-xs font-semibold text-neutral-900 dark:text-neutral-200 block">
                 Allow Multiple Submissions
               </span>
-              <span className="text-[11px] text-slate-400 block">
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400 block font-mono">
                 Allow respondents to submit multiple times by default.
               </span>
             </div>

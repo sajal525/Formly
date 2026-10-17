@@ -111,21 +111,21 @@ export function ResponseTableView({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Left: Search input */}
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
           <Input
             type="text"
             placeholder="Search responses..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 h-9 text-xs rounded-xl border-slate-200 dark:border-slate-800"
+            className="pl-8 h-8 text-xs font-mono rounded-lg border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => onSearchChange("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
@@ -137,7 +137,7 @@ export function ResponseTableView({
               size="sm"
               variant="outline"
               onClick={() => onExportSelected(selectedIds)}
-              className="h-9 text-xs gap-1.5 border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100"
+              className="h-8 text-xs font-mono gap-1.5 rounded-lg border-[#E5E7EB] dark:border-[#27272A] bg-neutral-100 dark:bg-[#1C1F26] text-neutral-700 dark:text-neutral-300"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
               Export Selected ({selectedIds.length})
@@ -150,13 +150,13 @@ export function ResponseTableView({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-9 text-xs gap-1.5 rounded-xl border-slate-200 dark:border-slate-800"
+                className="h-8 text-xs font-mono gap-1.5 rounded-lg border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
               >
-                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-                <span>Sort: {sort === "newest" ? "Latest first" : "Oldest first"}</span>
+                <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Sort: {sort === "newest" ? "Latest" : "Oldest"}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="text-xs">
+            <DropdownMenuContent align="end" className="text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
               <DropdownMenuItem onClick={() => onSortChange("newest")}>
                 Latest first
               </DropdownMenuItem>
@@ -172,12 +172,12 @@ export function ResponseTableView({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-9 text-xs gap-1 rounded-xl border-slate-200 dark:border-slate-800"
+                className="h-8 text-xs font-mono gap-1 rounded-lg border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300"
               >
                 <span>{pageSize} / page</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="text-xs">
+            <DropdownMenuContent align="end" className="text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417]">
               <DropdownMenuItem onClick={() => onPageSizeChange(10)}>
                 10 per page
               </DropdownMenuItem>
@@ -197,18 +197,18 @@ export function ResponseTableView({
         {/* Table Container */}
         <div
           className={cn(
-            "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs transition-all",
+            "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl overflow-hidden transition-all",
             selectedResponse ? "lg:col-span-7 xl:col-span-8" : "lg:col-span-12"
           )}
         >
           {responses.length === 0 ? (
             <div className="p-12 text-center">
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <p className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
                 {searchQuery
                   ? "No submissions match your search query."
                   : "No responses yet."}
               </p>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+              <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
                 {searchQuery
                   ? "Try searching for a different term or clearing the search filter."
                   : "Once this form receives submissions, they will be listed here."}
@@ -218,7 +218,7 @@ export function ResponseTableView({
                   size="sm"
                   variant="outline"
                   onClick={() => onSearchChange("")}
-                  className="mt-3 text-xs"
+                  className="mt-3 text-xs h-7 rounded-lg border-[#E5E7EB] dark:border-[#27272A]"
                 >
                   Clear search
                 </Button>
@@ -228,31 +228,31 @@ export function ResponseTableView({
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/75 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800 text-slate-500 font-semibold">
+                  <tr className="bg-neutral-50 dark:bg-[#181B20] border-b border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 dark:text-neutral-500 font-mono text-[10px] uppercase tracking-wider">
                     <th className="p-3 w-10 text-center">
                       <input
                         type="checkbox"
                         checked={isAllSelected}
                         onChange={toggleSelectAll}
                         aria-label="Select all responses on this page"
-                        className="rounded border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                        className="rounded border-[#E5E7EB] dark:border-[#27272A] text-[#563BFA] focus:ring-[#563BFA] cursor-pointer"
                       />
                     </th>
-                    <th className="py-3 px-2 w-10 text-center text-slate-400">#</th>
-                    <th className="py-3 px-3 min-w-[140px]">Timestamp</th>
+                    <th className="py-2.5 px-2 w-10 text-center">#</th>
+                    <th className="py-2.5 px-3 min-w-[140px]">Timestamp</th>
                     {columns.map((col) => (
                       <th
                         key={col.id}
-                        className="py-3 px-3 min-w-[120px] max-w-[180px] truncate"
+                        className="py-2.5 px-3 min-w-[120px] max-w-[180px] truncate"
                         title={col.label}
                       >
                         {col.label}
                       </th>
                     ))}
-                    <th className="py-3 px-3 text-right pr-4">Actions</th>
+                    <th className="py-2.5 px-3 text-right pr-4">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#27272A]">
                   {responses.map((row) => {
                     const isSelected = selectedResponse?.id === row.id;
                     const isChecked = selectedIds.includes(row.id);
@@ -262,9 +262,9 @@ export function ResponseTableView({
                         key={row.id}
                         onClick={() => onSelectResponse(row.id)}
                         className={cn(
-                          "cursor-pointer transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/50",
+                          "cursor-pointer transition-colors hover:bg-neutral-50 dark:hover:bg-[#1C1F26]",
                           isSelected
-                            ? "bg-violet-50/70 dark:bg-violet-950/30 font-medium"
+                            ? "bg-[#563BFA]/5 dark:bg-[#563BFA]/10 font-medium"
                             : ""
                         )}
                       >
@@ -277,25 +277,25 @@ export function ResponseTableView({
                             checked={isChecked}
                             onChange={(e) => toggleSelectRow(row.id, e as any)}
                             aria-label={`Select response ${row.rowNumber}`}
-                            className="rounded border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                            className="rounded border-[#E5E7EB] dark:border-[#27272A] text-[#563BFA] focus:ring-[#563BFA] cursor-pointer"
                           />
                         </td>
-                        <td className="py-3 px-2 text-center text-slate-400 font-mono text-[11px]">
+                        <td className="py-2.5 px-2 text-center text-neutral-400 font-mono text-[11px]">
                           {row.rowNumber}
                         </td>
-                        <td className="py-3 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                        <td className="py-2.5 px-3 text-neutral-600 dark:text-neutral-400 font-mono text-xs whitespace-nowrap">
                           {formatTimestamp(row.submittedAt)}
                         </td>
                         {columns.map((col) => (
                           <td
                             key={col.id}
-                            className="py-3 px-3 text-slate-800 dark:text-slate-200 max-w-[180px] truncate"
+                            className="py-2.5 px-3 text-neutral-800 dark:text-neutral-200 max-w-[180px] truncate"
                             title={row.previewAnswers[col.id]}
                           >
                             {row.previewAnswers[col.id] || "-"}
                           </td>
                         ))}
-                        <td className="py-3 px-3 text-right pr-4">
+                        <td className="py-2.5 px-3 text-right pr-4">
                           <Button
                             variant={isSelected ? "default" : "outline"}
                             size="sm"
@@ -304,10 +304,10 @@ export function ResponseTableView({
                               onSelectResponse(row.id);
                             }}
                             className={cn(
-                              "h-7 px-2.5 text-xs rounded-lg gap-1",
+                              "h-6 px-2 text-xs rounded-md gap-1 font-mono transition-colors border",
                               isSelected
-                                ? "bg-violet-600 text-white hover:bg-violet-700"
-                                : "text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+                                ? "bg-[#563BFA] text-white border-[#563BFA]"
+                                : "border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                             )}
                           >
                             <Eye className="w-3 h-3" />
@@ -324,11 +324,11 @@ export function ResponseTableView({
 
           {/* Table Pagination Footer */}
           {pagination.totalCount > 0 && (
-            <div className="p-3 bg-slate-50/60 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div className="p-3 bg-white dark:bg-[#121417] border-t border-[#E5E7EB] dark:border-[#27272A] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-neutral-500">
               <div>
-                Showing <span className="font-semibold">{startRecord}</span> to{" "}
-                <span className="font-semibold">{endRecord}</span> of{" "}
-                <span className="font-semibold">{pagination.totalCount}</span> responses
+                Showing <span className="font-bold text-neutral-800 dark:text-neutral-200">{startRecord}</span> to{" "}
+                <span className="font-bold text-neutral-800 dark:text-neutral-200">{endRecord}</span> of{" "}
+                <span className="font-bold text-neutral-800 dark:text-neutral-200">{pagination.totalCount}</span> responses
               </div>
 
               {pagination.totalPages > 1 && (
@@ -338,7 +338,7 @@ export function ResponseTableView({
                     size="sm"
                     disabled={pagination.page <= 1}
                     onClick={() => onPageChange(pagination.page - 1)}
-                    className="h-7 w-7 p-0 rounded-lg"
+                    className="h-7 w-7 p-0 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-600 dark:text-neutral-400"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </Button>
@@ -358,16 +358,16 @@ export function ResponseTableView({
 
                       return (
                         <React.Fragment key={p}>
-                          {hasGap && <span className="px-1 text-slate-400">...</span>}
+                          {hasGap && <span className="px-1 text-neutral-400 font-mono text-xs">...</span>}
                           <Button
                             variant={p === pagination.page ? "default" : "outline"}
                             size="sm"
                             onClick={() => onPageChange(p)}
                             className={cn(
-                              "h-7 w-7 p-0 rounded-lg text-xs font-semibold",
+                              "h-7 w-7 p-0 rounded-md text-xs font-mono font-medium transition-colors border",
                               p === pagination.page
-                                ? "bg-violet-600 text-white"
-                                : "text-slate-600 hover:bg-slate-100"
+                                ? "bg-[#563BFA] text-white border-[#563BFA]"
+                                : "border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-[#1C1F26]"
                             )}
                           >
                             {p}
@@ -381,7 +381,7 @@ export function ResponseTableView({
                     size="sm"
                     disabled={pagination.page >= pagination.totalPages}
                     onClick={() => onPageChange(pagination.page + 1)}
-                    className="h-7 w-7 p-0 rounded-lg"
+                    className="h-7 w-7 p-0 rounded-md border-[#E5E7EB] dark:border-[#27272A] bg-white dark:bg-[#121417] text-neutral-600 dark:text-neutral-400"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
                   </Button>

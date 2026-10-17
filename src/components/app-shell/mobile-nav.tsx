@@ -23,12 +23,12 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       >
         <button
           onClick={onClose}
-          className="absolute right-3 top-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors z-10"
+          className="absolute right-3 top-4 p-2 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-white transition-colors z-10"
           aria-label="Close menu"
         >
           <X className="w-5 h-5" />
         </button>
-        <AppSidebar className="w-full h-full border-r-0" onNavigate={onClose} />
+        <AppSidebar variant="default" className="w-full h-full border-r-0" onNavigate={onClose} />
       </div>
     </div>
   );

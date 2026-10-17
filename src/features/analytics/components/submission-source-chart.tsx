@@ -20,16 +20,16 @@ export function SubmissionSourceChart({
   return (
     <div
       className={cn(
-        "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col justify-between",
+        "bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-4 flex flex-col justify-between",
         className
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+          <h3 className="text-[11px] font-mono font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
             Submission Source
           </h3>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] font-mono text-neutral-400">
             {total} total responses tracked
           </p>
         </div>
@@ -38,22 +38,22 @@ export function SubmissionSourceChart({
           type="button"
           onClick={() => setShowTable(!showTable)}
           title="Toggle accessible table view"
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500"
+          className="p-1 rounded-md border border-[#E5E7EB] dark:border-[#27272A] hover:bg-neutral-50 dark:hover:bg-[#1C1F26] text-neutral-500"
         >
           <TableIcon className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {total === 0 ? (
-        <div className="h-[170px] flex flex-col items-center justify-center text-xs text-slate-400 text-center p-4">
-          <Share2 className="w-6 h-6 mb-1 text-slate-300" />
+        <div className="h-[170px] flex flex-col items-center justify-center text-xs font-mono text-neutral-400 text-center p-4">
+          <Share2 className="w-5 h-5 mb-1 text-neutral-300 dark:text-neutral-700" />
           <span>No source attribution recorded for this period.</span>
         </div>
       ) : showTable ? (
-        <div className="max-h-[170px] overflow-y-auto text-xs border rounded-lg p-2">
+        <div className="max-h-[170px] overflow-y-auto text-xs font-mono border border-[#E5E7EB] dark:border-[#27272A] rounded-lg p-2">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b text-slate-500">
+              <tr className="border-b border-[#E5E7EB] dark:border-[#27272A] text-neutral-400 text-[10px] uppercase">
                 <th className="pb-1">Source Channel</th>
                 <th className="pb-1 text-right">Count</th>
                 <th className="pb-1 text-right">%</th>
