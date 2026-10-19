@@ -158,7 +158,7 @@ export function MyFormsToolbar({
               className={cn(
                 "h-8 px-3 rounded-xl text-xs font-medium shrink-0 flex items-center gap-2 transition-all outline-none select-none border cursor-pointer",
                 isActive
-                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 border-zinc-900 dark:border-white shadow-2xs"
+                  ? "bg-[#563BFA] text-white border-[#563BFA] shadow-2xs"
                   : "bg-white dark:bg-zinc-900/70 border-zinc-200/90 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700"
               )}
             >
@@ -168,7 +168,7 @@ export function MyFormsToolbar({
                 className={cn(
                   "px-1.5 py-0.2 rounded text-[10px] font-mono leading-none",
                   isActive
-                    ? "bg-white/20 dark:bg-zinc-900/20 text-white dark:text-zinc-950"
+                    ? "bg-white/20 text-white"
                     : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
                 )}
               >

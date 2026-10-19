@@ -3,6 +3,7 @@
 import React from "react";
 import { FileText, TrendingUp, Eye, FileEdit } from "lucide-react";
 import { AccountStatsDTO } from "../schemas/profile-schema";
+import { cn } from "@/lib/utils";
 
 interface AccountStatsCardProps {
   stats: AccountStatsDTO;
@@ -14,38 +15,42 @@ export function AccountStatsCard({ stats }: AccountStatsCardProps) {
       label: "Total Forms",
       value: stats.totalForms,
       icon: FileText,
-      color: "text-[#563BFA] dark:text-indigo-400",
-      bgColor: "bg-indigo-50 dark:bg-indigo-950/50",
-      borderColor: "border-indigo-100 dark:border-indigo-900/30",
+      color: "text-[#563BFA] dark:text-[#A798FF]",
+      bgColor: "bg-[#F7F5FF] dark:bg-[#1A1829]",
+      borderColor: "border-[#ECE8FF] dark:border-[#2C2849]",
+      iconBg: "bg-[#EDE8FF] dark:bg-[#2C2652]",
     },
     {
       label: "Total Responses",
       value: stats.totalResponses,
       icon: TrendingUp,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950/50",
-      borderColor: "border-emerald-100 dark:border-emerald-900/30",
+      color: "text-[#2563EB] dark:text-[#60A5FA]",
+      bgColor: "bg-[#F0F7FF] dark:bg-[#122238]",
+      borderColor: "border-[#DCEBFF] dark:border-[#1E375A]",
+      iconBg: "bg-[#DCEBFF] dark:bg-[#1A3860]",
     },
     {
       label: "Total Views",
       value: stats.totalViews,
       icon: Eye,
-      color: "text-sky-600 dark:text-sky-400",
-      bgColor: "bg-sky-50 dark:bg-sky-950/50",
-      borderColor: "border-sky-100 dark:border-sky-900/30",
+      color: "text-[#E11D48] dark:text-[#FB7185]",
+      bgColor: "bg-[#FFF0F5] dark:bg-[#2D1622]",
+      borderColor: "border-[#FFE0EB] dark:border-[#4B1E34]",
+      iconBg: "bg-[#FFE0EB] dark:bg-[#481E32]",
     },
     {
       label: "Draft Forms",
       value: stats.draftForms,
       icon: FileEdit,
-      color: "text-rose-600 dark:text-rose-400",
-      bgColor: "bg-rose-50 dark:bg-rose-950/50",
-      borderColor: "border-rose-100 dark:border-rose-900/30",
+      color: "text-[#D97706] dark:text-[#FBBF24]",
+      bgColor: "bg-[#FFF9EE] dark:bg-[#2A2012]",
+      borderColor: "border-[#FEEEC8] dark:border-[#463318]",
+      iconBg: "bg-[#FEEEC8] dark:bg-[#463318]",
     },
   ];
 
   return (
-    <div className="bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A] p-5">
+    <div className="bg-white dark:bg-[#121417] rounded-xl border border-[#E5E7EB] dark:border-[#27272A] p-5 shadow-2xs">
       <div className="flex items-center justify-between pb-3.5 border-b border-[#E5E7EB] dark:border-[#27272A]">
         <div>
           <h2 className="text-xs font-semibold text-neutral-900 dark:text-white">
@@ -66,10 +71,20 @@ export function AccountStatsCard({ stats }: AccountStatsCardProps) {
           return (
             <div
               key={item.label}
-              className="p-3 rounded-lg bg-neutral-50 dark:bg-[#181B20] border border-[#E5E7EB] dark:border-[#27272A] flex flex-col justify-between"
+              className={cn(
+                "p-3 rounded-lg border flex flex-col justify-between shadow-2xs transition-all",
+                item.bgColor,
+                item.borderColor
+              )}
             >
               <div className="flex items-center justify-between">
-                <div className="w-6 h-6 rounded-md bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] flex items-center justify-center text-neutral-500">
+                <div
+                  className={cn(
+                    "w-7 h-7 rounded-md flex items-center justify-center shrink-0 shadow-xs",
+                    item.iconBg,
+                    item.color
+                  )}
+                >
                   <Icon className="w-3.5 h-3.5" />
                 </div>
               </div>
@@ -77,7 +92,7 @@ export function AccountStatsCard({ stats }: AccountStatsCardProps) {
                 <div className="text-lg font-mono font-bold text-neutral-900 dark:text-white">
                   {item.value.toLocaleString()}
                 </div>
-                <div className="text-[10px] font-mono text-neutral-400 truncate mt-0.5">
+                <div className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400 truncate mt-0.5">
                   {item.label}
                 </div>
               </div>

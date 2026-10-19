@@ -111,7 +111,7 @@ export interface FormAnalyticsDTO {
 }
 
 const PALETTE = [
-  "#8B5CF6", // violet
+  "#563BFA", // Formly brand purple
   "#3B82F6", // blue
   "#10B981", // emerald
   "#EC4899", // pink

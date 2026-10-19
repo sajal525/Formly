@@ -11,14 +11,14 @@ export function FormStatusBadge({ status, className = "" }: FormStatusBadgeProps
     DRAFT: {
       label: "Draft",
       badgeStyle:
-        "bg-zinc-100/90 text-zinc-700 border-zinc-200/90 dark:bg-zinc-800/90 dark:text-zinc-300 dark:border-zinc-700",
+        "bg-white text-zinc-700 border-zinc-200/90 dark:bg-zinc-800/90 dark:text-zinc-300 dark:border-zinc-700",
       dotStyle: "bg-zinc-400",
     },
     PUBLISHED: {
       label: "Published",
       badgeStyle:
-        "bg-purple-100/90 text-purple-700 border-purple-200/80 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-800/60",
-      dotStyle: "bg-purple-600",
+        "bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60",
+      dotStyle: "bg-emerald-500",
     },
     CLOSED: {
       label: "Closed",

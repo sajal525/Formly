@@ -28,22 +28,42 @@ export function AnalyticsKpiCards({ kpis, className }: AnalyticsKpiCardsProps) {
     {
       ...kpis.responses,
       icon: Users,
+      bgClass: "bg-[#F0F7FF] dark:bg-[#122238]",
+      borderClass: "border-[#DCEBFF] dark:border-[#1E375A]",
+      iconBg: "bg-[#DCEBFF] dark:bg-[#1A3860]",
+      iconColor: "text-[#2563EB] dark:text-[#60A5FA]",
     },
     {
       ...kpis.views,
       icon: Eye,
+      bgClass: "bg-[#FFF0F5] dark:bg-[#2D1622]",
+      borderClass: "border-[#FFE0EB] dark:border-[#4B1E34]",
+      iconBg: "bg-[#FFE0EB] dark:bg-[#481E32]",
+      iconColor: "text-[#E11D48] dark:text-[#FB7185]",
     },
     {
       ...kpis.completionRate,
       icon: TrendingUp,
+      bgClass: "bg-[#F0FDF4] dark:bg-[#122A1E]",
+      borderClass: "border-[#DCFCE7] dark:border-[#1E4D34]",
+      iconBg: "bg-[#DCFCE7] dark:bg-[#1B4D33]",
+      iconColor: "text-[#16A34A] dark:text-[#4ADE80]",
     },
     {
       ...kpis.averageTime,
       icon: Clock,
+      bgClass: "bg-[#FFF9EE] dark:bg-[#2A2012]",
+      borderClass: "border-[#FEEEC8] dark:border-[#463318]",
+      iconBg: "bg-[#FEEEC8] dark:bg-[#463318]",
+      iconColor: "text-[#D97706] dark:text-[#FBBF24]",
     },
     {
       ...kpis.startedForms,
       icon: UserCheck,
+      bgClass: "bg-[#F7F5FF] dark:bg-[#1A1829]",
+      borderClass: "border-[#ECE8FF] dark:border-[#2C2849]",
+      iconBg: "bg-[#EDE8FF] dark:bg-[#2C2652]",
+      iconColor: "text-[#563BFA] dark:text-[#A798FF]",
     },
   ];
 
@@ -59,12 +79,16 @@ export function AnalyticsKpiCards({ kpis, className }: AnalyticsKpiCardsProps) {
         return (
           <div
             key={idx}
-            className="bg-white dark:bg-[#121417] border border-[#E5E7EB] dark:border-[#27272A] rounded-xl p-3.5 flex flex-col justify-between"
+            className={cn(
+              "border rounded-xl p-3.5 flex flex-col justify-between transition-all shadow-2xs",
+              c.bgClass,
+              c.borderClass
+            )}
           >
             {/* Top row */}
             <div className="flex items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 truncate">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 truncate">
                   {c.label}
                 </span>
                 <span
@@ -74,7 +98,13 @@ export function AnalyticsKpiCards({ kpis, className }: AnalyticsKpiCardsProps) {
                   <Info className="w-3 h-3" />
                 </span>
               </div>
-              <div className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-[#1C1F26] border border-[#E5E7EB] dark:border-[#27272A] text-neutral-500 dark:text-neutral-400 flex items-center justify-center shrink-0">
+              <div
+                className={cn(
+                  "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-xs",
+                  c.iconBg,
+                  c.iconColor
+                )}
+              >
                 <IconComponent className="w-3.5 h-3.5" />
               </div>
             </div>
@@ -92,16 +122,16 @@ export function AnalyticsKpiCards({ kpis, className }: AnalyticsKpiCardsProps) {
                     className={cn(
                       "text-[10px] font-mono",
                       c.deltaType === "positive"
-                        ? "text-emerald-600 dark:text-emerald-400"
+                        ? "text-emerald-600 dark:text-emerald-400 font-medium"
                         : c.deltaType === "negative"
-                        ? "text-rose-600 dark:text-rose-400"
+                        ? "text-rose-600 dark:text-rose-400 font-medium"
                         : "text-neutral-400"
                     )}
                   >
                     {c.deltaText}
                   </span>
                 ) : (
-                  <span className="text-[10px] font-mono text-neutral-400">
+                  <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
                     {c.subtext}
                   </span>
                 )}

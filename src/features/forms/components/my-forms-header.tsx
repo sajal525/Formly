@@ -49,7 +49,7 @@ export function MyFormsHeader({ onCreateBlankClick }: MyFormsHeaderProps) {
 
       {/* Sleek TUI Create Form Button & Dropdown */}
       <div className="relative self-start sm:self-center shrink-0" ref={dropdownRef}>
-        <div className="inline-flex items-center rounded-xl bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 transition-colors shadow-2xs">
+        <div className="inline-flex items-center rounded-xl bg-[#563BFA] hover:bg-[#4830d9] text-white transition-colors shadow-2xs">
           <button
             type="button"
             onClick={onCreateBlankClick}
@@ -59,11 +59,11 @@ export function MyFormsHeader({ onCreateBlankClick }: MyFormsHeaderProps) {
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Create Form</span>
           </button>
-          <div className="w-[1px] h-4 bg-white/20 dark:bg-zinc-900/20" />
+          <div className="w-[1px] h-4 bg-white/25" />
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="px-2 py-2 text-white/80 hover:text-white dark:text-zinc-700 dark:hover:text-zinc-950 transition-colors cursor-pointer"
+            className="px-2 py-2 text-white/80 hover:text-white transition-colors cursor-pointer"
             aria-label="More creation choices"
             aria-expanded={isDropdownOpen}
           >

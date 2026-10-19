@@ -139,7 +139,7 @@ export function ViewsVsResponsesChart({
                       opacity={0.85}
                     />
                   )}
-                  {/* Responses bar (violet) */}
+                  {/* Responses bar (brand purple) */}
                   {pt.responses > 0 && (
                     <rect
                       x={centerX + 1}
@@ -147,7 +147,7 @@ export function ViewsVsResponsesChart({
                       width={barWidth}
                       height={respHeight}
                       rx={1.5}
-                      fill="#8B5CF6"
+                      fill="#563BFA"
                     />
                   )}
                 </g>

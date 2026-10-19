@@ -176,26 +176,26 @@ export function RecentFormsSection({
     switch (status) {
       case "PUBLISHED":
         return (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium backdrop-blur-md bg-purple-100/90 dark:bg-purple-950/90 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/60 shadow-xs">
+          <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold backdrop-blur-md bg-[#EAF8F1]/95 dark:bg-[#122A1E]/95 text-[#15803D] dark:text-[#4ADE80] border border-[#CDEEDD] dark:border-[#1E4D34] shadow-xs">
             Published
           </span>
         );
       case "CLOSED":
         return (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium backdrop-blur-md bg-rose-100/90 dark:bg-rose-950/90 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/60 shadow-xs">
+          <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold backdrop-blur-md bg-rose-50/95 dark:bg-rose-950/90 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/60 shadow-xs">
             Closed
           </span>
         );
       case "ARCHIVED":
         return (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium backdrop-blur-md bg-amber-100/90 dark:bg-amber-950/90 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60 shadow-xs">
+          <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold backdrop-blur-md bg-amber-50/95 dark:bg-amber-950/90 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-xs">
             Archived
           </span>
         );
       case "DRAFT":
       default:
         return (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium backdrop-blur-md bg-white/85 dark:bg-zinc-900/85 text-zinc-700 dark:text-zinc-300 border border-black/5 dark:border-white/10 shadow-xs">
+          <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold backdrop-blur-md bg-white/95 dark:bg-zinc-800/95 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 shadow-xs">
             Draft
           </span>
         );
@@ -281,7 +281,7 @@ export function RecentFormsSection({
           <button
             type="button"
             onClick={onCreateClick}
-            className="h-8 px-4 rounded-xl bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer shadow-2xs"
+            className="h-8 px-4 rounded-xl bg-[#563BFA] hover:bg-[#4830d9] text-white text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer shadow-2xs"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Create Form</span>
