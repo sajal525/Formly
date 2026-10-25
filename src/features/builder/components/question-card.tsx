@@ -182,6 +182,7 @@ export function QuestionCard({
 
   return (
     <div
+      id={`question-card-${question.id}`}
       ref={setNodeRef}
       style={style}
       onClick={onSelect}

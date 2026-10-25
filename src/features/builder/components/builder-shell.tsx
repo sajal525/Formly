@@ -28,6 +28,8 @@ import {
 import { FormDraftDTO } from "../server/get-form-draft";
 import { ImageUploadModal } from "./image-block/image-upload-modal";
 import { CoverImageEditorModal } from "./cover-image/cover-image-editor-modal";
+import { AiImportModal } from "./ai-import/ai-import-modal";
+import { CheckCircle2, AlertCircle, X } from "lucide-react";
 
 interface BuilderShellProps {
   initialDraft: FormDraftDTO;
@@ -78,6 +80,15 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
   const [isCoverEditorOpen, setIsCoverEditorOpen] = useState(false);
   const [coverEditorFile, setCoverEditorFile] = useState<File | null>(null);
   const [coverEditorPreviewUrl, setCoverEditorPreviewUrl] = useState<string | null>(null);
+  const [isAiImportOpen, setIsAiImportOpen] = useState(false);
+  const [toast, setToast] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  const showToast = useCallback((text: string, type: "success" | "error" = "success") => {
+    setToast({ text, type });
+    setTimeout(() => {
+      setToast((curr) => (curr?.text === text ? null : curr));
+    }, 4000);
+  }, []);
 
   const handleSelectCoverFile = useCallback((file: File) => {
     setCoverEditorFile(file);
@@ -222,6 +233,47 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
     });
     setSelectedBlockId(newId);
   }, [selectedBlockId, setDefinitionWithHistory]);
+
+  // Import questions extracted by AI
+  const handleConfirmAiImport = useCallback(
+    (newQuestions: BuilderQuestion[]) => {
+      if (!newQuestions || newQuestions.length === 0) return;
+
+      const firstNewId = newQuestions[0].id;
+
+      setDefinitionWithHistory((prev) => {
+        const currentBlocks = ensureDefinitionBlocks(prev);
+        const newBlocks: BuilderQuestionBlock[] = newQuestions.map((q) => ({
+          id: q.id,
+          kind: "question" as const,
+          question: q,
+        }));
+        const nextBlocks = [...currentBlocks, ...newBlocks];
+        const synced = syncBlocksAndQuestions(nextBlocks);
+        return {
+          ...prev,
+          blocks: synced.blocks,
+          questions: synced.questions,
+        };
+      });
+
+      setSelectedBlockId(firstNewId);
+      setIsAiImportOpen(false);
+      showToast(
+        `Imported ${newQuestions.length} question${newQuestions.length === 1 ? "" : "s"} successfully!`,
+        "success"
+      );
+
+      // Scroll to the first newly added question
+      setTimeout(() => {
+        const el = document.getElementById(`question-card-${firstNewId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
+    },
+    [setDefinitionWithHistory, showToast]
+  );
 
   // Insert newly confirmed image block
   const handleInsertImage = useCallback(
@@ -529,6 +581,7 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
           onTabChange={setActiveTab}
           onPublishClick={() => setIsPublishDialogOpen(true)}
           isPublished={initialDraft.status === "PUBLISHED"}
+          onImportWithAi={() => setIsAiImportOpen(true)}
           user={user}
         />
 
@@ -537,6 +590,7 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           questionCount={definition.questions?.length || 0}
+          onImportWithAi={() => setIsAiImportOpen(true)}
         />
 
         {/* Tab View Body */}
@@ -660,6 +714,44 @@ export function BuilderShell({ initialDraft, user }: BuilderShellProps) {
         editingCoverImage={definition.coverImage}
         onSaveCoverImage={handleSaveCoverImage}
       />
+
+      {/* Import with AI Modal */}
+      <AiImportModal
+        isOpen={isAiImportOpen}
+        onClose={() => setIsAiImportOpen(false)}
+        formId={initialDraft.id}
+        existingQuestionCount={definition.questions?.length || 0}
+        onConfirmImport={handleConfirmAiImport}
+      />
+
+      {/* Success / Info Toast Alert */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={cn(
+            "fixed bottom-6 right-6 z-50 p-3.5 rounded-xl border text-xs font-semibold flex items-center gap-3 shadow-lg animate-in slide-in-from-bottom-2 duration-200 select-none",
+            toast.type === "success"
+              ? "bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-200"
+              : "bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-800/40 text-red-800 dark:text-red-200"
+          )}
+        >
+          {toast.type === "success" ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+          )}
+          <span>{toast.text}</span>
+          <button
+            type="button"
+            onClick={() => setToast(null)}
+            className="p-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors ml-2 cursor-pointer"
+            aria-label="Dismiss message"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

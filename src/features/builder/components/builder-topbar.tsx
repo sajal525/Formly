@@ -48,6 +48,7 @@ interface BuilderTopbarProps {
   onPublishClick: () => void;
   isPublishing?: boolean;
   isPublished?: boolean;
+  onImportWithAi?: () => void;
   user?: {
     username?: string;
     displayName?: string;
@@ -71,6 +72,7 @@ export function BuilderTopbar({
   onPublishClick,
   isPublishing,
   isPublished = false,
+  onImportWithAi,
   user,
 }: BuilderTopbarProps) {
   const router = useRouter();
@@ -430,6 +432,19 @@ export function BuilderTopbar({
                 <SettingsIcon className="w-3.5 h-3.5 text-neutral-400" />
                 <span>Form settings</span>
               </button>
+              {onImportWithAi && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onImportWithAi();
+                  }}
+                  className="w-full text-left px-3 py-1.5 flex items-center gap-2 text-[#563BFA] dark:text-[#a594fd] hover:bg-violet-50/60 dark:hover:bg-[#563BFA]/10"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#563BFA] dark:text-[#a594fd]" />
+                  <span className="font-medium">Import with AI</span>
+                </button>
+              )}
               <Link
                 href={`/forms/${formId}/preview`}
                 target="_blank"
